@@ -1304,12 +1304,8 @@
         <div class="ap-calc-field-row ap-engr-wine-row">
           <label class="ap-engr-checkbox-label"><input type="checkbox" class="ap-engr-wine" checked> Vernese Wine (+3% Move Speed)</label>
         </div>
-        <div class="ap-calc-field-row ap-engr-ealyn-row">
-          <label class="ap-engr-checkbox-label"><input type="checkbox" class="ap-engr-ealyn"> Ealyn's Blessing (+3% Attack Speed)</label>
-        </div>
+        <p class="ap-brace-compare-footer-note ap-engr-ms-readout">Raid Captain Efficiency: —</p>
         <p class="ap-brace-compare-footer-note ap-engr-manafood-note">—</p>
-        <p class="ap-brace-compare-footer-note ap-engr-ms-readout">Effective Move Speed: —</p>
-        <p class="ap-brace-compare-footer-note ap-engr-atk-readout">Effective Attack Speed: —</p>
       </div>
     </div>
 

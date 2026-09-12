@@ -4490,8 +4490,8 @@ h3 { color: var(--dbc-teal); }
   color: var(--dbc-lavender);
   margin: 0 0 0.7em;
 }
-/* .ap-engr-checkbox-label (Rage Rune/Vernese Wine/Mana Food/Ealyn's
-   Blessing/Include Mass Increase) never actually had a CSS rule of its
+/* .ap-engr-checkbox-label (Rage Rune/Vernese Wine/Mana Food/Include Mass
+   Increase) never actually had a CSS rule of its
    own - every other label in this calculator either matches
    label.ap-calc-field-label (the left-hand field name in a label+control
    row) or one of the dedicated inline-checkbox classes elsewhere
@@ -5139,7 +5139,7 @@ h3 { color: var(--dbc-teal); }
     width: 50%;
   }
 }
-/* The readouts (Effective Move/Attack Speed, the Wine-vs-Mana-Food note)
+/* The readouts (Raid Captain Efficiency, the Wine-vs-Mana-Food note)
    sit inside the In-Raid Variables card - same dashed-top-edge treatment
    as every other .ap-brace-compare-footer-note, just scoped to read as
    "notes about this card" rather than "notes about the whole section".

@@ -766,12 +766,18 @@
 
   // Reads the master Build toggle's real state (the ap-brace-spec-build
   // select - see its own comment in resources.md) straight from the DOM,
-  // for the couple of call sites (Engraving Comparison's derived
-  // Playstyle, the Mana Food default listener) that need just the
-  // RE/Surge family bit before a full readInputs() has happened yet.
-  function isSurgeBuild(root) {
+  // for call sites that need the build's config (isSurge, share) before a
+  // full readInputs() has happened yet - Engraving Comparison's derived
+  // Playstyle, the Mana Food default listener, and readEngravingInputs's
+  // own surgeShare field (see raidCaptainSurgeRageMoveSpeed) all go
+  // through this one lookup so they can never disagree about which build
+  // is actually selected.
+  function currentBuildConfig(root) {
     const buildId = normalizeBraceSpecBuild(getSelect(root, ".ap-brace-spec-build", "re-333"));
-    return !!(BRACE_SPEC_BUILDS[buildId] || BRACE_SPEC_BUILDS["re-333"]).isSurge;
+    return BRACE_SPEC_BUILDS[buildId] || BRACE_SPEC_BUILDS["re-333"];
+  }
+  function isSurgeBuild(root) {
+    return !!currentBuildConfig(root).isSurge;
   }
 
   // Fallback default for the Family chips (RE / Surge) in the two-tier
@@ -3351,10 +3357,9 @@
   const MAELSTROM_SPEED_BONUS = 12.8;
   const RAID_CAPTAIN_WINE_MOVE_SPEED = 3; // Vernese Wine - Surge only, Move Speed only (see surgeEffectiveAttackSpeed's own comment for why it has no Attack Speed counterpart here).
   // Support: Artist/Valkyrie - a party-wide Move Speed buff, not a personal
-  // consumable choice, so unlike Wine/Mana Food/Ealyn's Blessing it isn't
-  // part of their 3-way mutually-exclusive set (see that listener's own
-  // comment below) and applies on both RE and Surge alike, same as Rage
-  // Rune just above. Modeled as a flat add at its full value - "100%
+  // consumable choice, so unlike Wine/Mana Food it isn't part of their
+  // 2-way mutually-exclusive set (see that listener's own comment below)
+  // and applies on both RE and Surge alike, same as Rage Rune just above. Modeled as a flat add at its full value - "100%
   // uptime" is the assumption baked into the flat number itself, not a
   // tracked uptime input like Maelstrom's. Only ever a real source while a
   // Support is actually in the party though (gated on `yearning`, same
@@ -3365,18 +3370,32 @@
   const SUPPORT_AV_MOVE_SPEED = 8;
   // Rage Rune on Surprise Attack (Surge only): 16% chance per cast of +16%
   // Move Speed AND +16% Attack Speed for 6s (the one proc grants both at
-  // once). The buff usually covers close to a full rotation once it
-  // procs, but not guaranteed to - on the rare rotation where it falls
-  // off before the last skill (a 75% DPS-share hit even when it did
-  // proc), the real uptime is a little lower than "procced = full
-  // rotation" would suggest. Modeled here as a flat expected-value add
-  // (chance * value) rather than a tracked uptime like Maelstrom's, since
-  // there's no per-rotation cast-count input to weight it against - the
-  // rare early-fall-off case is treated as noise around that average
-  // rather than something worth its own input. Toggled on by default
-  // since the rune itself is assumed taken.
+  // once). Surprise Attack is cast once every rotation guaranteed, plus a
+  // 2nd time on roughly half of rotations. Toggled on by default since the
+  // rune itself is assumed taken.
+  //
+  // raidCaptainSurgeRageMoveSpeed (below) is where this actually gets
+  // used for Raid Captain's Move Speed -> Dmg conversion - see its own
+  // comment for the full Maelstrom-overlap model. surgeEffectiveAttackSpeed
+  // further down still uses the simpler flat expected-value add
+  // (chance * value); that reading is purely informational (nothing there
+  // feeds any DPS number on the page), so it isn't worth the same
+  // overlap-model treatment.
   const RAGE_RUNE_PROC_CHANCE = 0.16;
   const RAGE_RUNE_SPEED_BONUS = 16;
+  const RAGE_RUNE_SECOND_CAST_CHANCE = 0.5;
+  // The 1st (guaranteed) Surprise Attack cast lands ~0.5-1s after
+  // Maelstrom, so on a proc its buff only extends 0.5-1s past Maelstrom's
+  // own window - real coverage of a boss-movement stall, but only for a
+  // stall that short. The 2nd cast (~50% chance to happen at all) lands
+  // right before the Surge finisher itself, so on a proc its fresh 6s
+  // buff comfortably outlasts any realistic stall - treated as a full
+  // rescue (credit 1.0) in raidCaptainSurgeRageMoveSpeed. This is the 1st
+  // cast's credit relative to that full-rescue baseline - a labeled
+  // placeholder, not derived from any real stall-length distribution
+  // (nothing on this page tracks one), open to retuning if a better read
+  // on typical stall length vs. that 0.5-1s overhang ever turns up.
+  const RAGE_RUNE_OVERHANG_CREDIT = 0.35;
   const RAID_CAPTAIN_MOVE_SPEED_CAP = 140;
   // Mana Food's flat Dmg from unlocking the Bleed rune on Maelstrom - not
   // gated on Raid Captain or any other engraving (any loadout running
@@ -3389,13 +3408,104 @@
   const MANA_FOOD_BLEED_DMG = 0.0075;
 
   function raidCaptainMoveSpeed(engrInputs, yearning) {
-    let ms = RAID_CAPTAIN_BASE_MOVE_SPEED + (RAID_CAPTAIN_CLASS_MOVE_SPEED[engrInputs.spec] || 0);
-    if (yearning) ms += SUPPORT_SPEED_BONUS;
-    ms += MAELSTROM_SPEED_BONUS * (engrInputs.maelstromUptime / 100);
-    if (engrInputs.spec === "surge" && engrInputs.rageRune) ms += RAGE_RUNE_PROC_CHANCE * RAGE_RUNE_SPEED_BONUS;
-    if (engrInputs.supportAv && yearning) ms += SUPPORT_AV_MOVE_SPEED;
-    if (engrInputs.spec === "surge" && engrInputs.wine && !engrInputs.manaFood) ms += RAID_CAPTAIN_WINE_MOVE_SPEED;
-    return Math.min(ms, RAID_CAPTAIN_MOVE_SPEED_CAP);
+    let restOfMs = RAID_CAPTAIN_BASE_MOVE_SPEED + (RAID_CAPTAIN_CLASS_MOVE_SPEED[engrInputs.spec] || 0);
+    if (yearning) restOfMs += SUPPORT_SPEED_BONUS;
+    if (engrInputs.supportAv && yearning) restOfMs += SUPPORT_AV_MOVE_SPEED;
+    if (engrInputs.spec === "surge" && engrInputs.wine && !engrInputs.manaFood) restOfMs += RAID_CAPTAIN_WINE_MOVE_SPEED;
+
+    if (engrInputs.spec !== "surge" || !engrInputs.rageRune) {
+      // RE has no Maelstrom/Rage Rune overlap to model (Rage Rune is
+      // Surge-only); Surge without Rage Rune taken has nothing stochastic
+      // to average over either. Still has to time-weight the CAPPED
+      // up/down values rather than cap an already-averaged sum, same
+      // concavity reason as raidCaptainSurgeRageMoveSpeed below - min() is
+      // concave, so min(restOfMs + bonus*uptime%, cap) systematically
+      // overstates the real value whenever restOfMs+bonus sits near/over
+      // the cap (the common case). Getting this wrong here was the actual
+      // bug behind "checking Rage Rune makes the number go down" - it
+      // wasn't Rage Rune's math that was wrong, it was this baseline being
+      // inflated relative to it, so toggling Rage Rune on jumped to the
+      // (lower, correct) branch-capped number and looked like a
+      // regression.
+      const u = engrInputs.maelstromUptime / 100;
+      const ms = u * Math.min(restOfMs + MAELSTROM_SPEED_BONUS, RAID_CAPTAIN_MOVE_SPEED_CAP)
+        + (1 - u) * Math.min(restOfMs, RAID_CAPTAIN_MOVE_SPEED_CAP);
+      return ms;
+    }
+    return raidCaptainSurgeRageMoveSpeed(restOfMs, engrInputs);
+  }
+
+  // Surge + Rage Rune: models the overlap between Maelstrom's own uptime
+  // and Rage Rune's procs instead of just adding both as flat, independent
+  // EV terms (see project chat log for the full derivation this
+  // implements).
+  //
+  // Maelstrom's own downtime (100 - maelstromUptime) is assumed to land
+  // entirely inside the back-loaded "share" portion of the rotation (the
+  // Surge namesake skill's own finisher - BRACE_SPEC_BUILDS's `share`,
+  // reused here as engrInputs.surgeShare) rather than spread evenly across
+  // the whole fight: Maelstrom (cast ~1s into a normally ~6s rotation,
+  // itself lasting 6s) only fails to cover the finisher when a
+  // boss-movement stall pushes the rotation past that window - it
+  // essentially never fails to cover the early/mid part of an
+  // undisrupted rotation. Once Maelstrom's downtime would exceed the
+  // tail's own share of the rotation, the excess spills into the normal
+  // segment too (e.g. at 0% Maelstrom Uptime there's no Maelstrom
+  // anywhere, not just missing from the tail).
+  //
+  // Within each segment, this takes the probability-weighted average of
+  // the CAPPED outcomes (proc vs. no proc) rather than capping an
+  // already-averaged sum the way the old flat formula did - min() is
+  // concave, so capping first then averaging systematically overstates
+  // the real expected value whenever the baseline sits close to the 140%
+  // cap, which is most of the time given Maelstrom's typical uptime. This
+  // is what actually produces the "severe diminishing returns" a Rage
+  // Rune proc has while Maelstrom's already up, without needing to model
+  // that as its own separate effect.
+  //
+  // The 1st Surprise Attack cast (guaranteed every rotation) only ever
+  // gets credited against the NORMAL segment's own Maelstrom state (see
+  // RAGE_RUNE_OVERHANG_CREDIT's own comment for why its tail-rescue value
+  // is folded into pRescue at a fraction of the 2nd cast's, rather than
+  // counted as its own independent segment).
+  function raidCaptainSurgeRageMoveSpeed(restOfMs, engrInputs) {
+    const cap = RAID_CAPTAIN_MOVE_SPEED_CAP;
+    const withMael = restOfMs + MAELSTROM_SPEED_BONUS;
+    const noMael = restOfMs;
+    const bonus = RAGE_RUNE_SPEED_BONUS;
+    const p1 = RAGE_RUNE_PROC_CHANCE; // 1st cast, guaranteed
+    const p2 = RAGE_RUNE_SECOND_CAST_CHANCE * RAGE_RUNE_PROC_CHANCE; // 2nd cast, ~50% chance to happen at all
+    // Combined chance the tail's Maelstrom gap gets rescued by SOME Rage
+    // proc - the 2nd cast counts fully (a fresh 6s buff outlasts any
+    // realistic stall), the 1st cast counts at its overhang credit only
+    // (its buff's 0.5-1s overhang past Maelstrom covers just a short
+    // stall, not the whole gap).
+    const pRescue = p2 + (1 - p2) * p1 * RAGE_RUNE_OVERHANG_CREDIT;
+
+    const share = Math.max(0, Math.min(1, engrInputs.surgeShare || 0));
+    const downtime = 1 - engrInputs.maelstromUptime / 100;
+
+    // Fraction of each segment where Maelstrom is actually up.
+    let qTail, qNormal;
+    if (downtime <= share) {
+      qTail = share > 0 ? 1 - downtime / share : 1;
+      qNormal = 1;
+    } else {
+      qTail = 0;
+      const excess = downtime - share;
+      qNormal = share < 1 ? Math.max(0, 1 - excess / (1 - share)) : 0;
+    }
+
+    // Probability-weighted average of the capped (proc, no-proc)
+    // outcomes for one segment, given whether Maelstrom is up in it.
+    function blend(rageChance, maelstromUp) {
+      const base = maelstromUp ? withMael : noMael;
+      return rageChance * Math.min(base + bonus, cap) + (1 - rageChance) * Math.min(base, cap);
+    }
+
+    const normal = qNormal * blend(p1, true) + (1 - qNormal) * blend(p1, false);
+    const tail = qTail * blend(pRescue, true) + (1 - qTail) * blend(pRescue, false);
+    return (1 - share) * normal + share * tail;
   }
 
   function raidCaptainMoveSpeedFraction(engrInputs, yearning) {
@@ -3473,18 +3583,20 @@
     return foodMult / wineMult - 1;
   }
 
-  // ----- Attack Speed (display only) -----
+  // ----- Attack Speed (sources reference, no live display) -----
+  // The live "Attack Speed: ...%" readout that used to sit under Raid
+  // Captain Efficiency in the Engraving Comparison card has been removed
+  // (it was purely informational, never fed into any DPS number on the
+  // page) - surgeEffectiveAttackSpeed below is no longer called from
+  // anywhere. Left in place, unused, purely as a record of every Attack
+  // Speed source and its value in case the readout needs to come back.
   // Mass Increase is the only engraving on this whole page whose Attack
   // Speed matters at all (its own -10% drawback, called out in the page
   // banner as unmodeled in the DPS search above) - RE never runs Mass
-  // Increase, so RE has no use for an Attack Speed readout at all (see
-  // renderEngravingComparison, which hides this whole readout outside
-  // Surge). Purely informational: nothing here feeds back into any DPS
-  // number on the page, so unlike raidCaptainMoveSpeed this has no
-  // "Fraction" counterpart and nothing multiplies against it.
+  // Increase, so RE never had a use for this readout to begin with.
   const BASE_ATTACK_SPEED = 106.32; // Same base value the sheet gives Move Speed - not a typo, just how the base stat lines up for this class.
   const SURGE_IDENTITY_ATTACK_SPEED = 20; // Surge's own Identity gauge, always on for Surge - not a togglable source.
-  const EALYN_ATTACK_SPEED = 3; // Ealyn's Blessing - Surge-only alternative to Vernese Wine/Mana Food (see the 3-way exclusivity listener below). Attack Speed only - no Move Speed counterpart, unlike Wine.
+  const EALYN_ATTACK_SPEED = 3; // Ealyn's Blessing - Surge-only alternative to Vernese Wine/Mana Food, Attack Speed only (no Move Speed counterpart, unlike Wine). Its own checkbox was removed along with the readout below (it had no effect on anything else) - kept here as a source reference only.
   const MASS_INCREASE_ATTACK_SPEED_PENALTY = 10;
   const SURGE_ATTACK_SPEED_CAP = 140; // Same 140% AS/MS cap Raid Captain's Move Speed uses (RAID_CAPTAIN_MOVE_SPEED_CAP above) - Attack Speed shares the identical class cap, just tracked separately since nothing here multiplies against it.
 
@@ -3493,7 +3605,9 @@
     atk += MAELSTROM_SPEED_BONUS * (engrInputs.maelstromUptime / 100);
     if (yearning) atk += SUPPORT_SPEED_BONUS;
     if (engrInputs.rageRune) atk += RAGE_RUNE_PROC_CHANCE * RAGE_RUNE_SPEED_BONUS;
-    if (engrInputs.ealynsBlessing) atk += EALYN_ATTACK_SPEED;
+    // Ealyn's Blessing's own checkbox is gone (see EALYN_ATTACK_SPEED's
+    // comment) so engrInputs no longer carries an ealynsBlessing flag -
+    // EALYN_ATTACK_SPEED is left unapplied here for the same reason.
     // Mass Increase's drawback only actually applies to a reader who's
     // running (or considering) Mass Increase - miOptIn is this section's
     // own "include Mass Increase in the best-combo search" checkbox, the
@@ -3932,6 +4046,13 @@
       // is no longer its own control here, it just echoes RE vs Surge from
       // whichever 6-way build is currently selected up top.
       spec: isSurgeBuild(root) ? "surge" : "re",
+      // The selected build's own Spec-scaling `share` (BRACE_SPEC_BUILDS) -
+      // reused here as "what fraction of your damage is the back-loaded
+      // Surge finisher" for raidCaptainSurgeRageMoveSpeed's Maelstrom/Rage
+      // Rune overlap model. Only meaningful on Surge; harmless to read
+      // unconditionally (RE's own share value just goes unused, same as
+      // rageRune/maelstromUptime below already do on RE).
+      surgeShare: currentBuildConfig(root).share,
       grudgeLevel: getSelect(root, ".ap-engr-grudge-level", "4 Nodes"),
       ambushLevel: getSelect(root, ".ap-engr-ambush-level", "4 Nodes"),
       adrenalineLevel: getSelect(root, ".ap-engr-adrenaline-level", "4 Nodes"),
@@ -3946,7 +4067,6 @@
       wine: getCheckbox(root, ".ap-engr-wine", true),
       manaFood: getCheckbox(root, ".ap-engr-manafood", false),
       manaFoodAmount: getNumber(root, ".ap-engr-manafood-amount", 6000),
-      ealynsBlessing: getCheckbox(root, ".ap-engr-ealyn", false),
       stone1Target: getSelect(root, ".ap-engr-stone1-target", "None"),
       stone1Level: getSelect(root, ".ap-engr-stone1-level", "0 Lv."),
       stone2Target: getSelect(root, ".ap-engr-stone2-target", "None"),
@@ -4215,8 +4335,8 @@
       // reasoning as the pool/candidateFlagSets exclusion above (RE never
       // runs it, and its -10% Attack Speed drawback isn't modeled) -
       // filtered out below rather than left in the array, since this
-      // table has no per-row spec toggle like the checkbox/wine/ealyn
-      // rows above do.
+      // table has no per-row spec toggle like the checkbox/wine rows
+      // above do.
       engrInputs.spec !== "re"
         ? { label: "Mass Increase", gain: massIncreaseGain(engrInputs, inputs) }
         : null,
@@ -4348,7 +4468,6 @@
       rows,
       stoneBreakdown,
       moveSpeed: raidCaptainMoveSpeed(engrInputs, inputs.yearning),
-      attackSpeed: engrInputs.spec === "surge" ? surgeEffectiveAttackSpeed(engrInputs, inputs.yearning) : null,
       wineVsManaFood: raidCaptainWineVsManaFood(engrInputs, inputs),
       spec: engrInputs.spec,
     };
@@ -4948,8 +5067,6 @@
         ? "Mana Food (+Maelstrom Bleed)"
         : "Mana Food (Main Stat only)";
     }
-    const ealynRow = root.querySelector(".ap-engr-ealyn-row");
-    if (ealynRow) ealynRow.style.display = isSurge ? "" : "none";
     const miRow = root.querySelector(".ap-engr-mi-row");
     if (miRow) miRow.style.display = isSurge ? "" : "none";
     const miOptinRow = root.querySelector(".ap-engr-mi-optin-row");
@@ -4963,8 +5080,8 @@
     // that assumption inline instead of leaving it as a silent premise
     // the reader has to already know. Sits after the text (not before)
     // so the line reads as plain text first, with the icon as a trailing
-    // annotation rather than competing with "Move Speed"/"Attack Speed"
-    // for the reader's first glance.
+    // annotation rather than competing with "Raid Captain Efficiency"/
+    // "Attack Speed" for the reader's first glance.
     function appendFeastIcon(el) {
       const icon = document.createElement("img");
       icon.className = "skill-icon ap-engr-feast-icon";
@@ -4974,33 +5091,31 @@
       icon.loading = "lazy";
       // "display" mode (not the default visibility:hidden) - a missing
       // icon should collapse the gap entirely rather than leave a blank
-      // 1em space sitting after "Move Speed: ..."/"Attack Speed: ...".
+      // 1em space sitting after "Raid Captain Efficiency: ..."/"Attack Speed: ...".
       window.SiteUtils.hideOnError(icon, "display");
       el.appendChild(icon);
     }
 
+    // Displayed as Raid Captain Efficiency - % of the way from 0% bonus
+    // (exactly 100% Move Speed) to the 140% cap - rather than the raw
+    // Move Speed % itself. result.moveSpeed is already the correct
+    // time-weighted expected value across capped/uncapped states (see
+    // raidCaptainMoveSpeed/raidCaptainSurgeRageMoveSpeed above - this
+    // block doesn't change that math at all), but labeling it as a
+    // literal live "Move Speed" stat misled readers sitting near the cap
+    // most of the time into reading e.g. "139.xx% (140% cap)" as a bug
+    // ("why isn't this 140?") rather than the correct EV it was. Same
+    // concept as loa-logs' own "Raid Captain Efficiency" stat (damage
+    // actually gained from the engraving / damage if capped the whole
+    // fight - 0% = never above base Move Speed, 100% = capped the entire
+    // fight), just computed here from the modeled inputs instead of a
+    // real log.
     const msEl = root.querySelector(".ap-engr-ms-readout");
     if (msEl) {
-      msEl.textContent = "Move Speed: " + result.moveSpeed.toFixed(2) + "% (140% cap) ";
+      const rcEfficiency = Math.max(0, Math.min(100, (result.moveSpeed - 100) / (RAID_CAPTAIN_MOVE_SPEED_CAP - 100) * 100));
+      msEl.textContent = "Raid Captain Efficiency: " + rcEfficiency.toFixed(2) + "% ";
+      msEl.title = "% of Raid Captain's potential damage bonus you're capturing - 0% means never above base Move Speed, 100% means capped (140% Move Speed) the entire fight.";
       appendFeastIcon(msEl);
-    }
-
-    // Attack Speed is Surge-only display (see surgeEffectiveAttackSpeed's
-    // own comment - RE never runs Mass Increase, so it has no use for
-    // this readout at all), unlike the Move Speed readout just above,
-    // which both specs use since Raid Captain's own Move Speed calc
-    // always applies.
-    const atkEl = root.querySelector(".ap-engr-atk-readout");
-    if (atkEl) {
-      if (!isSurge || result.attackSpeed === null) {
-        atkEl.style.display = "none";
-      } else {
-        atkEl.style.display = "";
-        let text = "Attack Speed: " + result.attackSpeed.toFixed(2) + "% (140% cap)";
-        if (engrInputs.miOptIn) text += " (Mass Increase)";
-        atkEl.textContent = text + " ";
-        appendFeastIcon(atkEl);
-      }
     }
 
     const foodNoteEl = root.querySelector(".ap-engr-manafood-note");
@@ -5312,6 +5427,8 @@
       /* storage unavailable - nothing to clear */
     }
     resetFieldsToDefaults(root);
+    normalizeSpeedChoiceExclusivity(root);
+    syncSpeedChoiceFamilyTracking(root);
     // Instantly re-calculate calculations and refresh value/range displays
     update(root);
   }
@@ -5329,6 +5446,8 @@
     normalizeChaosCoreExclusivity(root);
     normalizeWeaponCoreExclusivity(root);
     normalizeRaidContributionExclusivity(root);
+    normalizeSpeedChoiceExclusivity(root);
+    syncSpeedChoiceFamilyTracking(root);
     updatePresetButtonStates(root);
     update(root);
   }
@@ -5451,6 +5570,8 @@
     normalizeChaosCoreExclusivity(root);
     normalizeWeaponCoreExclusivity(root);
     normalizeRaidContributionExclusivity(root);
+    normalizeSpeedChoiceExclusivity(root);
+    syncSpeedChoiceFamilyTracking(root);
     saveInputs(root, activeId);
     update(root);
     let msg = "Imported into Preset " + activeId + ".";
@@ -5587,6 +5708,54 @@
     if (kazerosEl.checked && guardianEl.checked) {
       guardianEl.checked = false;
     }
+  }
+
+  // Same idea as normalizeChaosCoreExclusivity/normalizeRaidContribution
+  // Exclusivity above, for Vernese Wine / Mana Food's own 2-way
+  // exclusivity (see the live "change" listener pair's own comment near
+  // speedChoiceEls). That listener pair only fires on a real user click,
+  // so it can't catch a conflict left behind by a bulk field mutation
+  // that sets .checked directly without dispatching "change" -
+  // resetFieldsToDefaults in particular, whose raw HTML defaults have
+  // BOTH Wine and Mana Food starting checked at once (Wine for Surge,
+  // Mana Food for RE - see the Mana-Food-default crossing listener's own
+  // comment for why). Called wherever the other normalize* functions are
+  // (reset, preset switch, import, init) so a stale/hand-edited export -
+  // or a Reset landing back on Surge - can't leave both actually counted
+  // in the calc. Only matters on Surge: RE never treats these as
+  // competing picks (Mana Food is purely informational there, Wine's row
+  // is hidden and its flag is ignored - see raidCaptainMoveSpeed's own
+  // spec check), so leaving them both checked while on RE is harmless
+  // and intentionally left alone. Wine wins over Mana Food when both are
+  // checked, matching the crossing listener's own choice to turn Mana
+  // Food off (not Wine) on landing on Surge.
+  function normalizeSpeedChoiceExclusivity(root) {
+    if (!isSurgeBuild(root)) return;
+    const wineEl = root.querySelector(".ap-engr-wine");
+    const manaFoodEl = root.querySelector(".ap-engr-manafood");
+    let keptOne = false;
+    [wineEl, manaFoodEl].filter(Boolean).forEach((el) => {
+      if (!el.checked) return;
+      if (keptOne) el.checked = false;
+      else keptOne = true;
+    });
+  }
+
+  // Resyncs the "last known family" tracker the Mana Food crossing
+  // listener above keys off of (buildSelectEl.dataset.lastFamilyIsSurge)
+  // to whatever the build select actually ends up at after a bulk field
+  // mutation. Needed alongside normalizeSpeedChoiceExclusivity, not
+  // instead of it: that function fixes up a conflict already left behind
+  // in the checkboxes' own state, while this one fixes up the crossing
+  // listener's memory of what family it last saw, so the reader's VERY
+  // NEXT real RE<->Surge click still gets detected as a crossing instead
+  // of silently comparing against a stale remembered family and skipping
+  // the Mana Food default flip (see that listener's own comment for the
+  // full failure mode this resolves).
+  function syncSpeedChoiceFamilyTracking(root) {
+    const buildSelectEl = root.querySelector(".ap-brace-spec-build");
+    if (!buildSelectEl) return;
+    buildSelectEl.dataset.lastFamilyIsSurge = isSurgeBuild(root) ? "1" : "0";
   }
 
   // The Keen Blunt Weapon Ability Stone only does anything while Keen
@@ -5929,6 +6098,8 @@
       normalizeChaosCoreExclusivity(root);
       normalizeWeaponCoreExclusivity(root);
       normalizeRaidContributionExclusivity(root);
+      normalizeSpeedChoiceExclusivity(root);
+      syncSpeedChoiceFamilyTracking(root);
       updatePresetButtonStates(root);
 
       const flashyEl = root.querySelector(".ap-flashy-atk");
@@ -5988,20 +6159,17 @@
         });
       }
 
-      // Vernese Wine, Mana Food, and Ealyn's Blessing are a 3-way
-      // mutually exclusive set of Surge consumable choices - Wine feeds
-      // Raid Captain's isolated Move Speed calc (see raidCaptainMoveSpeed),
-      // Mana Food feeds its own contribution-table row (manaFoodGain),
-      // and Ealyn's Blessing feeds the Attack Speed readout
-      // (surgeEffectiveAttackSpeed) - only one is ever actually eaten at
-      // once. Same "dedicated listeners, checking one unchecks the
-      // others" shape as Kazeros/Guardian just above, since (unlike the 2
-      // Ability Stone slots) there's no natural "primary" side to fall
-      // back on for a plain update()-driven resolver.
+      // Vernese Wine and Mana Food are a 2-way mutually exclusive set of
+      // Surge consumable choices - Wine feeds Raid Captain's isolated
+      // Move Speed calc (see raidCaptainMoveSpeed), and Mana Food feeds
+      // its own contribution-table row (manaFoodGain) - only one is ever
+      // actually eaten at once. Same "dedicated listeners, checking one
+      // unchecks the other" shape as Kazeros/Guardian just above, since
+      // (unlike the 2 Ability Stone slots) there's no natural "primary"
+      // side to fall back on for a plain update()-driven resolver.
       const wineEl = root.querySelector(".ap-engr-wine");
       const manaFoodEl = root.querySelector(".ap-engr-manafood");
-      const ealynEl = root.querySelector(".ap-engr-ealyn");
-      const speedChoiceEls = [wineEl, manaFoodEl, ealynEl].filter(Boolean);
+      const speedChoiceEls = [wineEl, manaFoodEl].filter(Boolean);
       speedChoiceEls.forEach((el) => {
         el.addEventListener("change", () => {
           if (el.checked) {
@@ -6082,10 +6250,10 @@
       // on RE it's purely informational (Main-Stat-only, doesn't compete
       // with anything - see renderEngravingComparison), so defaulting it
       // on costs nothing and saves the reader a click. On Surge it's one
-      // of 3 competing consumable choices above, so it stays off by
-      // default there like Wine/Ealyn's own untouched defaults - forcing
-      // it on would silently outcompete whichever of those the reader
-      // actually wants the moment they switch specs. Playstyle itself is
+      // of 2 competing consumable choices above, so it stays off by
+      // default there like Wine's own untouched default - forcing it on
+      // would silently outcompete Wine the moment the reader switches
+      // specs. Playstyle itself is
       // no longer its own control (used to be a dedicated RE/Surge radio
       // pair here in Engraving Comparison) - it's derived from the master
       // Build toggle above (see isSurgeBuild/readEngravingInputs), so this
@@ -6094,13 +6262,33 @@
       // every build switch (e.g. RE 111 -> RE 313 must NOT stomp a
       // mid-session manual Mana Food toggle, only crossing the RE/Surge
       // boundary should).
+      //
+      // "Last known family" is tracked on buildSelectEl's own dataset
+      // (not a private closure variable) specifically so it can be
+      // resynced from outside this listener - see
+      // syncSpeedChoiceFamilyTracking below, called alongside
+      // normalizeSpeedChoiceExclusivity from every bulk field mutation
+      // (Reset to defaults, preset switch, import, init). Those all set
+      // the build select's value directly via resetFieldsToDefaults
+      // without dispatching "change", so a closure here would go stale
+      // across them - e.g. Reset while on Surge silently snaps the form
+      // back to the RE default, but a closure that still believed the
+      // build was Surge would then miss the reader's very next crossing
+      // to Surge (nowIsSurge === the stale remembered value, no
+      // difference detected, Mana Food never flips back off). Confirmed
+      // via Playwright: this was the exact repro for a reader hitting
+      // Reset while on Surge, then crossing to Surge again finding Mana
+      // Food still ticked alongside Wine.
       if (manaFoodEl && buildSelectEl) {
-        let lastIsSurge = isSurgeBuild(root);
+        if (buildSelectEl.dataset.lastFamilyIsSurge === undefined) {
+          buildSelectEl.dataset.lastFamilyIsSurge = isSurgeBuild(root) ? "1" : "0";
+        }
         buildSelectEl.addEventListener("change", () => {
           const nowIsSurge = isSurgeBuild(root);
+          const lastIsSurge = buildSelectEl.dataset.lastFamilyIsSurge === "1";
           if (nowIsSurge !== lastIsSurge) {
             manaFoodEl.checked = !nowIsSurge;
-            lastIsSurge = nowIsSurge;
+            buildSelectEl.dataset.lastFamilyIsSurge = nowIsSurge ? "1" : "0";
           }
         });
       }
