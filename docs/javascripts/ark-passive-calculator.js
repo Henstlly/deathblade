@@ -1401,11 +1401,71 @@
     );
   }
 
+  // General correct replacement for "Math.min(critRateTotal(...), 1)".
+  // critRateTotal bakes in TWO independent "sometimes on, sometimes off"
+  // crit-rate contributors as plain averaged terms - Adrenaline (`h` =
+  // bonus * uptime%: a buff that's up some fraction of the fight) and
+  // Back Attack Rate (`p` = 0.1 * rate%: a per-hit chance a given hit
+  // lands from behind) - both are expectations over a Bernoulli variable,
+  // so both hit the exact same concavity problem: min() is concave, so
+  // capping an already-averaged sum ONCE systematically overstates the
+  // true time/hit-weighted crit rate whenever a buffed/back-attack state
+  // would cross the cap while the baseline doesn't. Confirmed against
+  // project chat log: at 75% baseline with Adrenaline (+20% @ 97% uptime)
+  // AND Back Attack (+10% @ 90% rate) together, the naive averaged-sum
+  // formula reads a flat 100.00% where the true joint-weighted value is
+  // 99.035% - a bigger gap than either source produces alone, since two
+  // independent swingy terms compound.
+  //
+  // blendCritTerms takes `base` (the fixed, non-swingy part of crit rate,
+  // already including Master keystone's own flat +7% `extra` - that has
+  // to be inside `base` before any branch, since it shares the same cap)
+  // plus a list of independent {bonus, p} terms, and computes the TRUE
+  // expected capped value by enumerating every on/off combination and
+  // weighting by joint probability (assumes independence between terms -
+  // e.g. Adrenaline uptime not correlating with which hits land as back
+  // attacks - the same simplifying assumption already implicit everywhere
+  // else in this calculator, not a new weakness this introduces).
+  // Recursing one term at a time is mathematically identical to that full
+  // enumeration (tower rule: E[f(X,Y)] = E_X[E_Y[f(X,Y)|X]]), and means
+  // adding a future similar source (a new buff/proc with its own uptime
+  // or proc-rate feeding crit rate) is just adding another {bonus, p}
+  // entry below - no bespoke branch code needed per source.
+  function blendCritTerms(base, terms) {
+    if (!terms.length) return Math.min(base, 1);
+    const [{ bonus, p }, ...rest] = terms;
+    return p * blendCritTerms(base + bonus, rest) + (1 - p) * blendCritTerms(base, rest);
+  }
+
+  // Downstream (combinedMultiplier's mult, kbwEngravingGainPct,
+  // marginalCritDmgGainPct) all take effCrit as an already-fixed scalar
+  // and are affine in it / in critDmgTotal with effCrit held constant, so
+  // fixing the value at this one computation point is sufficient -
+  // E[mult] = mult(E[effCrit]) exactly, no need to re-derive those
+  // formulas or touch combinedMultiplier/bestComboFor themselves.
+  function effectiveCritRate(inputs, keenSenseLv, extra) {
+    const adrenalineBonus = ADRENALINE_TABLE[inputs.adrenaline] || 0;
+    const adrenalineUptime = inputs.adrenalineUptime / 100;
+    const backAttackBonus = 0.1;
+    const backAttackRate = inputs.backAttackRate / 100;
+    // Strip both buggy averaged terms back out of critRateTotal's sum
+    // rather than re-listing every other term here, so this can never
+    // drift out of sync with critRateTotal's own term list.
+    const restOfCrit =
+      critRateTotal(inputs, keenSenseLv) -
+      adrenalineBonus * adrenalineUptime -
+      backAttackBonus * backAttackRate;
+    return blendCritTerms(restOfCrit + extra, [
+      { bonus: adrenalineBonus, p: adrenalineUptime },
+      { bonus: backAttackBonus, p: backAttackRate },
+    ]);
+  }
+
   function getKeystoneComponents(inputs, shared, keenSenseLv, limitBreakLv, keystone) {
     const S4 = critRateTotal(inputs, keenSenseLv);
     const T4 = S4 + 0.07;
-    const S5 = Math.min(S4, 1);
-    const T5 = Math.min(T4, 1);
+    const S5 = effectiveCritRate(inputs, keenSenseLv, 0);
+    const T5 = effectiveCritRate(inputs, keenSenseLv, 0.07);
     const S19 = evoDmgTotal(keenSenseLv, limitBreakLv, shared);
     const T19 = S19 + 0.2;
 
@@ -1531,7 +1591,7 @@
     // keystone selected" values baseStats already reports above (S5, the
     // capped raw Crit Rate; onCritDmgBase, the pre-Critical-keystone on-crit
     // multiplier), so the gain % is consistent with the rest of the card.
-    const baseEffCrit = Math.min(critRateTotal(inputs, 0), 1);
+    const baseEffCrit = effectiveCritRate(inputs, 0, 0);
     const baseStats = {
       critRate: critRateTotal(inputs, 0) * 100,
       critDmg: shared.critDmgTotal,

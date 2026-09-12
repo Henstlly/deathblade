@@ -66,7 +66,7 @@ extra_javascript:
   - javascripts/extra.js?v=2
   - javascripts/cpm-calculator.js?v=6
   - javascripts/bid-calculator.js?v=4
-  - javascripts/ark-passive-calculator.js?v=32
+  - javascripts/ark-passive-calculator.js?v=34
   - javascripts/bible-import.js?v=10
   - javascripts/build-data.js?v=4
   - javascripts/build-stats-badge.js?v=1
