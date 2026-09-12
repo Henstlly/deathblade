@@ -1281,7 +1281,8 @@
   }
 
   // Isolated DPS gain from one flat Crit Dmg contributor (e.g. Keen Blunt
-  // Weapon's engraving bonus or its Ability Stone), expressed as "% damage
+  // Weapon's engraving bonus/Ability Stone, or Breaking Moon's average
+  // per-cast add - see breakingMoonContribution), expressed as "% damage
   // you'd lose if this one line were removed and everything else (Crit
   // Rate, on-crit multipliers, Evo Dmg, Add Dmg) stayed exactly as-is".
   //
@@ -1334,6 +1335,39 @@
     const withoutTerm = (1 - effCrit) + effCrit * (1 + onCrit) * (critDmgTotal - totalValue);
     if (withoutTerm <= 0) return 0;
     return (withTermAdjusted / withoutTerm - 1) * 100;
+  }
+
+  // Real, re-optimized replacement for kbwEngravingGainPct wherever KBW's
+  // row is compared against Setup A/B's own "vs No Setup" methodology
+  // (bestStats.kbwGain and kbwContributionGain below - NOT baseStats.kbwGain,
+  // which uses fixed pre-keystone effCrit/onCrit that never compete against
+  // anything, so it has nothing to re-optimize and stays on the closed form).
+  // kbwEngravingGainPct's closed form silently assumes the winning
+  // keystone+split cell is IDENTICAL with and without KBW's Crit Dmg value -
+  // true only some of the time. KBW's value feeds straight into
+  // shared.critDmgTotal (see computeShared), which is part of the grid
+  // formula itself, so removing it can genuinely flip which of the 9 cells
+  // bestComboFor picks (e.g. Master's higher effCrit stops being worth it
+  // once Critical's on-crit multiplier no longer has KBW's larger Crit Dmg
+  // to amplify) - confirmed live: a default-settings run had KBW's own best
+  // cell at Master+Pulverize/LB1-KS2 while the true no-KBW baseline actually
+  // preferred Critical+Pulverize/LB1-KS2, a difference the closed form has
+  // no way to see since it only ever holds one fixed cell's effCrit/onCrit
+  // and subtracts KBW's value out of critDmgTotal underneath it. Setup A/B's
+  // own vsNeither ratio never had this problem (bestComboFor already
+  // re-searches all 9 cells for both the "with" and "without" candidate), so
+  // this reuses that exact approach instead of the affine shortcut, at the
+  // cost of a second real grid search rather than an O(1) formula.
+  function kbwRealizedGainPct(candidateInputs) {
+    const kbwValue = KBW_TABLE[candidateInputs.kbw] || 0;
+    const kbwStoneValue = KBW_STONE_TABLE[candidateInputs.kbwStone] || 0;
+    if (!kbwValue && !kbwStoneValue) return 0;
+    const withBest = bestComboFor(candidateInputs);
+    if (!withBest || withBest.mult <= 0) return 0;
+    const withoutInputs = Object.assign({}, candidateInputs, { kbw: "Not Used", kbwStone: "0 Lv." });
+    const withoutBest = bestComboFor(withoutInputs);
+    if (!withoutBest || withoutBest.mult <= 0) return 0;
+    return (withBest.mult / withoutBest.mult - 1) * 100;
   }
 
   function critRateTotal(inputs, keenSenseLv) {
@@ -1501,19 +1535,20 @@
       kbwUsed,
       kbwStoneUsed,
       kbwGain: kbwEngravingGainPct(baseEffCrit, shared.onCritDmgBase, shared.critDmgTotal, kbwValue, kbwStoneValue),
-      // Flat contribution, not a marginal DPS-gain ratio like kbwGain -
-      // Breaking Moon is a plain additive Crit Dmg source (see
-      // breakingMoonContribution), so unlike KBW it's identical between
-      // the Base and Best Setup cards rather than varying with effCrit.
+      // Marginal DPS gain from Breaking Moon's average per-cast Crit Dmg
+      // add (see breakingMoonContribution), same closed-form ratio KBW's
+      // engraving line uses via marginalCritDmgGainPct - unlike KBW there's
+      // no EV malus to fold in, so the generic helper applies directly.
+      // Varies with effCrit like kbwGain does, so Base and Best Setup can
+      // legitimately show different values here (unlike the old flat-add
+      // display, which was identical between the two cards).
       breakingMoonActive: shared.breakingMoonActive,
-      breakingMoonAdd: shared.breakingMoonAdd * 100,
+      breakingMoonGain: marginalCritDmgGainPct(baseEffCrit, shared.onCritDmgBase, shared.critDmgTotal, shared.breakingMoonAdd),
     };
 
     // Best Setup stats (only things affected by nodes)
     let bestStats = null;
     if (best) {
-      const splitLabel = best.split.label;
-      const keystoneLabels = KEYSTONE_LABELS;
       const { keenSense, limitBreak } = best.split;
       let comps;
       if (best.keystone === "crit+master") {
@@ -1522,7 +1557,7 @@
           master: getKeystoneComponents(inputs, shared, keenSense, limitBreak, "master"),
         };
         bestStats = {
-          label: splitLabel + " + " + keystoneLabels[best.keystone],
+          critDmg: shared.critDmgTotal,
           rawCrit: comps.master.rawCrit * 100,
           onCritDmg: comps.critical.onCrit * 100,
           evoDmg: comps.master.evo * 100,
@@ -1534,7 +1569,7 @@
           pulverize: getKeystoneComponents(inputs, shared, keenSense, limitBreak, "pulverize"),
         };
         bestStats = {
-          label: splitLabel + " + " + keystoneLabels[best.keystone],
+          critDmg: shared.critDmgTotal,
           rawCrit: comps.critical.rawCrit * 100,
           onCritDmg: comps.critical.onCrit * 100,
           evoDmg: comps.pulverize.evo * 100,
@@ -1546,7 +1581,7 @@
           pulverize: getKeystoneComponents(inputs, shared, keenSense, limitBreak, "pulverize"),
         };
         bestStats = {
-          label: splitLabel + " + " + keystoneLabels[best.keystone],
+          critDmg: shared.critDmgTotal,
           rawCrit: comps.master.rawCrit * 100,
           onCritDmg: shared.onCritDmgBase * 100,
           evoDmg: comps.pulverize.evo * 100,
@@ -1554,17 +1589,23 @@
         };
       }
 
-      // Same marginal-gain calc as the Base card, just using the winning
-      // cell's own effCrit (best.effCrit) and on-crit multiplier
-      // (bestStats.onCritDmg, already resolved per-branch above) instead of
-      // the no-keystone baseline ones.
+      // Real re-optimized with/without ratio (kbwRealizedGainPct), NOT the
+      // same closed-form calc the Base card above uses - the Base card's
+      // effCrit/onCrit never come from a competition (no keystone has been
+      // picked yet at that point), so nothing there can flip; this row's
+      // effCrit/onCrit DO come from a 9-cell competition (best.effCrit is
+      // whichever cell won WITH kbw active), and removing KBW's Crit Dmg
+      // can change which cell would actually win - see kbwRealizedGainPct's
+      // own comment for the confirmed live example. Re-searches the grid
+      // with kbw/kbwStone zeroed rather than assuming best's own cell stays
+      // optimal without it.
       bestStats.kbwUsed = kbwUsed;
       bestStats.kbwStoneUsed = kbwStoneUsed;
-      bestStats.kbwGain = kbwEngravingGainPct(best.effCrit, bestStats.onCritDmg / 100, shared.critDmgTotal, kbwValue, kbwStoneValue);
-      // Same flat add as baseStats.breakingMoonAdd - not keystone-dependent,
-      // so identical whichever pair the grid above picked as best.
+      bestStats.kbwGain = kbwRealizedGainPct(inputs);
+      // Same marginal-gain calc as baseStats.breakingMoonGain, just using
+      // the winning cell's own effCrit/on-crit multiplier like kbwGain does.
       bestStats.breakingMoonActive = shared.breakingMoonActive;
-      bestStats.breakingMoonAdd = shared.breakingMoonAdd * 100;
+      bestStats.breakingMoonGain = marginalCritDmgGainPct(best.effCrit, bestStats.onCritDmg / 100, shared.critDmgTotal, shared.breakingMoonAdd);
     }
 
     return { cells, best, baseStats, bestStats };
@@ -1779,7 +1820,7 @@
       },
       {
         label: ["Crit Stat +", ...trip("80", "100", "120")],
-        note: "Set your current bracelet so this isn't double-counted.",
+        note: "Set your current bracelet's Crit Stat so this isn't double-counted.",
         low: critStatGain(CRIT_STAT_TABLE.Low),
         mid: critStatGain(CRIT_STAT_TABLE.Mid),
         high: critStatGain(CRIT_STAT_TABLE.High),
@@ -1798,7 +1839,7 @@
       },
       {
         label: ["Outgoing Damage +", ...trip("2", "2.5", "3"), "% & Damage to Staggered +", ...trip("4", "4.5", "5"), "%"],
-        note: "Assumes " + (STAGGER_DPS_SHARE * 100).toFixed(0) + "% of DPS happens during stagger.",
+        note: "Assumes " + (STAGGER_DPS_SHARE * 100).toFixed(0) + "% of all DPS happens during stagger windows.",
         low: OUTGOING_DMG_TABLE.Low + STAGGER_DMG_TABLE.Low * STAGGER_DPS_SHARE,
         mid: OUTGOING_DMG_TABLE.Mid + STAGGER_DMG_TABLE.Mid * STAGGER_DPS_SHARE,
         high: OUTGOING_DMG_TABLE.High + STAGGER_DMG_TABLE.High * STAGGER_DPS_SHARE,
@@ -1813,7 +1854,7 @@
         id: "addB",
         label: ["Additional Damage +", ...trip("2.5", "3", "3.5"), "% & Dmg vs Demon/Archdemon +", { tier: "fixed", text: "2.5" }, "%"],
         note:
-          "Displayed value assumes a Demon/Archdemon target, which most boss fights aren't. Additional Damage portion alone: " +
+          "Displayed value assumes a Demon/Archdemon target. Additional Damage portion alone: " +
           formatPctBare(BRACELET_ADD_B_TABLE.Low / (1 + addDmgBaseline)) + "/" +
           formatPctBare(BRACELET_ADD_B_TABLE.Mid / (1 + addDmgBaseline)) + "/" +
           formatPctBare(BRACELET_ADD_B_TABLE.High / (1 + addDmgBaseline)) + ".",
@@ -1839,7 +1880,7 @@
       },
       {
         label: ["Back Attack Damage +", ...trip("2.5", "3", "3.5"), "%"],
-        note: "Assumes " + (BACK_ATTACK_DPS_SHARE * 100).toFixed(0) + "% of DPS comes from back attack skills.",
+        note: "Assumes " + (BACK_ATTACK_DPS_SHARE * 100).toFixed(0) + "% of all DPS comes from skills that are labeled as a back attack.",
         low: BACK_DMG_TABLE.Low * BACK_ATTACK_DPS_SHARE,
         mid: BACK_DMG_TABLE.Mid * BACK_ATTACK_DPS_SHARE,
         high: BACK_DMG_TABLE.High * BACK_ATTACK_DPS_SHARE,
@@ -2566,7 +2607,7 @@
               low: universalStatDeltaGain(ACC_QUALITY_MAIN_STAT_TABLE.Low),
               mid: universalStatDeltaGain(ACC_QUALITY_MAIN_STAT_TABLE.Mid),
               high: universalStatDeltaGain(ACC_QUALITY_MAIN_STAT_TABLE.High),
-              note: "Maximum Main Stat difference between a minimum-quality and maximum-quality accessory: Ring +1,935, Earring +2,083, Necklace +2,679.",
+              note: "Maximum difference between a minimum-quality and maximum-quality accessory: Ring +1,935, Earring +2,083, Necklace +2,679.",
             },
           ];
         }
@@ -4081,18 +4122,17 @@
     });
   }
 
-  function kbwContributionGain(engrInputs, best, bestStats, shared) {
-    const kbwValue = KBW_TABLE[engrInputs.kbwLevel] || 0;
-    const kbwStoneValue = KBW_STONE_TABLE[engravingStoneLevel("kbw", engrInputs)] || 0;
-    const onCrit = bestStats.onCritDmg / 100;
-    // Engraving + Ability Stone removed jointly in one ratio (see
-    // kbwEngravingGainPct's own comment) - summing two marginals computed
-    // separately against the same full critDmgTotal understates the
-    // combined DPS Contribution shown in this row, to the point it could
-    // read lower than a flatly-additive engraving like Cursed Doll despite
-    // Keen Blunt Weapon's larger raw Crit Dmg values.
-    const gainPct = kbwEngravingGainPct(best.effCrit, onCrit, shared.critDmgTotal, kbwValue, kbwStoneValue);
-    return gainPct / 100;
+  // Now a thin wrapper around kbwRealizedGainPct's real re-optimized
+  // with/without search, so this row matches Setup A/B's own "vs No Setup"
+  // methodology exactly instead of the old closed-form approximation (which
+  // held the isolated section's winning keystone/split fixed and could
+  // silently diverge from Setup A/B whenever removing KBW would actually
+  // flip which cell wins - see kbwRealizedGainPct's own comment for a
+  // confirmed live example of exactly that). Engraving + Ability Stone are
+  // still removed jointly (isolatedInputs already carries both kbwLevel and
+  // its Stone level, same as before), not as two separate marginals.
+  function kbwContributionGain(isolatedInputs) {
+    return kbwRealizedGainPct(isolatedInputs) / 100;
   }
 
   function computeEngravingComparison(inputs, engrInputs) {
@@ -4169,7 +4209,7 @@
         note: "Follows Adrenaline Uptime % from the Ark Passive section above.",
       },
       { label: "Raid Captain", gain: raidCaptainGain(engrInputs, inputs) },
-      { label: "Keen Blunt Weapon", gain: kbwContributionGain(engrInputs, isolatedBest, isolatedBestStats, isolatedShared) },
+      { label: "Keen Blunt Weapon", gain: kbwContributionGain(isolatedInputs) },
       { label: "Cursed Doll", gain: cursedDollGain(engrInputs, inputs) },
       // Mass Increase stays Surge-only in this reference table too, same
       // reasoning as the pool/candidateFlagSets exclusion above (RE never
@@ -4497,7 +4537,6 @@
     setDisplay("#ap-crit-hit-syn-2", inputs.critHitSyn2 ? 0.08 : 0);
   }
 
-  // ----- Rendering -----
   function renderGrid(root, result) {
     // Top 3 combinations, ranked by % of the grid's best cell. Pure
     // rendering: pctOfBest was already computed in computeGridAndSummary,
@@ -4564,25 +4603,24 @@
       const bmRow = root.querySelector(".ap-stat-card-row--breakingmoon-base");
       const bmEl = root.querySelector(".ap-summary-base-breakingmoon");
       if (bmRow) bmRow.classList.toggle("ap-stat-card-row--hidden", !base.breakingMoonActive);
-      if (bmEl) bmEl.textContent = "+" + base.breakingMoonAdd.toFixed(2) + "%";
+      if (bmEl) bmEl.textContent = "+" + base.breakingMoonGain.toFixed(2) + "%";
     }
 
-    // Best Setup line (no Crit Dmg)
+    // Best Setup line
     const best = result.bestStats;
     if (best) {
-      const labelEl = root.querySelector(".ap-summary-best-label");
       const critEl = root.querySelector(".ap-summary-best-crit");
+      const dmgEl = root.querySelector(".ap-summary-best-critdmg");
       const onCritEl = root.querySelector(".ap-summary-best-oncrit");
       const evoEl = root.querySelector(".ap-summary-best-evodmg");
       const addEl = root.querySelector(".ap-summary-best-adddmg");
-
-      if (labelEl) labelEl.textContent = best.label;
 
       if (critEl) {
         const raw = best.rawCrit;
         critEl.textContent = raw.toFixed(2) + "%";
         critEl.classList.toggle("ap-summary-value-warn", raw > 100);
       }
+      if (dmgEl) dmgEl.textContent = (best.critDmg * 100).toFixed(2) + "%";
       if (onCritEl) onCritEl.textContent = best.onCritDmg.toFixed(2) + "%";
       if (evoEl) evoEl.textContent = best.evoDmg.toFixed(2) + "%";
       if (addEl) addEl.textContent = best.addDmg.toFixed(2) + "%";
@@ -4597,7 +4635,7 @@
       const bmRow = root.querySelector(".ap-stat-card-row--breakingmoon-best");
       const bmEl = root.querySelector(".ap-summary-best-breakingmoon");
       if (bmRow) bmRow.classList.toggle("ap-stat-card-row--hidden", !best.breakingMoonActive);
-      if (bmEl) bmEl.textContent = "+" + best.breakingMoonAdd.toFixed(2) + "%";
+      if (bmEl) bmEl.textContent = "+" + best.breakingMoonGain.toFixed(2) + "%";
     }
   }
 
@@ -4613,8 +4651,13 @@
     container.innerHTML = "";
     let anyFlip = false;
 
-    rows.forEach((row) => {
+    rows.forEach((row, index) => {
       const tr = document.createElement("tr");
+      // rows[] arrives already sorted descending (see the .sort() call in
+      // each compute* function that feeds this renderer), so index 0 is
+      // always the top line - no best-row highlight anymore though (see
+      // extra.css's .ap-brace-compare-flip-note comment for why it was
+      // stripped rather than reshaped a third time).
       if (row.flipsBest) anyFlip = true;
 
       const labelTd = window.SiteUtils.el("td", "ap-brace-row-label");
@@ -4860,8 +4903,12 @@
     const container = root.querySelector(".ap-arkgrid-compare-rows");
     if (!container) return;
     container.innerHTML = "";
-    rows.forEach((row) => {
+    rows.forEach((row, index) => {
       const tr = document.createElement("tr");
+      // rows[] is sorted descending by ancient17 (see computeArkGridComparison's
+      // own rows.sort call), same ranking renderComparisonRows above relies
+      // on - no best-row highlight applied though, same as that renderer
+      // (see extra.css's .ap-brace-compare-flip-note comment for why).
       const labelTd = window.SiteUtils.el("td", "ap-brace-row-label", row.label);
       tr.appendChild(labelTd);
       ["p14", "relic17", "ancient17", "relic20", "ancient20"].forEach((key) => {
@@ -4874,11 +4921,11 @@
   }
 
   // ----- Engraving Comparison rendering -----
-  const MANAFOOD_ICON_BASE_TEXT = "Only accurate if the Main Stat input in Character Data doesn't already include Mana Food's bonus.";
+  const MANAFOOD_TIP_BASE_TEXT = "Only accurate if the Main Stat input in Character Data doesn't already include Mana Food's Main Stat bonus.";
   // 222's own gearing more easily clears the Bleed rune's stat threshold
   // without Mana Food's help - worth flagging, but only for the one build
   // it's actually about, so it's appended rather than said unconditionally.
-  const MANAFOOD_ICON_222_SUFFIX = " 222 may not need Mana Food to equip Maelstrom Bleed.";
+  const MANAFOOD_TIP_222_SUFFIX = " 222 may not need Mana Food to equip Maelstrom Bleed.";
   // Contribution rows are a single value per engraving (not a Low/Mid/
   // High trio), so this doesn't reuse renderComparisonRows - closer to
   // renderArkGridComparison's own bespoke-shape renderer just above.
@@ -4971,16 +5018,20 @@
 
     // 222's own caveat used to be its own always-there row below the
     // checkbox, shown/hidden by isSurge like the rest of this card's
-    // consumable rows - folded into the icon's tooltip instead so a
-    // reader not on 222 doesn't pay for a row that's never relevant to
-    // them. Appended (not swapped in) since the icon's base text - the
-    // Main Stat double-counting caveat - applies to both specs; only the
-    // 222 aside is Surge-only info, not a spec-conditional rewrite of the
-    // base text itself (contrast SPEC_NOTE_TEXT_RE/SURGE above, which
-    // really are two different messages for the same icon).
-    const manaFoodIconEl = root.querySelector(".ap-engr-manafood-icon");
-    if (manaFoodIconEl) {
-      manaFoodIconEl.title = MANAFOOD_ICON_BASE_TEXT + (isSurge ? MANAFOOD_ICON_222_SUFFIX : "");
+    // consumable rows - folded into the checkbox label's tooltip instead
+    // so a reader not on 222 doesn't pay for a row that's never relevant
+    // to them. Appended (not swapped in) since the label's base text -
+    // the Main Stat double-counting caveat - applies to both specs; only
+    // the 222 aside is Surge-only info, not a spec-conditional rewrite of
+    // the base text itself (contrast SPEC_NOTE_TEXT_RE/SURGE above, which
+    // really are two different messages for the same trigger). Lives on
+    // the checkbox label itself (not a dedicated icon) - see
+    // ap-brace-tooltip.js's own comment on why a persistent element like
+    // this one needs its title kept in sync on every recompute rather
+    // than just set once.
+    const manaFoodCheckboxLabelEl = root.querySelector(".ap-engr-manafood-row .ap-engr-checkbox-label");
+    if (manaFoodCheckboxLabelEl) {
+      manaFoodCheckboxLabelEl.title = MANAFOOD_TIP_BASE_TEXT + (isSurge ? MANAFOOD_TIP_222_SUFFIX : "");
     }
 
     const rowsContainer = root.querySelector(".ap-engr-contrib-rows");

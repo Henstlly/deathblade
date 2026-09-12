@@ -89,7 +89,7 @@
   <div class="ap-calc-group ap-calc-group--crit-rate">
     <div class="ap-calc-group-title">Crit Rate</div>
     <div class="ap-calc-field-row">
-      <label class="ap-calc-field-label" for="ap-crit-stat">Crit Stat</label>
+      <label class="ap-calc-field-label" for="ap-crit-stat" title="Crit Stat as shown in your character profile.">Crit Stat</label>
       <span class="ap-value-display" data-for="ap-crit-stat"></span>
       <input type="number" id="ap-crit-stat" class="ap-crit-stat" min="0" max="750" step="1" value="658">
     </div>
@@ -156,7 +156,7 @@
       </select>
     </div>
     <div class="ap-calc-field-row">
-      <label class="ap-calc-field-label" for="ap-adrenaline-uptime">Adrenaline Uptime %</label>
+      <label class="ap-calc-field-label" for="ap-adrenaline-uptime" title="% of the fight spent at a full Adrenaline stacks - scales both the Crit Rate bonus above and the Ability Stone's AP bonus.">Adrenaline Uptime %</label>
       <input type="number" id="ap-adrenaline-uptime" class="ap-adrenaline-uptime" min="0" max="100" step="1" value="97">
     </div>
   </div>
@@ -245,12 +245,12 @@
     <div class="ap-calc-field-row ap-calc-field-row-pair">
       <label class="ap-calc-field-label">Bracelet</label>
       <div class="ap-calc-pair ap-calc-pair-checks">
-        <label class="ap-calc-pair-check">
+        <label class="ap-calc-pair-check" title="Checked if your bracelet rolled a + Crit Hit Dmg dual line - each dual line adds +1.5% Crit Hit Dmg multiplicatively.">
           <input type="checkbox" id="ap-crit-rate-dual" class="ap-crit-rate-dual" checked>
           <span class="ap-calc-pair-check-label">1</span>
           <span class="ap-value-display">(1.50%)</span>
         </label>
-        <label class="ap-calc-pair-check">
+        <label class="ap-calc-pair-check" title="Checked if your bracelet rolled a + Crit Hit Dmg dual line - each dual line adds +1.5% Crit Hit Dmg multiplicatively.">
           <input type="checkbox" id="ap-crit-dmg-dual" class="ap-crit-dmg-dual" checked>
           <span class="ap-calc-pair-check-label">2</span>
           <span class="ap-value-display">(1.50%)</span>
@@ -364,32 +364,32 @@
   <div class="ap-calc-party-card">
     <div class="ap-calc-group-title">Party &amp; Positioning</div>
     <div class="ap-calc-field-row">
-      <label class="ap-calc-field-label" for="ap-crit-syn1">Crit Rate Synergy 1</label>
+      <label class="ap-calc-field-label" for="ap-crit-syn1" title="A flat +10% Crit Rate party synergy buff.">Crit Rate Synergy 1</label>
       <span class="ap-value-display" data-for="ap-crit-syn1"></span>
       <input type="checkbox" id="ap-crit-syn1" class="ap-crit-syn1">
     </div>
     <div class="ap-calc-field-row">
-      <label class="ap-calc-field-label" for="ap-crit-syn2">Crit Rate Synergy 2</label>
+      <label class="ap-calc-field-label" for="ap-crit-syn2" title="A flat +10% Crit Rate party synergy buff.">Crit Rate Synergy 2</label>
       <span class="ap-value-display" data-for="ap-crit-syn2"></span>
       <input type="checkbox" id="ap-crit-syn2" class="ap-crit-syn2">
     </div>
     <div class="ap-calc-field-row">
-      <label class="ap-calc-field-label" for="ap-crit-hit-syn-1">Crit Hit Damage Synergy 1</label>
+      <label class="ap-calc-field-label" for="ap-crit-hit-syn-1" title="A flat +8% Crit Hit Damage party synergy buff, multiplicative.">Crit Hit Damage Synergy 1</label>
       <span class="ap-value-display" data-for="ap-crit-hit-syn-1"></span>
       <input type="checkbox" id="ap-crit-hit-syn-1" class="ap-crit-hit-syn-1">
     </div>
     <div class="ap-calc-field-row">
-      <label class="ap-calc-field-label" for="ap-crit-hit-syn-2">Crit Hit Damage Synergy 2</label>
+      <label class="ap-calc-field-label" for="ap-crit-hit-syn-2" title="A flat +8% Crit Hit Damage party synergy buff, multiplicative.">Crit Hit Damage Synergy 2</label>
       <span class="ap-value-display" data-for="ap-crit-hit-syn-2"></span>
       <input type="checkbox" id="ap-crit-hit-syn-2" class="ap-crit-hit-syn-2">
     </div>
     <div class="ap-calc-field-row">
-      <label class="ap-calc-field-label" for="ap-yearning">Support: Passionate Dance (Evo Dmg)</label>
+      <label class="ap-calc-field-label" for="ap-yearning" title="+14% Evo Dmg while active, used to determine if a Support is present for all relevant bonuses and calculations.">Support: Passionate Dance</label>
       <span class="ap-value-display" data-for="ap-yearning"></span>
       <input type="checkbox" id="ap-yearning" class="ap-yearning" checked>
     </div>
     <div class="ap-calc-field-row">
-      <label class="ap-calc-field-label" for="ap-back-attack-rate">Back Attack Rate % (Crit Rate)</label>
+      <label class="ap-calc-field-label" for="ap-back-attack-rate" title="% of your hits landed from behind - converts straight to Crit Rate at a 10:1 ratio (90% back attack = +9% Crit Rate).">Back Attack Rate %</label>
       <input type="number" id="ap-back-attack-rate" class="ap-back-attack-rate" min="0" max="100" step="1" value="90">
     </div>
   </div>
@@ -432,20 +432,19 @@
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--oncrit">Crit Hit Dmg</span><span class="ap-summary-base-oncrit ap-summary-value">—</span></div>
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--evodmg">Evo Dmg</span><span class="ap-summary-base-evodmg ap-summary-value">—</span></div>
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--adddmg">Add Dmg</span><span class="ap-summary-base-adddmg ap-summary-value">—</span></div>
-        <div class="ap-stat-card-row ap-stat-card-row--kbw-base ap-stat-card-row--hidden"><span class="ap-summary-label ap-summary-label--critdmg">KBW Dmg</span><span class="ap-summary-base-kbw ap-summary-value">—</span></div>
-        <div class="ap-stat-card-row ap-stat-card-row--kbwstone-base ap-stat-card-row--hidden"><span class="ap-summary-label ap-summary-label--critdmg">KBW Stone Dmg</span><span class="ap-summary-base-kbwstone ap-summary-value">—</span></div>
-        <div class="ap-stat-card-row ap-stat-card-row--breakingmoon-base ap-stat-card-row--hidden"><span class="ap-summary-label ap-summary-label--critdmg">B. Moon CDmg</span><span class="ap-summary-base-breakingmoon ap-summary-value">—</span></div>
+        <div class="ap-stat-card-row ap-stat-card-row--kbw-base ap-stat-card-row--hidden"><span class="ap-summary-label ap-summary-label--critdmg" title="Actual DPS gain from Keen Blunt Weapon (engraving + Ability Stone combined), factoring in its -20% dmg on 10% of hits - not the raw Crit Dmg % it grants.">KBW Dmg</span><span class="ap-summary-base-kbw ap-summary-value">—</span></div>
+        <div class="ap-stat-card-row ap-stat-card-row--breakingmoon-base ap-stat-card-row--hidden"><span class="ap-summary-label ap-summary-label--critdmg" title="Actual DPS gain from Breaking Moon's average per-cast Crit Dmg add (Surge 111 only) - not the raw Crit Dmg % it grants.">T→Z Dmg</span><span class="ap-summary-base-breakingmoon ap-summary-value">—</span></div>
       </div>
 
       <div class="ap-stat-card ap-stat-card-best">
-        <div class="ap-stat-card-title">Best Setup <span class="ap-summary-best-label ap-stat-card-subtitle">—</span></div>
+        <div class="ap-stat-card-title">Best Setup</div>
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--critrate">Crit Rate</span><span class="ap-summary-best-crit ap-summary-value">—</span></div>
+        <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--critdmg">Crit Dmg</span><span class="ap-summary-best-critdmg ap-summary-value">—</span></div>
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--oncrit">Crit Hit Dmg</span><span class="ap-summary-best-oncrit ap-summary-value">—</span></div>
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--evodmg">Evo Dmg</span><span class="ap-summary-best-evodmg ap-summary-value">—</span></div>
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--adddmg">Add Dmg</span><span class="ap-summary-best-adddmg ap-summary-value">—</span></div>
-        <div class="ap-stat-card-row ap-stat-card-row--kbw-best ap-stat-card-row--hidden"><span class="ap-summary-label ap-summary-label--critdmg">KBW Dmg</span><span class="ap-summary-best-kbw ap-summary-value">—</span></div>
-        <div class="ap-stat-card-row ap-stat-card-row--kbwstone-best ap-stat-card-row--hidden"><span class="ap-summary-label ap-summary-label--critdmg">KBW Stone Dmg</span><span class="ap-summary-best-kbwstone ap-summary-value">—</span></div>
-        <div class="ap-stat-card-row ap-stat-card-row--breakingmoon-best ap-stat-card-row--hidden"><span class="ap-summary-label ap-summary-label--critdmg">B. Moon CDmg</span><span class="ap-summary-best-breakingmoon ap-summary-value">—</span></div>
+        <div class="ap-stat-card-row ap-stat-card-row--kbw-best ap-stat-card-row--hidden"><span class="ap-summary-label ap-summary-label--critdmg" title="Actual DPS gain from Keen Blunt Weapon (engraving + Ability Stone combined), factoring in its -20% dmg on 10% of hits - not the raw Crit Dmg % it grants.">KBW Dmg</span><span class="ap-summary-best-kbw ap-summary-value">—</span></div>
+        <div class="ap-stat-card-row ap-stat-card-row--breakingmoon-best ap-stat-card-row--hidden"><span class="ap-summary-label ap-summary-label--critdmg" title="Actual DPS gain from Breaking Moon's average per-cast Crit Dmg add (Surge 111 only) - not the raw Crit Dmg % it grants.">T→Z Dmg</span><span class="ap-summary-best-breakingmoon ap-summary-value">—</span></div>
       </div>
 
     </div>
@@ -482,7 +481,7 @@
        dragged to a bookmarks bar, so the icon has to live outside it or
        every saved bookmark would be titled "⠿ Bible Import". -->
   <span class="bible-import-control">
-    <a href="#" class="bible-import-bookmarklet" title="Drag to your bookmarks bar, then click it on a loaded lostark.bible character page. Doesn't capture Main Stat % (Stronghold Pet + Skins), set them manually. Only as accurate as your Raid Loadout, make sure it matches your equipment.">Bible Import</a>
+    <a href="#" class="bible-import-bookmarklet" title="Drag to your bookmarks bar, then click it on a loaded lostark.bible character page. Doesn't capture Main Stat % (Stronghold Pet + Skins), set them manually. Only as accurate as your Raid Loadout is.">Bible Import</a>
     <span class="bible-import-status" aria-live="polite"></span>
     <ul class="bible-import-warnings" hidden></ul>
   </span>
@@ -579,7 +578,7 @@
       <div class="ap-gear-card ap-gear-card--basics">
         <p class="ap-gear-card-title">Weapon Power / Main Stat / Misc</p>
         <div class="ap-calc-field-row ap-calc-field-row-pair">
-          <label class="ap-calc-field-label" title="Affects only the flat Weapon Power granted by lines below, not your Weapon Power itself.">Earrings</label>
+          <label class="ap-calc-field-label" title="Affects only the flat Weapon Power granted by lines below, not your Weapon Power.">Earrings</label>
           <div class="ap-calc-pair">
             <select id="ap-gear-wp-earring1" class="ap-gear-wp-earring1">
               <option value="None">None</option>
@@ -600,7 +599,7 @@
           <input type="number" id="ap-gear-wp" class="ap-gear-wp ap-gear-input-wide" min="0" max="1000000" step="1" value="259216">
         </div>
         <div class="ap-calc-field-row">
-          <label class="ap-calc-field-label" for="ap-gear-wp-karma-lv" title="+0.1% Weapon Power per level, up to Lv.30 (+3%). Affects only the flat Weapon Power granted by lines below, not your Weapon Power itself.">Karmic Enlightenment Level</label>
+          <label class="ap-calc-field-label" for="ap-gear-wp-karma-lv" title="+0.1% Weapon Power per level. Affects only the flat Weapon Power granted by lines below, not your Weapon Power.">Karmic Enlightenment Level</label>
           <span class="ap-value-display" data-for="ap-gear-wp-karma-lv"></span>
           <input type="number" id="ap-gear-wp-karma-lv" class="ap-gear-wp-karma-lv ap-gear-input-narrow" min="0" max="30" step="1" value="30">
         </div>
@@ -626,15 +625,15 @@
           <input type="number" id="ap-gear-main-stat" class="ap-gear-main-stat ap-gear-input-wide" min="0" max="2000000" step="1" value="854918">
         </div>
         <div class="ap-calc-field-row">
-          <label class="ap-calc-field-label" for="ap-gear-main-stat-pct" title="Stronghold Pet (+1%) + Skins: Legendary +2% each and Epic +1% each. Affects only the flat Main Stat granted by lines below, not your Main Stat itself.">Main Stat %</label>
+          <label class="ap-calc-field-label" for="ap-gear-main-stat-pct" title="Stronghold Pet (+1%) + Equipped Skins: Legendary +2% each and Epic +1% each. Affects only the flat Main Stat granted by lines below, not your Main Stat.">Main Stat %</label>
           <input type="number" id="ap-gear-main-stat-pct" class="ap-gear-main-stat-pct ap-gear-input-narrow" min="0" max="15" step="0.1" value="9">
         </div>
         <div class="ap-calc-field-row ap-calc-field-row-pair">
           <label class="ap-calc-field-label ap-gear-gem-base-ap-label" title="The SUM of every socketed gem's Base AP% bonus (Lv.7 +0.6% / Lv.8 +0.8% / Lv.9 +1% / Lv.10 +1.2% each).">Gem Base AP %</label>
           <div class="ap-calc-pair ap-gear-gem-base-ap-pair">
             <span class="ap-value-display" data-for="ap-gear-gem-base-ap"></span>
-            <input type="number" id="ap-gear-gem-base-ap" class="ap-gear-gem-base-ap ap-gear-input-narrow" min="0" max="13.2" step="0.1" value="13.2" title="Gem Base AP % - the SUM across all your socketed gems.">
-            <label class="ap-calc-pair-check" title="Check to add your stone's Base AP % bonus if available (+1.5%).">
+            <input type="number" id="ap-gear-gem-base-ap" class="ap-gear-gem-base-ap ap-gear-input-narrow" min="0" max="13.2" step="0.1" value="13.2" title="Gem Base AP % - as shown on your character profile's gem section.">
+            <label class="ap-calc-pair-check" title="Check to add your stone's Base AP % bonus at 5+ engraving levels if available (+1.5%).">
               <span class="ap-calc-pair-check-label">Ability Stone</span>
               <input type="checkbox" id="ap-gear-ability-stone-base-ap" class="ap-gear-ability-stone-base-ap" checked>
             </label>
@@ -685,12 +684,12 @@
           </div>
         </div>
         <div class="ap-calc-field-row">
-          <label class="ap-calc-field-label" for="ap-gear-ap-kazeros" title="Kazeros Raid Contribution buff, +2% Attack Power.">Kazeros Raid Contribution</label>
+          <label class="ap-calc-field-label" for="ap-gear-ap-kazeros" title="Only applicable for Kazeros Raids, up to +2% Attack Power at max contribution.">Kazeros Raid Contribution</label>
           <span class="ap-value-display" data-for="ap-gear-ap-kazeros"></span>
           <input type="checkbox" id="ap-gear-ap-kazeros" class="ap-gear-ap-kazeros">
         </div>
         <div class="ap-calc-field-row">
-          <label class="ap-calc-field-label" for="ap-gear-ap-guardian" title="Guardian Raid Contribution buff, +3% Attack Power.">Guardian Raid Contribution</label>
+          <label class="ap-calc-field-label" for="ap-gear-ap-guardian" title="Only applicable for Guardian Raids, +3% Attack Power at max contribution.">Guardian Raid Contribution</label>
           <span class="ap-value-display" data-for="ap-gear-ap-guardian"></span>
           <input type="checkbox" id="ap-gear-ap-guardian" class="ap-gear-ap-guardian">
         </div>
@@ -717,7 +716,7 @@
           <input type="number" id="ap-gear-ap-astrogem-lv" class="ap-gear-ap-astrogem-lv" min="0" max="120" step="1" value="35">
         </div>
         <div class="ap-calc-field-row ap-gear-ap-select-row">
-          <label class="ap-calc-field-label" for="ap-adrenaline-stone" title="A fixed 0.9% per stack (assuming the full 6 stacks), scaled by Adrenaline Uptime %, plus this stone's own bonus, same scaling (Lv.1 +0.48% / Lv.2 +0.60% / Lv.3 +0.83% / Lv.4 +0.95% per stack).">Ability Stone: Adrenaline</label>
+          <label class="ap-calc-field-label" for="ap-adrenaline-stone" title="A fixed 0.9% per stack, scaled by Adrenaline Uptime %, plus this stone's own bonus, same scaling (Lv.1 +0.48% / Lv.2 +0.60% / Lv.3 +0.83% / Lv.4 +0.95% per stack).">Ability Stone: Adrenaline</label>
           <span class="ap-value-display" data-for="ap-adrenaline-stone"></span>
           <select id="ap-adrenaline-stone" class="ap-adrenaline-stone">
             <option value="0 Lv." selected>Lv. 0</option>
@@ -818,8 +817,7 @@
         </div>
       </div>
       <div class="ap-calc-field-row">
-        <label class="ap-calc-field-label" for="ap-brace-crit-stat-equipped">Current Bracelet's Crit Stat</label>
-        <span class="ap-brace-info-icon" title="Subtracted from your total Crit Stat to build the no-bracelet baseline, so this comparison doesn't double-count Crit Stat your current bracelet already grants. Use 0 if your bracelet didn't roll a Crit stat line at all (a real Crit roll, when present, is always 60-120).">i</span>
+        <label class="ap-calc-field-label" for="ap-brace-crit-stat-equipped" title="Subtracted from your total Crit Stat to build the no-bracelet baseline, so your Crit Stat isn't double-counted. Use 0 if your bracelet has no Crit Stat line at all.">Current Bracelet's Crit Stat</label>
         <input type="number" id="ap-brace-crit-stat-equipped" class="ap-brace-crit-stat-equipped" min="0" max="120" step="1" value="82">
       </div>
 
@@ -1208,7 +1206,7 @@
       <div class="ap-gear-card ap-gear-card--engr-core">
         <p class="ap-gear-card-title">Engravings</p>
         <div class="ap-calc-field-row">
-          <label class="ap-calc-field-label">Grudge</label>
+          <label class="ap-calc-field-label"><span class="skill-mention" data-skill-id="grudge">Grudge</span></label>
           <select class="ap-engr-grudge-level">
             <option value="0 Nodes">0 Nodes</option>
             <option value="1 Nodes">1 Nodes</option>
@@ -1218,7 +1216,7 @@
           </select>
         </div>
         <div class="ap-calc-field-row">
-          <label class="ap-calc-field-label">Ambush Master</label>
+          <label class="ap-calc-field-label"><span class="skill-mention" data-skill-id="ambushmaster">Ambush Master</span></label>
           <select class="ap-engr-ambush-level">
             <option value="0 Nodes">0 Nodes</option>
             <option value="1 Nodes">1 Nodes</option>
@@ -1228,7 +1226,7 @@
           </select>
         </div>
         <div class="ap-calc-field-row">
-          <label class="ap-calc-field-label">Adrenaline</label>
+          <label class="ap-calc-field-label"><span class="skill-mention" data-skill-id="adrenaline">Adrenaline</span></label>
           <select class="ap-engr-adrenaline-level">
             <option value="0 Nodes">0 Nodes</option>
             <option value="1 Nodes">1 Nodes</option>
@@ -1240,7 +1238,7 @@
 
         <p class="ap-gear-card-subtitle">Competing Pool</p>
         <div class="ap-calc-field-row">
-          <label class="ap-calc-field-label">Raid Captain</label>
+          <label class="ap-calc-field-label"><span class="skill-mention" data-skill-id="raidcaptain">Raid Captain</span></label>
           <select class="ap-engr-rc-level">
             <option value="0 Nodes">0 Nodes</option>
             <option value="1 Nodes">1 Nodes</option>
@@ -1250,7 +1248,7 @@
           </select>
         </div>
         <div class="ap-calc-field-row">
-          <label class="ap-calc-field-label">Keen Blunt Weapon</label>
+          <label class="ap-calc-field-label"><span class="skill-mention" data-skill-id="keenbluntweapon">Keen Blunt Weapon</span></label>
           <select class="ap-engr-kbw-level">
             <option value="0 Nodes">0 Nodes</option>
             <option value="1 Nodes">1 Nodes</option>
@@ -1260,7 +1258,7 @@
           </select>
         </div>
         <div class="ap-calc-field-row">
-          <label class="ap-calc-field-label">Cursed Doll</label>
+          <label class="ap-calc-field-label"><span class="skill-mention" data-skill-id="curseddoll">Cursed Doll</span></label>
           <select class="ap-engr-cd-level">
             <option value="0 Nodes">0 Nodes</option>
             <option value="1 Nodes">1 Nodes</option>
@@ -1270,7 +1268,7 @@
           </select>
         </div>
         <div class="ap-calc-field-row ap-engr-mi-row">
-          <label class="ap-calc-field-label">Mass Increase</label>
+          <label class="ap-calc-field-label"><span class="skill-mention" data-skill-id="massincrease">Mass Increase</span></label>
           <select class="ap-engr-mi-level">
             <option value="0 Nodes">0 Nodes</option>
             <option value="1 Nodes">1 Nodes</option>
@@ -1280,31 +1278,28 @@
           </select>
         </div>
         <div class="ap-calc-field-row ap-engr-mi-optin-row">
-          <label class="ap-engr-checkbox-label"><input type="checkbox" class="ap-engr-mi-optin" checked> Include Mass Increase in best-combo search <span class="ap-brace-info-icon" title="Its -10% Attack Speed drawback isn't modeled here - uncheck this if you'd rather leave it out of the best-combo search.">i</span></label>
+          <label class="ap-engr-checkbox-label" title="Its -10% Attack Speed drawback isn't modeled here - uncheck this if you'd rather leave it out of the best-combo search."><input type="checkbox" class="ap-engr-mi-optin" checked> Include Mass Increase in best-combo search</label>
         </div>
       </div>
 
       <div class="ap-gear-card ap-gear-card--engr-variables">
         <p class="ap-gear-card-title">In-Raid Variables</p>
         <div class="ap-calc-field-row">
-          <label class="ap-calc-field-label">Maelstrom Uptime %</label>
+          <label class="ap-calc-field-label" title="% of the fight Maelstrom's buffs are active as you attack the boss - a flat +12.8 Move Speed/Atk. Speed bonus.">Maelstrom Uptime %</label>
           <input type="number" class="ap-engr-maelstrom-uptime" min="0" max="100" step="1" value="80">
         </div>
         <div class="ap-calc-field-row ap-engr-manafood-row">
-          <label class="ap-engr-checkbox-label"><input type="checkbox" class="ap-engr-manafood" checked> <span class="ap-engr-manafood-label">Mana Food (+Maelstrom Bleed)</span></label>
-          <span class="ap-engr-manafood-select-wrap">
-            <span class="ap-brace-info-icon ap-engr-manafood-icon" title="Only accurate if the Main Stat input in Character Data doesn't already include Mana Food's bonus.">i</span>
-            <select class="ap-engr-manafood-amount">
-              <option value="6000" selected>6000 DEX</option>
-              <option value="12000">12000 DEX</option>
-            </select>
-          </span>
+          <label class="ap-engr-checkbox-label" title="Only accurate if the Main Stat input in Character Data doesn't already include Mana Food's Main Stat bonus."><input type="checkbox" class="ap-engr-manafood" checked> <span class="ap-engr-manafood-label">Mana Food (+Maelstrom Bleed)</span></label>
+          <select class="ap-engr-manafood-amount">
+            <option value="6000" selected>6000 DEX</option>
+            <option value="12000">12000 DEX</option>
+          </select>
         </div>
         <div class="ap-calc-field-row ap-engr-support-av-row">
-          <label class="ap-engr-checkbox-label"><input type="checkbox" class="ap-engr-support-av"> Support: Artist/Valkyrie (Identity)</label>
+          <label class="ap-engr-checkbox-label" title="A high-uptime, party-wide Move Speed buff from an Artist or Valkyrie's Identity."><input type="checkbox" class="ap-engr-support-av"> Support: Artist/Valkyrie (+Move Speed)</label>
         </div>
         <div class="ap-calc-field-row ap-engr-rage-rune-row">
-          <label class="ap-engr-checkbox-label"><input type="checkbox" class="ap-engr-rage-rune" checked> Rage Rune on Surprise Attack (Avg.)</label>
+          <label class="ap-engr-checkbox-label" title="16% chance per skill cast for +16% Move Speed and +16% Atk. Speed for 6s."><input type="checkbox" class="ap-engr-rage-rune" checked> Rage Rune on Surprise Attack (Avg.)</label>
         </div>
         <div class="ap-calc-field-row ap-engr-wine-row">
           <label class="ap-engr-checkbox-label"><input type="checkbox" class="ap-engr-wine" checked> Vernese Wine (+3% Move Speed)</label>
@@ -1335,7 +1330,7 @@
     <div class="ap-calc-field-row ap-engr-stone-row ap-engr-stone-row--first">
       <p class="ap-acc-panel-title ap-engr-contrib-title">Engraving and Ability Stone Values</p>
       <span class="ap-engr-stone-label-group">
-        <label class="ap-calc-field-label">Stone 1</label>
+        <label class="ap-calc-field-label" title="Pick which engraving your Ability Stone's first slot boosts, then that slot's level.">Stone 1</label>
         <span class="ap-engr-stone-pair">
           <select class="ap-engr-stone1-target">
             <option value="None" selected>None</option>
@@ -1359,7 +1354,7 @@
     </div>
     <div class="ap-calc-field-row ap-engr-stone-row">
       <span class="ap-engr-stone-label-group">
-        <label class="ap-calc-field-label">Stone 2</label>
+        <label class="ap-calc-field-label" title="Pick which engraving your Ability Stone's second slot boosts, then that slot's level.">Stone 2</label>
         <span class="ap-engr-stone-pair">
           <select class="ap-engr-stone2-target">
             <option value="None" selected>None</option>
@@ -1812,7 +1807,7 @@
           </div>
           <div class="ap-calc-field-row ap-avb-other-row">
             <label class="ap-calc-field-label">Other <span class="ap-avb-other-slot-label">Ring</span>'s Lines</label>
-            <span class="ap-brace-info-icon" title="Rings and Earrings come in pairs. Enter your OTHER ring/earring's real Crit Rate/Crit Damage (or Attack Power %/Weapon Power %) here.">i</span>
+            <span class="ap-brace-info-icon" title="Rings and Earrings come in pairs. Enter your OTHER ring/earring's real values here.">i</span>
           </div>
           <div class="ap-avb-other-fields">
             <div class="ap-calc-field-row">

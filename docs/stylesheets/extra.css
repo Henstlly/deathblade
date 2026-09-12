@@ -3951,20 +3951,6 @@ h3 { color: var(--dbc-teal); }
 .md-typeset .ap-engr-manafood-amount {
   flex-shrink: 0;
 }
-/* Wraps the new caveat icon + the select as one unit so the outer row's
-   space-between still only ever sees 2 children (checkbox label, this
-   wrapper) - same shape as before the icon existed. Without the wrapper,
-   a bare 3rd flex child here would eat its own share of space-between's
-   gap and drift away from the select instead of sitting flush against it.
-   flex-shrink: 0 for the same reason as .ap-engr-manafood-amount above -
-   this wrapper is now the thing sitting where that select used to sit
-   directly, so it needs the same protection from being squeezed. */
-.md-typeset .ap-engr-manafood-select-wrap {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35em;
-  flex-shrink: 0;
-}
 .md-typeset .ap-calc-field-row input[type="checkbox"] {
   width: 1.1em;
   height: 1.1em;
@@ -4230,16 +4216,6 @@ h3 { color: var(--dbc-teal); }
 }
 .md-typeset .ap-stat-card-best .ap-stat-card-title {
   color: var(--dbc-teal);
-}
-/* Names the actual winning combo (e.g. "LB1/KS2 + Critical + Master") right
-   in the Best card's header - filled by JS from result.bestStats.label,
-   which previously had nowhere to render. */
-.md-typeset .ap-stat-card-subtitle {
-  font-size: 0.9em;
-  text-transform: none;
-  letter-spacing: normal;
-  font-weight: 600;
-  color: var(--dbc-lilac);
 }
 .md-typeset .ap-stat-card-row {
   display: flex;
@@ -4544,16 +4520,6 @@ h3 { color: var(--dbc-teal); }
   flex-shrink: 0;
   accent-color: var(--dbc-pink);
   cursor: pointer;
-}
-/* The info icon riding along inside "Include Mass Increase in
-   comparisons" would otherwise inherit this label's own gap intended for
-   the checkbox-to-text space, reusing the same 0.5em a second time
-   between text and icon - fractionally wider than every other label's
-   icon spacing (e.g. Current Bracelet's Crit Stat's) elsewhere in this
-   section. Tightened back to that same shared spacing instead of
-   inheriting the checkbox gap by coincidence. */
-.md-typeset .ap-engr-checkbox-label .ap-brace-info-icon {
-  margin-left: -0.15em;
 }
 /* Accessory Line Comparison's 4 slot panels (Necklace/Earrings/Rings/Any
    Accessory Slot) - each just a small heading plus its own
@@ -5759,6 +5725,18 @@ h3 { color: var(--dbc-teal); }
 .md-typeset .ap-brace-row-situational .ap-brace-tier-val {
   color: var(--dbc-slate);
 }
+/* Best-row highlight for Bracelet-lines/Chaos Core was tried twice (a
+   left-accent stripe, then a box-shadow reproduction of
+   .ap-calc-result-row-best's border+tint formula) and rejected both
+   times - a <tr> can't take a real rounded border under border-collapse,
+   so the box-shadow version came out as a hard rectangular outline
+   around the row's <td>s instead of the soft rounded pill look every
+   other "promoted answer" treatment on the site uses, reading as "too
+   square" next to them. Stripped entirely rather than attempting a third
+   shape - these plain reference tables don't get a best-row highlight at
+   all now, same as Accessory-lines/Engraving DPS Contribution never did.
+   ap-brace-row-best is no longer added anywhere (see renderComparisonRows/
+   renderArkGridComparison in ark-passive-calculator.js). */
 .md-typeset .ap-brace-compare-flip-note {
   font-size: 0.78em;
   color: var(--dbc-slate);
