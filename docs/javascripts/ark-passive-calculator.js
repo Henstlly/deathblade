@@ -5429,6 +5429,8 @@
     resetFieldsToDefaults(root);
     normalizeSpeedChoiceExclusivity(root);
     syncSpeedChoiceFamilyTracking(root);
+    syncFamilyVariantMemory(root);
+    resetAvbMemory(root);
     // Instantly re-calculate calculations and refresh value/range displays
     update(root);
   }
@@ -5448,6 +5450,8 @@
     normalizeRaidContributionExclusivity(root);
     normalizeSpeedChoiceExclusivity(root);
     syncSpeedChoiceFamilyTracking(root);
+    syncFamilyVariantMemory(root);
+    resetAvbMemory(root);
     updatePresetButtonStates(root);
     update(root);
   }
@@ -5572,6 +5576,8 @@
     normalizeRaidContributionExclusivity(root);
     normalizeSpeedChoiceExclusivity(root);
     syncSpeedChoiceFamilyTracking(root);
+    syncFamilyVariantMemory(root);
+    resetAvbMemory(root);
     saveInputs(root, activeId);
     update(root);
     let msg = "Imported into Preset " + activeId + ".";
@@ -5756,6 +5762,94 @@
     const buildSelectEl = root.querySelector(".ap-brace-spec-build");
     if (!buildSelectEl) return;
     buildSelectEl.dataset.lastFamilyIsSurge = isSurgeBuild(root) ? "1" : "0";
+  }
+
+  // Same fix, same reason, as syncSpeedChoiceFamilyTracking above - but
+  // for the per-family "last variant used" memory the Family chip
+  // crossing listener reads (see initApCalcRoot's buildSelectEl block:
+  // rememberVariant/FAMILY_CROSSING_MAP). That memory used to live in a
+  // plain closure variable private to initApCalcRoot, which only ever
+  // updated on the build select's "change" event - but Reset to
+  // defaults/preset switch/import all set the select's value directly
+  // via resetFieldsToDefaults WITHOUT dispatching "change" (same
+  // no-dispatch fact that motivated lastFamilyIsSurge's own dataset
+  // move), so the closure never heard about it and kept remembering
+  // whatever variant was last actually clicked. Concretely: click Surge
+  // 333, hit Reset (form snaps back to the RE 333 / Surge 222 authored
+  // defaults), then click the Surge Family chip again - the reader
+  // would land back on 333, not the fixed 222 default, because nothing
+  // ever told the memory Reset had happened. Moving it onto
+  // buildSelectEl.dataset (reMemory/surgeMemory) instead of a closure
+  // makes it reachable from here, so it can be wiped and reseeded from
+  // whatever the select actually ends up at, same as the other tracker.
+  function syncFamilyVariantMemory(root) {
+    const buildSelectEl = root.querySelector(".ap-brace-spec-build");
+    if (!buildSelectEl) return;
+    delete buildSelectEl.dataset.reMemory;
+    delete buildSelectEl.dataset.surgeMemory;
+    const current = normalizeBraceSpecBuild(buildSelectEl.value);
+    const family = (BRACE_SPEC_BUILDS[current] && BRACE_SPEC_BUILDS[current].isSurge) ? "surge" : "re";
+    buildSelectEl.dataset[family + "Memory"] = current;
+  }
+
+  // Same bug, same fix, as syncFamilyVariantMemory/lastFamilyIsSurge
+  // above, for Accessory vs. Accessory's per-slot "remember Main
+  // Stat/Line 3/Other tier per slot" memory (see the full writeup on
+  // this feature at the .ap-avb-slot change listener in
+  // initApCalcRoot). That memory used to live in plain closure
+  // variables private to initApCalcRoot (avbMainStatMemory/
+  // avbLine3Memory/avbOtherMemory/avbLastSlot), updated only via that
+  // listener's "change" event - but resetFieldsToDefaults (used by
+  // Reset to defaults, preset switch, AND Import) sets the AVB fields'
+  // values directly without dispatching "change", so the closure never
+  // found out and kept remembering pre-reset values under a now-stale
+  // avbLastSlot key. Concretely: dial in a real Ring value, switch to
+  // Earring, hit Import (even importing back the SAME export - AVB
+  // fields have no id attributes on purpose, see this project's own
+  // notes on that, so they're never touched by the imported data
+  // itself, only reset to their HTML defaults by the shared
+  // resetFieldsToDefaults step Import also runs) - the very next real
+  // switch back to Ring then saves the just-reset Necklace-shaped
+  // default under the stale "Earring" key and hands back garbage for
+  // Ring instead of the real value that was there before Import.
+  // Moved to a WeakMap keyed by root (mirrors buildSelectEl.dataset's
+  // role for the Family/Surge fix - just structured data instead of
+  // strings, so dataset itself doesn't fit) so it's reachable and
+  // resettable from resetInputs/switchPreset/applyImportText/
+  // initApCalcRoot the same way. resetAvbMemory MUTATES the existing
+  // object in place rather than swapping in a new one - the change
+  // listener in initApCalcRoot captures getAvbMemory(root)'s return
+  // value ONCE into a local const when it's set up, so replacing the
+  // WeakMap entry wholesale would leave that already-captured reference
+  // pointing at the old (stale) object forever, silently defeating the
+  // whole reset. Caught this via Playwright: banked a real per-slot
+  // value, Reset/Import, switched slots again, and the "wiped" value
+  // was still there.
+  const avbMemoryStore = new WeakMap();
+  function getAvbMemory(root) {
+    let mem = avbMemoryStore.get(root);
+    if (!mem) {
+      mem = freshAvbMemory(root);
+      avbMemoryStore.set(root, mem);
+    }
+    return mem;
+  }
+  function freshAvbMemory(root) {
+    const avbSlotEl = root.querySelector(".ap-avb-slot");
+    return {
+      mainStat: { a: {}, b: {} },
+      line3: { a: {}, b: {} },
+      other: { line1: {}, line2: {} },
+      lastSlot: avbSlotEl ? avbSlotEl.value : "necklace",
+    };
+  }
+  function resetAvbMemory(root) {
+    const mem = getAvbMemory(root);
+    const fresh = freshAvbMemory(root);
+    mem.mainStat = fresh.mainStat;
+    mem.line3 = fresh.line3;
+    mem.other = fresh.other;
+    mem.lastSlot = fresh.lastSlot;
   }
 
   // The Keen Blunt Weapon Ability Stone only does anything while Keen
@@ -6100,6 +6194,8 @@
       normalizeRaidContributionExclusivity(root);
       normalizeSpeedChoiceExclusivity(root);
       syncSpeedChoiceFamilyTracking(root);
+      syncFamilyVariantMemory(root);
+      resetAvbMemory(root);
       updatePresetButtonStates(root);
 
       const flashyEl = root.querySelector(".ap-flashy-atk");
@@ -6198,25 +6294,28 @@
       // the page, not a fixed list of containers).
       const buildSelectEl = root.querySelector(".ap-brace-spec-build");
       if (buildSelectEl) {
-        // Per-family "last variant used" memory, kept in this closure so
-        // it's scoped to this one calculator instance and lives only for
-        // the page session (not persisted - a fresh load still falls
-        // back to FAMILY_CROSSING_MAP's fixed defaults below). Crossing
-        // a Family chip lands on whatever variant you were last on
-        // within the TARGET family, not always the same fixed
-        // counterpart - e.g. RE 333 -> Surge normally lands on Surge
-        // 222 (see FAMILY_CROSSING_MAP), but if you'd previously dialed
-        // in Surge 333 this session, crossing back to Surge returns you
-        // there instead. Seeded from whatever build is active on load so
-        // the very first cross (before either family has a remembered
-        // variant of its own) still has a sensible starting point via
-        // the fallback below.
-        const familyVariantMemory = { re: null, surge: null };
+        // Per-family "last variant used" memory. Lives on
+        // buildSelectEl.dataset (reMemory/surgeMemory), NOT a plain
+        // closure variable - it needs to be reachable and resettable
+        // from outside this block (see syncFamilyVariantMemory above,
+        // called from resetInputs/switchPreset/applyImport/
+        // initApCalcRoot), the same reason lastFamilyIsSurge lives on
+        // dataset instead of a closure a few sections up. Only for the
+        // page session (not persisted - a fresh load still falls back
+        // to FAMILY_CROSSING_MAP's fixed defaults below). Crossing a
+        // Family chip lands on whatever variant you were last on within
+        // the TARGET family, not always the same fixed counterpart -
+        // e.g. RE 333 -> Surge normally lands on Surge 222 (see
+        // FAMILY_CROSSING_MAP), but if you'd previously dialed in Surge
+        // 333 this session, crossing back to Surge returns you there
+        // instead. Seeded from whatever build is active on load (via
+        // syncFamilyVariantMemory in initApCalcRoot) so the very first
+        // cross still has a sensible starting point via the fallback
+        // below.
         const familyOfBuild = (id) => (BRACE_SPEC_BUILDS[id] && BRACE_SPEC_BUILDS[id].isSurge) ? "surge" : "re";
         const rememberVariant = (id) => {
-          familyVariantMemory[familyOfBuild(id)] = id;
+          buildSelectEl.dataset[familyOfBuild(id) + "Memory"] = id;
         };
-        rememberVariant(normalizeBraceSpecBuild(buildSelectEl.value));
         buildSelectEl.addEventListener("change", () => {
           rememberVariant(normalizeBraceSpecBuild(buildSelectEl.value));
         });
@@ -6230,7 +6329,7 @@
         });
         // Family chip: no-ops if already on that family. Otherwise
         // crosses to the target family's own remembered variant (see
-        // familyVariantMemory above) if this session has one, falling
+        // the dataset memory above) if this session has one, falling
         // back to FAMILY_CROSSING_MAP's fixed default otherwise (see
         // that map's own comment for the RE-has-fewer-slots handling).
         root.querySelectorAll(".ap-build-family-chip").forEach((chip) => {
@@ -6238,7 +6337,7 @@
             const clickedIsSurge = chip.dataset.family === "surge";
             if (isSurgeBuild(root) === clickedIsSurge) return;
             const targetFamily = clickedIsSurge ? "surge" : "re";
-            const mapped = familyVariantMemory[targetFamily] || FAMILY_CROSSING_MAP[normalizeBraceSpecBuild(buildSelectEl.value)];
+            const mapped = buildSelectEl.dataset[targetFamily + "Memory"] || FAMILY_CROSSING_MAP[normalizeBraceSpecBuild(buildSelectEl.value)];
             if (!mapped || mapped === buildSelectEl.value) return;
             buildSelectEl.value = mapped;
             buildSelectEl.dispatchEvent(new Event("change", { bubbles: true }));
@@ -6332,26 +6431,23 @@
       // markup's own starting tiers) - preserving real input without
       // losing the intentional starting point a fresh slot should still
       // show.
-      const avbMainStatMemory = { a: {}, b: {} };
-      const avbLine3Memory = { a: {}, b: {} };
-      const avbOtherMemory = { line1: {}, line2: {} };
-      let avbLastSlot = root.querySelector(".ap-avb-slot") ? root.querySelector(".ap-avb-slot").value : "necklace";
+      const avbMem = getAvbMemory(root);
       const avbSlotEl = root.querySelector(".ap-avb-slot");
       if (avbSlotEl) {
         avbSlotEl.addEventListener("change", () => {
           ["a", "b"].forEach((prefix) => {
             const msEl = root.querySelector(".ap-avb-" + prefix + "-mainstat");
             if (msEl) {
-              avbMainStatMemory[prefix][avbLastSlot] = msEl.value;
+              avbMem.mainStat[prefix][avbMem.lastSlot] = msEl.value;
               const range = ACC_MAIN_STAT_RANGE[avbSlotEl.value] || ACC_MAIN_STAT_RANGE.necklace;
-              const remembered = avbMainStatMemory[prefix][avbSlotEl.value];
+              const remembered = avbMem.mainStat[prefix][avbSlotEl.value];
               msEl.value = remembered !== undefined ? remembered : (prefix === "a" ? range.min : range.max);
             }
             const typeEl = root.querySelector(".ap-avb-" + prefix + "-line3-type");
             const tierEl = root.querySelector(".ap-avb-" + prefix + "-line3-tier");
             if (typeEl) {
-              avbLine3Memory[prefix][avbLastSlot] = { type: typeEl.value, tier: tierEl ? tierEl.value : "Mid" };
-              const remembered = avbLine3Memory[prefix][avbSlotEl.value];
+              avbMem.line3[prefix][avbMem.lastSlot] = { type: typeEl.value, tier: tierEl ? tierEl.value : "Mid" };
+              const remembered = avbMem.line3[prefix][avbSlotEl.value];
               typeEl.value = remembered ? remembered.type : "none";
               if (tierEl && remembered) tierEl.value = remembered.tier;
             }
@@ -6359,44 +6455,30 @@
           const newCfg = AVB_SLOT_LABELS[avbSlotEl.value] || AVB_SLOT_LABELS.necklace;
           const other1El = root.querySelector(".ap-avb-other-line1-tier");
           if (other1El) {
-            avbOtherMemory.line1[avbLastSlot] = other1El.value;
-            const remembered = avbOtherMemory.line1[avbSlotEl.value];
+            avbMem.other.line1[avbMem.lastSlot] = other1El.value;
+            const remembered = avbMem.other.line1[avbSlotEl.value];
             other1El.value = remembered !== undefined ? remembered : newCfg.otherLine1Default;
           }
           const other2El = root.querySelector(".ap-avb-other-line2-tier");
           if (other2El) {
-            avbOtherMemory.line2[avbLastSlot] = other2El.value;
-            const remembered = avbOtherMemory.line2[avbSlotEl.value];
+            avbMem.other.line2[avbMem.lastSlot] = other2El.value;
+            const remembered = avbMem.other.line2[avbSlotEl.value];
             other2El.value = remembered !== undefined ? remembered : newCfg.otherLine2Default;
           }
-          avbLastSlot = avbSlotEl.value;
+          avbMem.lastSlot = avbSlotEl.value;
         });
       }
-      // resetFieldsToDefaults (used by both the Reset-to-defaults button
-      // and the preset switcher below) sets these same fields' values
-      // directly rather than through user interaction, so it never fires
-      // the "change" event the swap logic above listens for - avbLastSlot
-      // and the three memory caches are left holding whatever they had
-      // BEFORE the reset, now silently out of sync with the freshly-reset
-      // DOM. The next real slot switch then saves the just-reset value
-      // under the wrong (stale avbLastSlot) key and/or reads back a
-      // pre-reset value that's no longer meant to exist - e.g. Necklace's
-      // reset-to-default 15178 getting filed under "ring" and clamping
-      // straight to Ring's max on the next switch, the exact "Accessory
-      // A lands on max instead of min" bug this whole memory system was
-      // built to prevent in the first place. Both call sites below must
-      // call this right after the fields themselves come back to their
-      // defaults, so the caches start clean and avbLastSlot matches
-      // whatever resetFieldsToDefaults just put in the slot dropdown.
-      function resetAvbMemory() {
-        avbMainStatMemory.a = {};
-        avbMainStatMemory.b = {};
-        avbLine3Memory.a = {};
-        avbLine3Memory.b = {};
-        avbOtherMemory.line1 = {};
-        avbOtherMemory.line2 = {};
-        avbLastSlot = avbSlotEl ? avbSlotEl.value : "necklace";
-      }
+      // resetFieldsToDefaults (used by Reset-to-defaults, the preset
+      // switcher, and Import - see resetAvbMemory's own comment at its
+      // module-level definition above for the full failure mode and why
+      // this state now lives there instead of in this closure) sets
+      // these same fields' values directly rather than through user
+      // interaction, so it never fires the "change" event the swap logic
+      // above listens for. resetAvbMemory(root) is called from all 4
+      // bulk-mutation call sites (resetInputs, switchPreset,
+      // applyImportText, initApCalcRoot) precisely so this closure never
+      // has to know when that happened - it just reads getAvbMemory(root)
+      // fresh on every real switch, and finds it already clean.
 
       // Coalesced to at most one recompute+render+save per animation
       // frame, shared across every field in this root. Range sliders fire
@@ -6501,7 +6583,6 @@
           );
           if (confirmed) {
             resetInputs(root);
-            resetAvbMemory();
           }
         });
       }
@@ -6516,11 +6597,11 @@
           const newId = parseInt(btn.dataset.preset, 10);
           // switchPreset() itself no-ops (returns before touching any
           // fields) when clicking the already-active preset - guard the
-          // same way here, or resetAvbMemory would wipe out perfectly
-          // live avb memory for what was actually a no-op click.
+          // same way here, or resetAvbMemory (now called inside
+          // switchPreset itself) would wipe out perfectly live avb
+          // memory for what was actually a no-op click.
           if (newId === getActivePresetId()) return;
           switchPreset(root, newId);
-          resetAvbMemory();
         });
       });
 
