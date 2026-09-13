@@ -103,7 +103,16 @@
   // 10004 reliably maps to "chaos_star" - confirmed matching the page
   // text's Chaos Star points on two separate real characters (an earlier
   // bug had this swapped with 10006, caught on a character with 17P Sun
-  // / 18P Star where the swap produced a mismatch).
+  // / 18P Star where the swap produced a mismatch). That's about the
+  // base-id -> slot NAME mapping only, though - it does NOT mean the
+  // hydration data's POINT VALUE for that slot can be trusted as more
+  // current than the page text. A third character (Meilu) later showed
+  // the "most_recent_raid" snapshot's Chaos Star points reading stale
+  // (matching her "most_recent_chaos_dungeon" snapshot instead) versus
+  // her actual current equip shown in the page text - see the comment
+  // above the hydrationCore mismatch check further down in this file for
+  // the full story. Point values from hydration are cross-checked against
+  // the page text and warned on, never used to override it.
   //
   // 10005/10006 are DELIBERATELY NOT mapped to chaos_moon/chaos_sun here.
   // Unlike Star, which of these two base ids is "Sun" vs "Moon" is NOT a
@@ -1079,10 +1088,27 @@
         // deliberately doesn't map Sun/Moon's base ids (see its comment),
         // so this is a no-op for those two slots and their point totals
         // always come straight from core.points (page text) below.
+        //
+        // NEVER let hydrationCore override core.points here (it used to,
+        // see below) - hydration.gridSlots' points come from the
+        // "most_recent_raid"-classified loadout's battlePoint data, which
+        // is a snapshot from whenever that character last actually entered
+        // a raid, not a live read of what's currently equipped. A real
+        // character (Meilu) surfaced this: her page text (scanned from the
+        // "Raid Loadout" tab, i.e. her CURRENT equip) read Chaos Star at
+        // 20P, but the "most_recent_raid" hydration snapshot said 19P -
+        // which actually matched her "most_recent_chaos_dungeon" snapshot
+        // instead, evidently because she'd re-invested a point in that
+        // core after her last raid clear without having re-entered a raid
+        // since. The earlier comment above GRID_BASE_TO_SLOT ("confirmed
+        // matching on two separate real characters") just means neither of
+        // those two happened to have this staleness - it was never a
+        // structural guarantee. Trust the page text unconditionally now
+        // (same as Sun/Moon already do) and only use hydration for the
+        // warning, not as an override.
         var hydrationCore = hydration.gridSlots && hydration.gridSlots[CHAOS_SLOT_TO_KEY[slotLabel]];
         if (hydrationCore && hydrationCore.points != null && hydrationCore.points !== core.points) {
-          warnings.push(slotLabel + ": page text says " + core.points + "P but the page's own data says " + hydrationCore.points + "P - used the page data (" + hydrationCore.points + "P), but this mismatch is worth a second look.");
-          core.points = hydrationCore.points;
+          warnings.push(slotLabel + ": page text says " + core.points + "P but the page's own data (most-recent-raid snapshot) says " + hydrationCore.points + "P - kept the page text's " + core.points + "P since that reflects what's currently equipped; the snapshot can be stale. Worth a second look if this doesn't match what you expect.");
         }
         if (core.points < 10) {
           // The real investment tiers are 0/10/14/17/18/19/20 - nothing below
