@@ -774,6 +774,35 @@
     return BRACE_SPEC_BUILDS[inputs.braceSpecBuild] || BRACE_SPEC_BUILDS["re-333"];
   }
 
+  // Single source of truth for turning the reader's Back Attack Rate %
+  // input into the actual fraction of DPS that lands as a Back Attack.
+  // Combat Analyzer's own Overview "Back Attack Rate" stat (NOT its
+  // "Back Attack Percentage" - that one is damage-weighted and answers a
+  // different question) was verified against two real logs' Attack
+  // Information tabs to already be a Damage-Share-weighted average
+  // restricted to Back-Attack-capable skills, and for RE builds it reads
+  // as if Deathblade Surge is excluded from that average - RE's Surge
+  // always lands as a Back Attack regardless of positioning, so folding
+  // it into a "how good is your positioning" stat would just water the
+  // number down with a skill that has no failure state. That means the
+  // reader's rate is already "the rate among the non-guaranteed pool"
+  // for RE, and it should NOT also be gated by a flat
+  // BACK_ATTACK_DPS_SHARE multiply on top of a separate guaranteed-share
+  // add-on - the two would double-count Surge's contribution.
+  // Surge-spec builds have no equivalent carve-out: Surge's own namesake
+  // skill is NOT a guaranteed Back Attack (it actually has to land as
+  // one), so the whole BACK_ATTACK_DPS_SHARE pool is gated by the rate.
+  function effectiveBackAttackShare(inputs) {
+    const rate = Math.max(0, Math.min(1, inputs.backAttackRate / 100));
+    const cfg = braceSpecConfig(inputs);
+    if (cfg.isSurge) {
+      return BACK_ATTACK_DPS_SHARE * rate;
+    }
+    const alwaysBack = Math.min(cfg.share, BACK_ATTACK_DPS_SHARE);
+    const variablePool = BACK_ATTACK_DPS_SHARE - alwaysBack;
+    return alwaysBack + variablePool * rate;
+  }
+
   // Reads the master Build toggle's real state (the ap-brace-spec-build
   // select - see its own comment in resources.md) straight from the DOM,
   // for call sites that need the build's config (isSurge, share) before a
@@ -1031,7 +1060,7 @@
       critSyn2: getCheckbox(root, ".ap-crit-syn2", false),
       critHitSyn1: getCheckbox(root, ".ap-crit-hit-syn-1", false),
       critHitSyn2: getCheckbox(root, ".ap-crit-hit-syn-2", false),
-      backAttackRate: Math.max(0, Math.min(100, getNumber(root, ".ap-back-attack-rate", 90))),
+      backAttackRate: Math.max(0, Math.min(100, getNumber(root, ".ap-back-attack-rate", 85))),
       // Support's Flash Orb (Drops of Ether) - same "% of the fight it's
       // up" pattern as Adrenaline Uptime/Back Attack Rate above, see
       // FLASH_ORB_FULL_CRIT_RATE's own comment for the assumed
@@ -1373,7 +1402,7 @@
     const k = STRIKE_CRIT_RATE;
     const n = inputs.critSyn1 ? 0.1 : 0;
     const o = inputs.critSyn2 ? 0.1 : 0;
-    const p = (inputs.backAttackRate / 100) * 0.1;
+    const p = effectiveBackAttackShare(inputs) * 0.1;
     // Support's Flash Orb (Drops of Ether) - see FLASH_ORB_FULL_CRIT_RATE's
     // own comment for the Ether-effectiveness assumption baked into it.
     const q = (inputs.flashOrbUptime / 100) * FLASH_ORB_FULL_CRIT_RATE;
@@ -1394,8 +1423,11 @@
   // critRateTotal bakes in THREE independent "sometimes on, sometimes
   // off" crit-rate contributors as plain averaged terms - Adrenaline
   // (`h` = bonus * uptime%: a buff that's up some fraction of the fight),
-  // Back Attack Rate (`p` = 0.1 * rate%: a per-hit chance a given hit
-  // lands from behind), and Support's Flash Orb (`q` = FLASH_ORB_FULL_
+  // Back Attack Rate (`p` = 0.1 * effectiveBackAttackShare(inputs): a
+  // per-hit chance a given hit both belongs to the Back-Attack-eligible
+  // DPS pool AND actually lands from behind - see that function's own
+  // comment for why it isn't just the raw rate% input), and Support's
+  // Flash Orb (`q` = FLASH_ORB_FULL_
   // CRIT_RATE * uptime%: same "up some fraction of the fight" shape as
   // Adrenaline) - all three are expectations over a Bernoulli variable,
   // so all three hit the exact same concavity problem: min() is concave,
@@ -1441,7 +1473,7 @@
     const adrenalineBonus = ADRENALINE_TABLE[inputs.adrenaline] || 0;
     const adrenalineUptime = inputs.adrenalineUptime / 100;
     const backAttackBonus = 0.1;
-    const backAttackRate = inputs.backAttackRate / 100;
+    const backAttackRate = effectiveBackAttackShare(inputs);
     const flashOrbBonus = FLASH_ORB_FULL_CRIT_RATE;
     const flashOrbUptime = inputs.flashOrbUptime / 100;
     // Strip all three buggy averaged terms back out of critRateTotal's
@@ -3716,7 +3748,7 @@
     // not a straight sum. Sheet reference: Engr+Stone!C7 =
     // (1+IF(ASS,backSkillShare,1)*FA/BA*H7)*(1+T7)-1; H7/T7 are this row's
     // BackDmg (0.15) and Type2 Dmg (0.048-0.076) columns respectively.
-    const backShare = BACK_ATTACK_DPS_SHARE * (inputs.backAttackRate / 100);
+    const backShare = effectiveBackAttackShare(inputs);
     const backDmg = AMBUSH_MASTER_BACK_DMG * backShare;
     const dmgBucket = (AMBUSH_MASTER_SECONDARY_TABLE[engrInputs.ambushLevel] || 0)
       + (AMBUSH_MASTER_STONE_TABLE[engravingStoneLevel("ambush", engrInputs)] || 0);

@@ -395,8 +395,8 @@
       <input type="number" id="ap-flash-orb-uptime" class="ap-flash-orb-uptime" min="0" max="100" step="1" value="0">
     </div>
     <div class="ap-calc-field-row">
-      <label class="ap-calc-field-label" for="ap-back-attack-rate" title="% of your hits landed from behind - converts straight to Crit Rate at a 10:1 ratio (90% back attack = +9% Crit Rate).">Back Attack Rate %</label>
-      <input type="number" id="ap-back-attack-rate" class="ap-back-attack-rate" min="0" max="100" step="1" value="90">
+      <label class="ap-calc-field-label" for="ap-back-attack-rate" title="Enter the 'Back Attack Rate' % from Combat Analyzer's Overview tab. Only applies to the share of your DPS that's a Back Attack.">Back Attack Rate %</label>
+      <input type="number" id="ap-back-attack-rate" class="ap-back-attack-rate" min="0" max="100" step="1" value="85">
     </div>
   </div>
 
