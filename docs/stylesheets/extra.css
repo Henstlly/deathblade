@@ -4127,6 +4127,23 @@ h3 { color: var(--dbc-teal); }
   padding: 0.5em 0.6em;
   border-radius: 6px;
   border: 1px solid transparent;
+  /* Clickable (preview that rank's stats in the Best Setup card) - see
+     renderGrid/initApCalcRoot's own comments. Cursor + a hover/focus tint
+     are the "you can click this" affordance, since nothing else about
+     the row otherwise looks interactive. transition is background-color
+     only (not border, which flips instantly with -best/-active below to
+     stay legible) so hover doesn't feel laggy. */
+  cursor: pointer;
+  transition: background-color 0.12s ease;
+}
+.md-typeset .ap-calc-result-row:hover,
+.md-typeset .ap-calc-result-row:focus-visible,
+.md-typeset .ap-calc-result-row:active {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+.md-typeset .ap-calc-result-row:focus-visible {
+  outline: 1px solid rgba(var(--dbc-lavender-rgb), 0.6);
+  outline-offset: -1px;
 }
 .md-typeset .ap-calc-result-row + .ap-calc-result-row {
   margin-top: 0.4em;
@@ -4134,6 +4151,15 @@ h3 { color: var(--dbc-teal); }
 .md-typeset .ap-calc-result-row-best {
   border-color: rgba(var(--dbc-teal-rgb), 0.5);
   background-color: rgba(var(--dbc-teal-rgb), 0.09);
+}
+/* Previewed (clicked) - a 2nd/3rd-best row whose stats are currently
+   populating the Best Setup card below. Deliberately a fainter lavender
+   tint rather than reusing -best's teal: teal still means "this IS the
+   true best" (rank 1 keeps it even while another row is being
+   previewed), this just marks "you're currently looking at this one". */
+.md-typeset .ap-calc-result-row-active:not(.ap-calc-result-row-best) {
+  border-color: rgba(var(--dbc-lavender-rgb), 0.6);
+  background-color: rgba(var(--dbc-lavender-rgb), 0.12);
 }
 .md-typeset .ap-result-rank {
   flex-shrink: 0;
@@ -4248,6 +4274,16 @@ h3 { color: var(--dbc-teal); }
 }
 .md-typeset .ap-stat-card-best .ap-stat-card-title {
   color: var(--dbc-teal);
+}
+/* Previewing a non-best Top Combinations row (see renderGrid) - same
+   lavender the row itself gets in that state, so the card and the row
+   driving it read as visually linked even without the row in view. */
+.md-typeset .ap-stat-card-best.ap-stat-card-previewed {
+  border-color: rgba(var(--dbc-lavender-rgb), 0.5);
+  background-color: rgba(var(--dbc-lavender-rgb), 0.06);
+}
+.md-typeset .ap-stat-card-best.ap-stat-card-previewed .ap-stat-card-title {
+  color: var(--dbc-lavender);
 }
 .md-typeset .ap-stat-card-row {
   display: flex;

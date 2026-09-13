@@ -921,6 +921,23 @@
     "master+pulv": "Master + Pulverize",
   };
 
+  // Top Combinations: per-root UI-only state for previewing a non-best
+  // cell's stats in the Best Setup card. Deliberately NOT persisted (not
+  // in readInputs' localStorage round-trip, not part of export/import) -
+  // this is a reader's "let me look at something other than the true
+  // best" toggle, not a build choice, so it resets to "auto" (rank 1) on
+  // reload same as any other transient UI state. Doesn't affect any
+  // calculation - see renderGrid's own comment.
+  const apCalcSelection = new WeakMap();
+  function getApCalcSelection(root) {
+    let state = apCalcSelection.get(root);
+    if (!state) {
+      state = { previewRank: 1 };
+      apCalcSelection.set(root, state);
+    }
+    return state;
+  }
+
   // Party & Positioning's synergy/support toggles (Crit Rate Synergy 1/2,
   // Crit Hit Damage Synergy 1/2, and the Passionate Dance support toggle) -
   // realistically only 3 of these 5 are ever active on the same pull, so at
@@ -1576,6 +1593,79 @@
     return mult;
   }
 
+  // Full stat card (Crit Dmg/Rate/onCrit/Evo/Add + Breaking Moon) for ONE
+  // specific cell - factored out of computeGridAndSummary so it can run
+  // for any cell, not just the true best. Two callers need this: the true
+  // best's own bestStats (below, same as before this was split out), and
+  // Top Combinations' per-row preview (renderGrid reads cell.stats for
+  // whichever of the 3 visible rows the reader clicked, even when that
+  // row isn't the true best). Math is unchanged from the original inline
+  // version - only the "best." references became "cell." so any cell can
+  // be passed in.
+  function computeCellStats(inputs, shared, cell) {
+    const { keenSense, limitBreak } = cell.split;
+    // critRate/critRateRaw below reuse cell.effCrit/cell.rawCrit directly -
+    // the grid loop already worked these out for this exact cell (same
+    // getKeystoneComponents call the comps lookups below would just be
+    // repeating), so there's no need to recompute them per branch. Same
+    // effective-vs-raw split as baseStats: critRate is what the DPS math
+    // in mult actually uses, critRateRaw is the uncapped sum shown as a
+    // secondary row.
+    let comps, stats;
+    if (cell.keystone === "crit+master") {
+      comps = {
+        critical: getKeystoneComponents(inputs, shared, keenSense, limitBreak, "critical"),
+        master: getKeystoneComponents(inputs, shared, keenSense, limitBreak, "master"),
+      };
+      stats = {
+        critDmg: shared.critDmgTotal,
+        critRate: cell.effCrit * 100,
+        critRateRaw: cell.rawCrit * 100,
+        onCritDmg: comps.critical.onCrit * 100,
+        evoDmg: comps.master.evo * 100,
+        addDmg: comps.master.add * 100,
+      };
+    } else if (cell.keystone === "crit+pulv") {
+      comps = {
+        critical: getKeystoneComponents(inputs, shared, keenSense, limitBreak, "critical"),
+        pulverize: getKeystoneComponents(inputs, shared, keenSense, limitBreak, "pulverize"),
+      };
+      stats = {
+        critDmg: shared.critDmgTotal,
+        critRate: cell.effCrit * 100,
+        critRateRaw: cell.rawCrit * 100,
+        onCritDmg: comps.critical.onCrit * 100,
+        evoDmg: comps.pulverize.evo * 100,
+        addDmg: comps.critical.add * 100,
+      };
+    } else if (cell.keystone === "master+pulv") {
+      comps = {
+        master: getKeystoneComponents(inputs, shared, keenSense, limitBreak, "master"),
+        pulverize: getKeystoneComponents(inputs, shared, keenSense, limitBreak, "pulverize"),
+      };
+      stats = {
+        critDmg: shared.critDmgTotal,
+        critRate: cell.effCrit * 100,
+        critRateRaw: cell.rawCrit * 100,
+        onCritDmg: shared.onCritDmgBase * 100,
+        evoDmg: comps.pulverize.evo * 100,
+        addDmg: comps.master.add * 100,
+      };
+    }
+
+    // Same marginal-gain calc as baseStats.breakingMoonGain, just using
+    // this cell's own effCrit/on-crit multiplier instead of the
+    // pre-keystone one. (KBW's isolated Dmg contribution used to get its
+    // own row here too, via kbwRealizedGainPct - see that function's own
+    // comment for why it needs a real re-optimized with/without search
+    // rather than a closed form - moved to the Engraving Comparison
+    // section's reference table below instead, so it isn't duplicated on
+    // this card anymore.)
+    stats.breakingMoonActive = shared.breakingMoonActive;
+    stats.breakingMoonGain = marginalCritDmgGainPct(cell.effCrit, stats.onCritDmg / 100, shared.critDmgTotal, shared.breakingMoonAdd);
+    return stats;
+  }
+
   function computeGridAndSummary(inputs) {
     const shared = computeShared(inputs);
     const cells = [];
@@ -1606,6 +1696,11 @@
 
     const maxMult = best ? best.mult : 1;
     cells.forEach(c => c.pctOfBest = (c.mult / maxMult) * 100);
+    // Precompute every cell's own stat card up front (cheap - 9 cells,
+    // same getKeystoneComponents calls the single-cell version already
+    // did) so Top Combinations can preview rank 2/3's real numbers
+    // on click without a second grid pass - see renderGrid.
+    cells.forEach(c => { c.stats = computeCellStats(inputs, shared, c); });
 
     // Base stats for verification - effCrit/onCrit here match the "no
     // keystone selected" values baseStats already reports above (S5, the
@@ -1643,70 +1738,7 @@
       breakingMoonGain: marginalCritDmgGainPct(baseEffCrit, shared.onCritDmgBase, shared.critDmgTotal, shared.breakingMoonAdd),
     };
 
-    // Best Setup stats (only things affected by nodes)
-    let bestStats = null;
-    if (best) {
-      const { keenSense, limitBreak } = best.split;
-      // critRate/critRateRaw below reuse best.effCrit/best.rawCrit
-      // directly - computeGridAndSummary already worked these out for
-      // this exact cell above (same getKeystoneComponents call the comps
-      // lookups below would just be repeating), so there's no need to
-      // recompute them per branch. Same effective-vs-raw split as
-      // baseStats above: critRate is what the DPS math in mult actually
-      // uses, critRateRaw is the uncapped sum shown as a secondary row.
-      let comps;
-      if (best.keystone === "crit+master") {
-        comps = {
-          critical: getKeystoneComponents(inputs, shared, keenSense, limitBreak, "critical"),
-          master: getKeystoneComponents(inputs, shared, keenSense, limitBreak, "master"),
-        };
-        bestStats = {
-          critDmg: shared.critDmgTotal,
-          critRate: best.effCrit * 100,
-          critRateRaw: best.rawCrit * 100,
-          onCritDmg: comps.critical.onCrit * 100,
-          evoDmg: comps.master.evo * 100,
-          addDmg: comps.master.add * 100,
-        };
-      } else if (best.keystone === "crit+pulv") {
-        comps = {
-          critical: getKeystoneComponents(inputs, shared, keenSense, limitBreak, "critical"),
-          pulverize: getKeystoneComponents(inputs, shared, keenSense, limitBreak, "pulverize"),
-        };
-        bestStats = {
-          critDmg: shared.critDmgTotal,
-          critRate: best.effCrit * 100,
-          critRateRaw: best.rawCrit * 100,
-          onCritDmg: comps.critical.onCrit * 100,
-          evoDmg: comps.pulverize.evo * 100,
-          addDmg: comps.critical.add * 100,
-        };
-      } else if (best.keystone === "master+pulv") {
-        comps = {
-          master: getKeystoneComponents(inputs, shared, keenSense, limitBreak, "master"),
-          pulverize: getKeystoneComponents(inputs, shared, keenSense, limitBreak, "pulverize"),
-        };
-        bestStats = {
-          critDmg: shared.critDmgTotal,
-          critRate: best.effCrit * 100,
-          critRateRaw: best.rawCrit * 100,
-          onCritDmg: shared.onCritDmgBase * 100,
-          evoDmg: comps.pulverize.evo * 100,
-          addDmg: comps.master.add * 100,
-        };
-      }
-
-      // Same marginal-gain calc as baseStats.breakingMoonGain, just using
-      // the winning cell's own effCrit/on-crit multiplier instead of the
-      // pre-keystone one. (KBW's isolated Dmg contribution used to get its
-      // own row here too, via kbwRealizedGainPct - see that function's own
-      // comment for why it needs a real re-optimized with/without search
-      // rather than a closed form - moved to the Engraving Comparison
-      // section's reference table below instead, so it isn't duplicated on
-      // this card anymore.)
-      bestStats.breakingMoonActive = shared.breakingMoonActive;
-      bestStats.breakingMoonGain = marginalCritDmgGainPct(best.effCrit, bestStats.onCritDmg / 100, shared.critDmgTotal, shared.breakingMoonAdd);
-    }
+    const bestStats = best ? best.stats : null;
 
     return { cells, best, baseStats, bestStats };
   }
@@ -4767,10 +4799,18 @@
     // Top 3 combinations, ranked by % of the grid's best cell. Pure
     // rendering: pctOfBest was already computed in computeGridAndSummary,
     // this only sorts and displays it - no math happens here.
+    //
+    // Each row is also clickable: it just PREVIEWS that rank's own stats
+    // in the Best Setup card below (title swaps to "2nd/3rd Best Setup")
+    // - a display-only toggle, doesn't touch inputs or any calculation at
+    // all. UI-only state (see apCalcSelection) - never saved/exported,
+    // resets to "auto" (rank 1) on reload.
     const list = root.querySelector(".ap-calc-results");
     if (!list) return;
 
+    const state = getApCalcSelection(root);
     const ranked = result.cells.slice().sort((a, b) => b.pctOfBest - a.pctOfBest).slice(0, 3);
+
     ranked.forEach((cell, i) => {
       const rank = i + 1;
       const rowEl = list.querySelector('.ap-calc-result-row[data-rank="' + rank + '"]');
@@ -4788,7 +4828,26 @@
         deltaEl.textContent = rank === 1 ? "Best" : (cell.pctOfBest - ranked[0].pctOfBest).toFixed(2) + "% vs best";
       }
       rowEl.classList.toggle("ap-calc-result-row-best", rank === 1);
+      rowEl.classList.toggle("ap-calc-result-row-active", state.previewRank === rank);
     });
+
+    // Which cell's stats populate the Best Setup card, and what its title
+    // reads: whichever rank the reader's currently previewing.
+    const cardRank = Math.min(Math.max(state.previewRank || 1, 1), ranked.length || 1);
+    const cardCell = ranked[cardRank - 1] || ranked[0] || null;
+
+    const cardEl = root.querySelector(".ap-stat-card-best");
+    const titleEl = cardEl && cardEl.querySelector(".ap-stat-card-title");
+    if (titleEl) {
+      const rankTitles = { 1: "Best Setup", 2: "2nd Best Setup", 3: "3rd Best Setup" };
+      titleEl.textContent = rankTitles[cardRank] || "Best Setup";
+    }
+    if (cardEl) {
+      // Mirrors the Top Combinations row's lavender "previewed" tint onto
+      // the card itself, so the two stay visually linked even if the
+      // previewed row has scrolled out of view.
+      cardEl.classList.toggle("ap-stat-card-previewed", cardRank !== 1);
+    }
 
     // Verification panel
     const base = result.baseStats;
@@ -4833,8 +4892,13 @@
       if (bmEl) bmEl.textContent = "+" + base.breakingMoonGain.toFixed(2) + "%";
     }
 
-    // Best Setup line
-    const best = result.bestStats;
+    // Best Setup line - shows whichever cell cardCell above resolved to
+    // (the previewed rank), via that cell's own precomputed .stats (see
+    // computeGridAndSummary's cells.forEach .stats assignment). Falls
+    // back to result.bestStats (the true best's own stats) if cardCell
+    // somehow didn't resolve to anything - shouldn't normally happen, but
+    // keeps this from going blank.
+    const best = (cardCell && cardCell.stats) || result.bestStats;
     if (best) {
       const critEl = root.querySelector(".ap-summary-best-crit");
       const critRawEl = root.querySelector(".ap-summary-best-crit-raw");
@@ -6307,6 +6371,29 @@
       syncFamilyVariantMemory(root);
       resetAvbMemory(root);
       updatePresetButtonStates(root);
+
+      // Top Combinations: click a row to preview its stats in the Best
+      // Setup card (state.previewRank) - see getApCalcSelection and
+      // renderGrid's own comment. Purely a display toggle, doesn't touch
+      // any input, so it just calls update(root) directly (like
+      // resetInputs/switchPreset above) rather than going through
+      // scheduleUpdate's rafSchedule - there's no rapid-fire typing to
+      // debounce here, just a click.
+      root.querySelectorAll(".ap-calc-result-row").forEach((rowEl) => {
+        const rank = parseInt(rowEl.dataset.rank, 10);
+        const preview = () => {
+          const state = getApCalcSelection(root);
+          state.previewRank = rank;
+          update(root);
+        };
+        rowEl.addEventListener("click", preview);
+        rowEl.addEventListener("keydown", (ev) => {
+          if (ev.key === "Enter" || ev.key === " ") {
+            ev.preventDefault();
+            preview();
+          }
+        });
+      });
 
       const flashyEl = root.querySelector(".ap-flashy-atk");
       const stableEl = root.querySelector(".ap-stable-atk");

@@ -261,6 +261,36 @@
   // tooltip the tap explicitly asked to keep open.
   var openTips = []; // [{ trigger, tip, state }]
 
+  // Ark Passive Calculator-only bug this exists to fix (see ap-brace-
+  // tooltip.js's blanket `.ap-calc [title]` selector): most of that
+  // calculator's tooltip triggers ARE <label>s - either wrapping their own
+  // checkbox directly (.ap-calc-pair-check, .ap-bvb-inline-check) or
+  // pointing at a sibling input via for="" (.ap-calc-field-label, the vast
+  // majority of fields). Tapping ANY such label, per plain HTML/DOM
+  // semantics, makes the browser ALSO synchronously dispatch a SECOND,
+  // separate "click" event straight at that label's associated control
+  // (this is what makes clicking anywhere on a checkbox's label text
+  // toggle the checkbox itself, and also focuses a text <input> the same
+  // way, which is why a real <input> additionally zooms in on mobile -
+  // ordinary label behavior, not a bug on its own). That second event's
+  // OWN bubble path runs independently of the first: for the wrapped case
+  // it re-enters the very same label and re-fires ITS OWN click listener a
+  // second time (closing what the real tap just opened); for the for=""
+  // case the control is a sibling, not a descendant, so the second event
+  // never passes through the label at all and instead bubbles up whatever
+  // ancestors THAT input has - either way nothing upstream of it calls
+  // stopPropagation, so it reaches the document-level "tap outside closes
+  // everything" listener below completely unblocked, undoing the open the
+  // real tap just did a moment earlier. No triggers elsewhere on the site
+  // are labels wrapping/pointing at a form control (skill-inline mentions,
+  // rotation chips, food pills are plain spans/divs), so this never fires
+  // for them - a single-shot flag rather than inspecting each trigger's
+  // tag/`for`/nesting keeps the fix correct for both label shapes above
+  // without having to special-case either one, and costs nothing anywhere
+  // else: the flag gets set and immediately consumed by that same click's
+  // own bubbling, and stays false the rest of the time.
+  var suppressNextDocumentClose = false;
+
   function setVisible(entry, visible) {
     entry.tip.classList.toggle("skill-tip-visible", visible);
     entry.trigger.classList.toggle("skill-tip-open", visible && entry.state.open);
@@ -402,6 +432,30 @@
         entry.state.open = true;
         positionTip(trigger, tip);
         refresh(entry);
+        // See suppressNextDocumentClose's own comment above openTips - a
+        // label trigger's forwarded second click is about to bubble to
+        // document on its own, independent of this stopPropagation (which
+        // only contains THIS real event, not that separate one). Most
+        // triggers AREN'T labels though (plain spans/chips elsewhere on
+        // the site), so no forwarded click ever arrives to consume/reset
+        // this flag via the document listener below - left unattended it
+        // would wrongly suppress the CLOSE-all a later, wholly unrelated
+        // tap elsewhere depends on, so it still needs an expiry of its own.
+        // Confirmed by instrumented timing (logging performance.now() at
+        // each step) that a label's forwarded click is NOT nested
+        // synchronously inside this dispatch - Chromium queues it as its
+        // own follow-up task a few ms later, arriving AFTER same-tick
+        // microtasks have already drained. A microtask-based expiry (tried
+        // first) therefore reset the flag too early, back to false before
+        // that follow-up task's click ever arrived, undoing the fix. A
+        // macrotask (setTimeout 0) queues behind that follow-up click
+        // instead, so it's still "true" when the real forwarded bubble
+        // reaches document (letting the check below consume it and skip
+        // straight past), yet still clears it long before any GENUINELY
+        // separate later tap (which needs an actual new user gesture, far
+        // slower than one queued-task's delay) could ever see a stale true.
+        suppressNextDocumentClose = true;
+        setTimeout(function () { suppressNextDocumentClose = false; }, 0);
         evt.stopPropagation();
       });
     }
@@ -571,7 +625,13 @@
   });
 
   // Tap-outside/Escape-to-close for the touch toggle above.
-  document.addEventListener("click", function () { closeAllExcept(null); });
+  document.addEventListener("click", function () {
+    if (suppressNextDocumentClose) {
+      suppressNextDocumentClose = false;
+      return;
+    }
+    closeAllExcept(null);
+  });
   document.addEventListener("keydown", function (evt) {
     if (evt.key === "Escape") closeAllExcept(null);
   });

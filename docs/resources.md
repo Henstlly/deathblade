@@ -405,21 +405,25 @@
        were "what's my best combo" and "what am I giving up if I run
        something else", so a ranked list answers both directly instead of
        asking the reader to scan a matrix for the highlighted cell. -->
+  <!-- Each row is clickable (tabindex/role="button") to preview that
+       rank's own stats in the Best Setup card below without changing any
+       calculation - see renderGrid's own comment. Not saved/exported -
+       see apCalcSelection's own comment in the JS. -->
   <div class="ap-calc-results">
     <div class="ap-calc-results-title">Top Combinations</div>
-    <div class="ap-calc-result-row" data-rank="1">
+    <div class="ap-calc-result-row" data-rank="1" tabindex="0" role="button" aria-label="Preview this combo's stats in the Best Setup card">
       <span class="ap-result-rank">1</span>
       <span class="ap-result-combo">—</span>
       <span class="ap-result-delta">—</span>
       <span class="ap-result-pct">—</span>
     </div>
-    <div class="ap-calc-result-row" data-rank="2">
+    <div class="ap-calc-result-row" data-rank="2" tabindex="0" role="button" aria-label="Preview this combo's stats in the Best Setup card">
       <span class="ap-result-rank">2</span>
       <span class="ap-result-combo">—</span>
       <span class="ap-result-delta">—</span>
       <span class="ap-result-pct">—</span>
     </div>
-    <div class="ap-calc-result-row" data-rank="3">
+    <div class="ap-calc-result-row" data-rank="3" tabindex="0" role="button" aria-label="Preview this combo's stats in the Best Setup card">
       <span class="ap-result-rank">3</span>
       <span class="ap-result-combo">—</span>
       <span class="ap-result-delta">—</span>
