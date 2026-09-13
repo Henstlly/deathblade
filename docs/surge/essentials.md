@@ -133,7 +133,7 @@ Pair with <span class="skill-mention" data-skill-id="curseddoll">Cursed Doll</sp
 
 **Pros:**{: .best-for } A safe default with no drawbacks.
 
-**Cons:**{: .tradeoff } Scales with <span class="skill-mention" data-skill-id="adrenaline">Adrenaline</span> <span class="skill-mention" data-glossary-id="relicbook">relic books</span>.
+**Cons:**{: .tradeoff } Additive to Breaking Moon's Crit Dmg bonus.
 
 </div>
 </details>
@@ -175,7 +175,7 @@ Pair with <span class="skill-mention" data-skill-id="curseddoll">Cursed Doll</sp
 <span class="food-req-item">![](../assets/shared/icon-ealynsblessing.png){: .skill-icon } Ealyn's Blessing</span> advised with Artist or Valkyrie
 { .food-req }
 
-**Pros:**{: .best-for } This is ceiling. Fewer drawbacks for [222](222-speedy.md).
+**Pros:**{: .best-for } This is ceiling. Fewer drawbacks for 222.
 
 **Cons:**{: .tradeoff } Doubles up on Maelstrom and food shackles.
 
