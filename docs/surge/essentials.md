@@ -90,7 +90,7 @@ Atk/Move Speed Feast
 </div>
 <div class="engraving-loadout-group" markdown>
 <span class="engraving-loadout-label">Choose 2</span>
-<span class="engraving-loadout-hint">pick the pair below that fits your food & skill level ↓</span>
+<span class="engraving-loadout-hint">pick the pair below that fits your needs ↓</span>
 </div>
 </div>
 
@@ -107,7 +107,7 @@ Atk/Move Speed Feast
 </summary>
 <div class="engraving-card-body" markdown>
 
-<span class="food-req-item">![](../assets/shared/icon-feast.png){: .skill-icon } Atk/Move Speed feast</span> + <span class="food-req-item">![](../assets/shared/icon-vernesewine.png){: .skill-icon } Vernese Wine</span> advised
+<span class="food-req-item">![](../assets/shared/icon-feast.png){: .skill-icon } Atk/Move Speed feast</span> + <span class="food-req-item">![](../assets/shared/icon-vernesewine.png){: .skill-icon } Vernese Wine</span>
 { .food-req }
 
 **Pros:**{: .best-for } Highest damage bonus.
@@ -128,12 +128,12 @@ Atk/Move Speed Feast
 </summary>
 <div class="engraving-card-body" markdown>
 
-Pair with <span class="skill-mention" data-skill-id="curseddoll">Cursed Doll</span> if you're starting out or stuck with it.
+Pair with <span class="skill-mention" data-skill-id="curseddoll">Cursed Doll</span> if starting out or stuck with it.
 { .food-req }
 
-**Pros:**{: .best-for } A safe default with no drawbacks.
+**Pros:**{: .best-for } A safe default with few drawbacks.
 
-**Cons:**{: .tradeoff } Additive to Breaking Moon's Crit Dmg bonus.
+**Cons:**{: .tradeoff } Additive to 111's Breaking Moon Crit Dmg bonus.
 
 </div>
 </details>
@@ -148,12 +148,12 @@ Pair with <span class="skill-mention" data-skill-id="curseddoll">Cursed Doll</sp
 </summary>
 <div class="engraving-card-body" markdown>
 
-<span class="food-req-item">![](../assets/shared/icon-feast.png){: .skill-icon } Atk/Move Speed feast</span> + <span class="food-req-item">![](../assets/shared/icon-ealynsblessing.png){: .skill-icon } Ealyn's Blessing</span> advised
+<span class="food-req-item">![](../assets/shared/icon-feast.png){: .skill-icon } Atk/Move Speed feast</span> + <span class="food-req-item">![](../assets/shared/icon-ealynsblessing.png){: .skill-icon } Ealyn's Blessing</span>
 { .food-req }
 
 **Pros:**{: .best-for } Highest damage bonus.
 
-**Cons:**{: .tradeoff } Requires Maelstrom management for gameplay rather than damage.
+**Cons:**{: .tradeoff } Requires Maelstrom management for gameplay, which can correlate to damage.
 
 </div>
 </details>
@@ -169,10 +169,10 @@ Pair with <span class="skill-mention" data-skill-id="curseddoll">Cursed Doll</sp
 </summary>
 <div class="engraving-card-body" markdown>
 
-<span class="food-req-item">![](../assets/shared/icon-vernesewine.png){: .skill-icon } Vernese Wine</span> advised with Bard or Paladin
+<span class="food-req-item">![](../assets/shared/icon-vernesewine.png){: .skill-icon } Vernese Wine</span> with Bard or Paladin
 { .food-req }
 
-<span class="food-req-item">![](../assets/shared/icon-ealynsblessing.png){: .skill-icon } Ealyn's Blessing</span> advised with Artist or Valkyrie
+<span class="food-req-item">![](../assets/shared/icon-ealynsblessing.png){: .skill-icon } Ealyn's Blessing</span> with Artist or Valkyrie
 { .food-req }
 
 **Pros:**{: .best-for } This is ceiling. Fewer drawbacks for 222.
@@ -184,7 +184,7 @@ Pair with <span class="skill-mention" data-skill-id="curseddoll">Cursed Doll</sp
 
 </div>
 
-<span class="engraving-loadout-note">Note: To compare advanced engraving values or get customized recommendations, check out the [Ark Passive Calculator!](../resources.md#ark-passive-calculator)</span>
+<span class="engraving-loadout-note">To compare advanced engraving/food values or get customized recommendations, check out the [Ark Passive Calculator!](../resources.md#ark-passive-calculator)</span>
 
 </div>
 
