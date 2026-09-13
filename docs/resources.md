@@ -389,6 +389,12 @@
       <input type="checkbox" id="ap-yearning" class="ap-yearning" checked>
     </div>
     <div class="ap-calc-field-row">
+      <label class="ap-calc-field-label" for="ap-flash-orb-uptime" title="+15% Crit Rate, scaled by the Support's Drops of Ether engraving.">Flash Orb Uptime %</label>
+      <span class="ap-brace-warn-icon ap-flash-orb-warn" title="Getting these orbs at all is pure RNG - they'll likely shift your best keystone pair once they land, but they're not worth building or planning a setup around.">WARN</span>
+      <span class="ap-value-display" data-for="ap-flash-orb-uptime"></span>
+      <input type="number" id="ap-flash-orb-uptime" class="ap-flash-orb-uptime" min="0" max="100" step="1" value="0">
+    </div>
+    <div class="ap-calc-field-row">
       <label class="ap-calc-field-label" for="ap-back-attack-rate" title="% of your hits landed from behind - converts straight to Crit Rate at a 10:1 ratio (90% back attack = +9% Crit Rate).">Back Attack Rate %</label>
       <input type="number" id="ap-back-attack-rate" class="ap-back-attack-rate" min="0" max="100" step="1" value="90">
     </div>
@@ -727,7 +733,7 @@
           </select>
         </div>
         <div class="ap-calc-field-row">
-          <label class="ap-calc-field-label" for="ap-gear-strength-orb-uptime" title="+10% Attack Power, scaled by the Support's Drops of Ether engraving.">Support: Strength Orb Uptime %</label>
+          <label class="ap-calc-field-label" for="ap-gear-strength-orb-uptime" title="+10% Attack Power, scaled by the Support's Drops of Ether engraving.">Strength Orb Uptime %</label>
           <span class="ap-value-display" data-for="ap-gear-strength-orb-uptime"></span>
           <input type="number" id="ap-gear-strength-orb-uptime" class="ap-gear-strength-orb-uptime ap-gear-input-narrow" min="0" max="100" step="1" value="0">
         </div>

@@ -560,6 +560,16 @@
   // Relic grade).
   const STRENGTH_ORB_BASE_AP = 10;
   const STRENGTH_ORB_FULL_AP = STRENGTH_ORB_BASE_AP * (1 + SUPPORT_ETHER_EFFECTIVENESS);
+  // Same Drops of Ether engraving's OTHER orb - Flash Orb (Crit Rate,
+  // folded into critRateTotal/effectiveCritRate below instead of the AP
+  // total above). Scaled by the same SUPPORT_ETHER_EFFECTIVENESS bonus
+  // just above - it's a single shared "Ether effectiveness" stat that
+  // scales both orbs together, not two separate ones (see that
+  // constant's own comment). Base value before the Ether effectiveness
+  // bonus - Flash Orb's +15% Crit Rate (per the engraving's Base Effect
+  // tooltip, Relic grade).
+  const FLASH_ORB_BASE_CRIT_RATE = 0.15;
+  const FLASH_ORB_FULL_CRIT_RATE = FLASH_ORB_BASE_CRIT_RATE * (1 + SUPPORT_ETHER_EFFECTIVENESS);
 
   function gearAttackPowerPercentTotal(inputs) {
     return (
@@ -1022,6 +1032,14 @@
       critHitSyn1: getCheckbox(root, ".ap-crit-hit-syn-1", false),
       critHitSyn2: getCheckbox(root, ".ap-crit-hit-syn-2", false),
       backAttackRate: Math.max(0, Math.min(100, getNumber(root, ".ap-back-attack-rate", 90))),
+      // Support's Flash Orb (Drops of Ether) - same "% of the fight it's
+      // up" pattern as Adrenaline Uptime/Back Attack Rate above, see
+      // FLASH_ORB_FULL_CRIT_RATE's own comment for the assumed
+      // engraving/stone combo baked into the full-uptime value. Only
+      // meaningful while a Support is actually in the party - gated off
+      // .ap-yearning the same way Strength Orb Uptime already is (see
+      // enforceGearSupportUptimeGate). Defaults to 0 (not used).
+      flashOrbUptime: Math.max(0, Math.min(100, getNumber(root, ".ap-flash-orb-uptime", 0))),
 
       yearning: getCheckbox(root, ".ap-yearning", true),
       evoKarmaRank: parseInt(getSelect(root, ".ap-evo-karma", "6"), 10) || 6,
@@ -1388,7 +1406,10 @@
     const n = inputs.critSyn1 ? 0.1 : 0;
     const o = inputs.critSyn2 ? 0.1 : 0;
     const p = (inputs.backAttackRate / 100) * 0.1;
-    return c + d + e + f + g + h + i + k + n + o + p + (ARK_CRUSHING_CRATE_TABLE[inputs.crushingCore] || 0);
+    // Support's Flash Orb (Drops of Ether) - see FLASH_ORB_FULL_CRIT_RATE's
+    // own comment for the Ether-effectiveness assumption baked into it.
+    const q = (inputs.flashOrbUptime / 100) * FLASH_ORB_FULL_CRIT_RATE;
+    return c + d + e + f + g + h + i + k + n + o + p + q + (ARK_CRUSHING_CRATE_TABLE[inputs.crushingCore] || 0);
   }
 
   function evoDmgTotal(keenSenseLv, limitBreakLv, shared) {
@@ -1402,20 +1423,25 @@
   }
 
   // General correct replacement for "Math.min(critRateTotal(...), 1)".
-  // critRateTotal bakes in TWO independent "sometimes on, sometimes off"
-  // crit-rate contributors as plain averaged terms - Adrenaline (`h` =
-  // bonus * uptime%: a buff that's up some fraction of the fight) and
+  // critRateTotal bakes in THREE independent "sometimes on, sometimes
+  // off" crit-rate contributors as plain averaged terms - Adrenaline
+  // (`h` = bonus * uptime%: a buff that's up some fraction of the fight),
   // Back Attack Rate (`p` = 0.1 * rate%: a per-hit chance a given hit
-  // lands from behind) - both are expectations over a Bernoulli variable,
-  // so both hit the exact same concavity problem: min() is concave, so
-  // capping an already-averaged sum ONCE systematically overstates the
-  // true time/hit-weighted crit rate whenever a buffed/back-attack state
-  // would cross the cap while the baseline doesn't. Confirmed against
-  // project chat log: at 75% baseline with Adrenaline (+20% @ 97% uptime)
-  // AND Back Attack (+10% @ 90% rate) together, the naive averaged-sum
-  // formula reads a flat 100.00% where the true joint-weighted value is
-  // 99.035% - a bigger gap than either source produces alone, since two
-  // independent swingy terms compound.
+  // lands from behind), and Support's Flash Orb (`q` = FLASH_ORB_FULL_
+  // CRIT_RATE * uptime%: same "up some fraction of the fight" shape as
+  // Adrenaline) - all three are expectations over a Bernoulli variable,
+  // so all three hit the exact same concavity problem: min() is concave,
+  // so capping an already-averaged sum ONCE systematically overstates the
+  // true time/hit-weighted crit rate whenever a buffed/back-attack/orb
+  // state would cross the cap while the baseline doesn't. Confirmed
+  // against project chat log: at 75% baseline with Adrenaline (+20% @
+  // 97% uptime) AND Back Attack (+10% @ 90% rate) together, the naive
+  // averaged-sum formula reads a flat 100.00% where the true
+  // joint-weighted value is 99.035% - a bigger gap than either source
+  // produces alone, since independent swingy terms compound. Flash Orb
+  // is folded into the same treatment below on the same reasoning
+  // (assumed independent of Adrenaline uptime/Back Attack rate, the same
+  // simplifying assumption already made between those two).
   //
   // blendCritTerms takes `base` (the fixed, non-swingy part of crit rate,
   // already including Master keystone's own flat +7% `extra` - that has
@@ -1448,16 +1474,20 @@
     const adrenalineUptime = inputs.adrenalineUptime / 100;
     const backAttackBonus = 0.1;
     const backAttackRate = inputs.backAttackRate / 100;
-    // Strip both buggy averaged terms back out of critRateTotal's sum
-    // rather than re-listing every other term here, so this can never
-    // drift out of sync with critRateTotal's own term list.
+    const flashOrbBonus = FLASH_ORB_FULL_CRIT_RATE;
+    const flashOrbUptime = inputs.flashOrbUptime / 100;
+    // Strip all three buggy averaged terms back out of critRateTotal's
+    // sum rather than re-listing every other term here, so this can
+    // never drift out of sync with critRateTotal's own term list.
     const restOfCrit =
       critRateTotal(inputs, keenSenseLv) -
       adrenalineBonus * adrenalineUptime -
-      backAttackBonus * backAttackRate;
+      backAttackBonus * backAttackRate -
+      flashOrbBonus * flashOrbUptime;
     return blendCritTerms(restOfCrit + extra, [
       { bonus: adrenalineBonus, p: adrenalineUptime },
       { bonus: backAttackBonus, p: backAttackRate },
+      { bonus: flashOrbBonus, p: flashOrbUptime },
     ]);
   }
 
@@ -4675,6 +4705,10 @@
     // e.g. 20% uptime reads as "(6.00%)", matching the field's own tooltip.
     setDisplay("#ap-gear-atropine-uptime", ((inputs.gearAtropineUptime / 100) * GEAR_AP_ATROPINE_FULL) / 100);
     setDisplay("#ap-gear-strength-orb-uptime", ((inputs.gearStrengthOrbUptime / 100) * STRENGTH_ORB_FULL_AP) / 100);
+    // Flash Orb Uptime's readout mirrors Strength Orb Uptime just above -
+    // the time-averaged effective Crit Rate (uptime * the full value
+    // while active), not the uptime number itself.
+    setDisplay("#ap-flash-orb-uptime", (inputs.flashOrbUptime / 100) * FLASH_ORB_FULL_CRIT_RATE);
     // Running total, shown even at 0% (unlike the other displays above,
     // which stay blank at 0) so it always reads as "here's your current
     // total" rather than looking broken/empty with nothing selected yet.
@@ -5667,21 +5701,24 @@
     });
   }
 
-  // Support AP Buff Uptime and Strength Orb Uptime both only mean
-  // anything while Support is actually part of the setup - gated on
-  // .ap-yearning ("Support: Passionate Dance" up in Party & Positioning)
-  // being CHECKED, not on whether it's disabled. Being disabled-but-checked
-  // (hit the 3-synergy limit above while already on) still means Support
-  // is active, so these fields should stay enabled in that case - only an
-  // unchecked .ap-yearning turns them off. Support: Artist/Valkyrie
-  // (Engraving Comparison's own Move Speed checkbox) is the same shape -
-  // a support-only source, not tied to any character-side gear input, but
-  // the reader still shouldn't be able to claim it while Passionate Dance
-  // itself is off, so it rides the same gate as the other two.
+  // Support AP Buff Uptime, Strength Orb Uptime, and Flash Orb Uptime all
+  // only mean anything while Support is actually part of the setup -
+  // gated on .ap-yearning ("Support: Passionate Dance" up in Party &
+  // Positioning) being CHECKED, not on whether it's disabled. Being
+  // disabled-but-checked (hit the 3-synergy limit above while already on)
+  // still means Support is active, so these fields should stay enabled in
+  // that case - only an unchecked .ap-yearning turns them off. Support:
+  // Artist/Valkyrie (Engraving Comparison's own Move Speed checkbox) is
+  // the same shape - a support-only source, not tied to any
+  // character-side gear input, but the reader still shouldn't be able to
+  // claim it while Passionate Dance itself is off, so it rides the same
+  // gate as the others. Strength Orb and Flash Orb are both Support's
+  // Drops of Ether engraving, same "no Support, no orb" dependency as the
+  // AP buff.
   function enforceGearSupportUptimeGate(root) {
     const yearningEl = root.querySelector(".ap-yearning");
     if (!yearningEl) return;
-    [".ap-gear-support-uptime", ".ap-gear-strength-orb-uptime", ".ap-engr-support-av"].forEach((selector) => {
+    [".ap-gear-support-uptime", ".ap-gear-strength-orb-uptime", ".ap-flash-orb-uptime", ".ap-engr-support-av"].forEach((selector) => {
       const el = root.querySelector(selector);
       if (el) el.disabled = !yearningEl.checked;
     });

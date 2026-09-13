@@ -5504,6 +5504,21 @@ h3 { color: var(--dbc-teal); }
 .md-typeset .ap-gear-ap-section .ap-value-display:empty {
   display: none;
 }
+/* Flash Orb Uptime % (Party & Positioning) carries the same empty
+   .ap-value-display span as the AP-section rows just above (blank at
+   0% uptime, see setDisplay's own comment in the JS) PLUS a WARN pill
+   ahead of the label warning that these orbs are pure RNG - two fixed-
+   width siblings the label now has to share the row with. Reusing the
+   .ap-gear-ap-section fix above (collapsing the empty span's reserved
+   4.5em instead of leaving a dead gap) matters more here than it did
+   there: on a narrow phone this row's label only had ~50px left to
+   wrap into once the WARN pill and input were accounted for, forcing
+   an unreadably tall stack of single-word lines. Freeing the span's
+   width back to the label fixes that without touching the WARN pill or
+   input at all. */
+.md-typeset .ap-calc-party-card .ap-value-display:empty {
+  display: none;
+}
 /* The title row also carries the running total badge on its right edge -
    .ap-gear-card-title's shared text styling (uppercase/size/color/
    margin) still applies via that class on the same element, this just
