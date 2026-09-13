@@ -6593,6 +6593,24 @@
         saveInputs(root, getActivePresetId());
       });
 
+      // Browser-native form value restoration (back/forward navigation,
+      // and some browsers' reload-restore too) can hand a field a STALE
+      // value keyed by its position among same-typed inputs rather than
+      // by id, when the field has no `name` attribute (none of these
+      // do) - independent of, and in addition to, this widget's own
+      // id-keyed localStorage persistence just above. Confirmed as the
+      // cause of a real report: inserting Flash Orb Uptime before Back
+      // Attack Rate shifted Back Attack Rate's old cached 90 onto the
+      // new field for a returning visitor, until a Reset overwrote it.
+      // Since every field's value is already fully owned and restored
+      // by saveInputs/loadInputs above, the browser's own restoration is
+      // pure risk with no benefit - killing it here, once, generically
+      // for every input/select in the root means any future inserted/
+      // reordered field is automatically covered too, not just this one.
+      root.querySelectorAll("input, select").forEach((el) => {
+        el.setAttribute("autocomplete", "off");
+      });
+
       root.querySelectorAll("input, select").forEach((el) => {
         // Weapon Power / Main Stat / Flat AP get typed digit-by-digit as
         // large numbers - recalculating on every keystroke means the
