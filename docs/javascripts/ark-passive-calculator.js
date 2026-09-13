@@ -4389,7 +4389,7 @@
         // (kbwRealizedGainPct/adrenalineGridRatio's own with-vs-without
         // grid search), so one shared note text keeps them consistent
         // instead of drifting into two slightly different wordings.
-        note: "Realized DPS gain: recomputes the best setup with vs without Adrenaline, so the winning keystone/split can flip. Not a flat layer like the rows above. AP half follows Adrenaline Uptime % from the Ark Passive section above.",
+        note: "Recomputes the best setup with vs without, so the winning keystone/split can flip. Follows Adrenaline Uptime % setting from the Ark Passive section above.",
       },
       { label: "Raid Captain", gain: raidCaptainGain(engrInputs, inputs) },
       {
@@ -4399,7 +4399,7 @@
         // specifically (no uptime/AP half to mention here) - see that
         // row's own comment for why the two share this note's first
         // sentence verbatim rather than each inventing their own phrasing.
-        note: "Realized DPS gain: recomputes the best setup with vs without Keen Blunt Weapon, so the winning keystone/split can flip. Not a flat layer like the rows above.",
+        note: "Recomputes the best setup with vs without, so the winning keystone/split can flip.",
       },
       { label: "Cursed Doll", gain: cursedDollGain(engrInputs, inputs) },
       // Mass Increase stays Surge-only in this reference table too, same
