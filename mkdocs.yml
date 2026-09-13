@@ -62,11 +62,11 @@ extra_css:
 # scratch). See README.md's "Forking this for your own spin" section
 # for the full breakdown.
 extra_javascript:
-  - javascripts/site-utils.js?v=9
+  - javascripts/site-utils.js?v=10
   - javascripts/extra.js?v=2
   - javascripts/cpm-calculator.js?v=6
   - javascripts/bid-calculator.js?v=4
-  - javascripts/ark-passive-calculator.js?v=39
+  - javascripts/ark-passive-calculator.js?v=40
   - javascripts/bible-import.js?v=10
   - javascripts/build-data.js?v=4
   - javascripts/build-stats-badge.js?v=1

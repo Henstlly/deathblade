@@ -6689,6 +6689,19 @@
           emptyValue: () => el.defaultValue,
         });
       });
+      // Uptime % fields are meant to hold precise measured values (e.g.
+      // 75.83%), not just whole percents, but they keep step="1" so the
+      // arrow keys still nudge by a whole point. See SiteUtils.
+      // bindDecimalPreservingArrowKeys's own comment for why that needs
+      // its own handler instead of just relying on the native input.
+      root.querySelectorAll(
+        ".ap-adrenaline-uptime, .ap-flash-orb-uptime, .ap-gear-support-uptime, " +
+        ".ap-gear-strength-orb-uptime, .ap-gear-atropine-uptime, .ap-engr-maelstrom-uptime"
+      ).forEach((el) => {
+        const step = el.step && el.step !== "" ? parseFloat(el.step) : 1;
+        window.SiteUtils.bindDecimalPreservingArrowKeys(el, step);
+      });
+
       const resetEl = root.querySelector(".ap-calc-reset");
       // A real <button>, not an <a href="#"> - this site has Material's
       // navigation.instant enabled, which intercepts <a> clicks globally

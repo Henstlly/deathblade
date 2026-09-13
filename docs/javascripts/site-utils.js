@@ -139,6 +139,46 @@
       });
     },
 
+    // A number input with step="1" (e.g. any "Uptime %" field: whole-
+    // percent arrow nudges are the common case) still lets a reader type
+    // an exact decimal like 75.83 - the browser just marks the field
+    // :invalid, it doesn't reject the keystrokes. The problem is the
+    // arrow keys: per the HTML5 stepUp/stepDown algorithm, a value that
+    // isn't already sitting on a step boundary gets SNAPPED to the
+    // nearest one on the first arrow press instead of stepped from where
+    // it actually is - so pressing Up on 75.83 silently becomes 76, not
+    // 76.83, and the typed decimal is gone. This intercepts ArrowUp/
+    // ArrowDown ourselves and adds/subtracts exactly `step` from whatever
+    // is actually in the field, decimals included, instead of letting
+    // the browser's native snap-then-round run.
+    // NOTE: this only covers the keyboard arrows. The tiny native
+    // mouse-click spin buttons live inside the browser's own shadow DOM
+    // with no exposed hook to intercept - a mouse click on those will
+    // still snap to a whole number. If that also needs covering, the
+    // only reliable fix is replacing the native spinner with a custom
+    // one (hide it via CSS, draw two small buttons wired to this same
+    // increment logic) - ask if that's wanted, it's a bigger change.
+    bindDecimalPreservingArrowKeys: function (input, step) {
+      if (!input) return;
+      step = step || 1;
+      input.addEventListener("keydown", function (e) {
+        if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
+        e.preventDefault();
+        var min = input.min !== "" ? parseFloat(input.min) : -Infinity;
+        var max = input.max !== "" ? parseFloat(input.max) : Infinity;
+        var current = parseFloat(input.value);
+        if (!isFinite(current)) current = 0;
+        var delta = e.key === "ArrowUp" ? step : -step;
+        // Round to 2dp to dodge float drift (e.g. 75.83 + 1 becoming
+        // 76.83000000000001) without truncating a genuine 2-decimal value.
+        var next = Math.round((current + delta) * 100) / 100;
+        next = Math.min(max, Math.max(min, next));
+        input.value = next;
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+      });
+    },
+
     // Copy text to the clipboard, with a textarea/execCommand fallback for
     // contexts where navigator.clipboard is unavailable (older WebViews,
     // non-HTTPS). Was duplicated in bid-calculator.js (with the fallback)
