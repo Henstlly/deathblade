@@ -893,7 +893,7 @@
          Ark Passive setup, Character Data, and this table's own inputs
          above are filled out, which is why it reads as a continuation of
          them rather than something you'd reach for on its own. -->
-    <details class="ap-bvb" open>
+    <details class="ap-bvb">
       <summary>Bracelet vs. Bracelet</summary>
       <div class="ap-brace-compare-body">
         <p class="ap-brace-compare-intro">Compares two full 5-line bracelets against each other and against running none at all.</p>
@@ -1138,7 +1138,6 @@
           <p class="ap-brace-compare-flip-note ap-bvb-keystone-note" hidden>Bracelet A and B land on different best keystones - the comparison above already accounts for that.</p>
         </div>
       </div>
-      <p class="ap-brace-compare-footer-note">Only as accurate as the Ark Passive, Character Data, and Bracelet inputs above are - fill everything in first or else.</p>
     </details>
   </div>
 </details>
@@ -1445,7 +1444,7 @@
          re-asked), not a standalone question. See
          computeEngravingSetupComparison's own JS comment for the full
          methodology. -->
-    <details class="ap-esvs" open>
+    <details class="ap-esvs">
       <summary>Setup A vs. Setup B</summary>
       <div class="ap-brace-compare-body">
         <p class="ap-brace-compare-intro">Two loadouts, compared against each other. Core Engravings and In-Raid Variables above apply.<span class="ap-brace-info-icon ap-esvs-food-icon" role="img" aria-label="Uses whichever food is currently selected. If either setup includes Raid Captain, switching food can change the winner here too - see the Overall Best Setup below." title="Uses whichever food is currently selected. If either setup includes Raid Captain, switching food can change the winner here too - see the Overall Best Setup below.">i</span></p>
@@ -1634,7 +1633,6 @@
           <p class="ap-brace-compare-footer-note ap-esvs-overall-best-note">—</p>
         </div>
       </div>
-      <p class="ap-brace-compare-footer-note">Only as accurate as the Ark Passive, Character Data, and Engraving inputs above are - fill everything in first or else.</p>
     </details>
   </div>
 </details>
@@ -1813,7 +1811,7 @@
          mainStatLine3Ratio/lineRatio for why Earring needs this second
          row at all, unlike Ring/Necklace whose Line 1/2 already gets its
          own Grid/Flat row and would just show +0.00% here). -->
-    <details class="ap-avb" open>
+    <details class="ap-avb">
       <summary>Accessory vs. Accessory</summary>
       <div class="ap-brace-compare-body">
         <p class="ap-brace-compare-intro">Compares your currently equipped accessory against a candidate replacement, and both against neither.</p>
@@ -1948,7 +1946,6 @@
         </div>
 
       </div>
-      <p class="ap-brace-compare-footer-note">Only as accurate as the Ark Passive, Character Data, and Accessory inputs above are - fill everything in first or else.</p>
     </details>
   </div>
 </details>
