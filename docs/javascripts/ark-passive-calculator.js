@@ -5437,7 +5437,7 @@
         // whatever's currently configured above, food is the only axis
         // actually being varied between the two sides of this comparison.
         foodNoteEl.textContent =
-          "Raid Captain setups: " + winner + " beats " + loser + " by " + Math.abs(pct).toFixed(2) + "%.";
+          "RC Setup: " + winner + " beats " + loser + " by " + Math.abs(pct).toFixed(2) + "%.";
       }
     }
 
