@@ -4134,6 +4134,8 @@ h3 { color: var(--dbc-teal); }
      only (not border, which flips instantly with -best/-active below to
      stay legible) so hover doesn't feel laggy. */
   cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
   transition: background-color 0.12s ease;
 }
 .md-typeset .ap-calc-result-row:hover,

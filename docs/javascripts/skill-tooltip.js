@@ -291,6 +291,37 @@
   // own bubbling, and stays false the rest of the time.
   var suppressNextDocumentClose = false;
 
+  // iOS/touch bug this exists to fix: after a real touchstart/touchend,
+  // WebKit (and other touch browsers) synthesize a legacy mouseover/
+  // mouseenter pair on whatever element was tapped, purely for
+  // compatibility with old mouse-only sites - this is standard touch-to-
+  // mouse-event emulation, not specific to this codebase. Every trigger
+  // here listens for mouseenter to open on hover, so that synthetic event
+  // was opening the tooltip via the HOVER path on every single tap, often
+  // a few ms BEFORE the real click/checkbox-toggle for that same tap even
+  // runs (confirmed via instrumented timing: touchend -> synthetic
+  // mouseenter -> real mousedown/focus/click, in that order) - a mouse
+  // user's hover is never preceded by a touchstart, so this only ever
+  // suppresses the synthetic case, never real hover. TOUCH_MOUSE_WINDOW_MS
+  // just needs to comfortably outlast the gap between touchend and the
+  // synthesized mouse sequence (a few ms in testing; browsers can take up
+  // to ~300-350ms historically) - 500 leaves margin without risking a
+  // slow real mouseenter shortly after an unrelated tap elsewhere getting
+  // wrongly swallowed too (a fresh mouse move needs real physical pointer
+  // travel time, which comfortably exceeds this window in practice).
+  var TOUCH_MOUSE_WINDOW_MS = 500;
+  var lastTouchAt = 0;
+  document.addEventListener(
+    "touchstart",
+    function () {
+      lastTouchAt = Date.now();
+    },
+    { capture: true, passive: true }
+  );
+  function recentlyTouched() {
+    return Date.now() - lastTouchAt < TOUCH_MOUSE_WINDOW_MS;
+  }
+
   function setVisible(entry, visible) {
     entry.tip.classList.toggle("skill-tip-visible", visible);
     entry.trigger.classList.toggle("skill-tip-open", visible && entry.state.open);
@@ -371,6 +402,14 @@
     openTips.push(entry);
 
     trigger.addEventListener("mouseenter", function () {
+      // See recentlyTouched()'s own comment above openTips - this
+      // mouseenter is almost certainly a touch-compatibility synthetic
+      // event, not a real hover, if a touchstart just happened. Bail
+      // before doing anything (including closeAllExcept, which would
+      // otherwise force-close whatever tap/focus-driven tooltip a
+      // GENUINE tap on this same trigger is about to open a few ms from
+      // now via its own click/focusin handlers below).
+      if (recentlyTouched()) return;
       // A different trigger's tap-toggled-open tooltip (entry.state.open)
       // is independent of hover/focus, so without this it would just sit
       // there once the mouse moves on to hover something else entirely -
@@ -412,17 +451,54 @@
       refresh(entry);
     });
 
-    // Tap-to-toggle for touch, which triggers neither hover nor focus -
-    // same pattern as ark-core-badge.js/ap-calc-popover elsewhere.
-    // Except: a .rotation-line in practice mode already owns clicks on
-    // itself (click anywhere on the line advances a step - see
-    // rotation-practice.js) - defer to that entirely on this chip rather
-    // than swallowing the click for our own tap-toggle instead. Hover/
-    // focus still shows the tooltip fine even while practicing; only the
-    // touch tap-to-open is what steps aside here.
-    if (opts.tapToggle !== false) {
+    // Two independent concerns used to be conflated in one opts.tapToggle
+    // flag: (1) does a click on this trigger toggle the tooltip's own
+    // open/closed state, and (2) does a click get kept from reaching the
+    // document-level "tap outside closes everything" listener below.
+    // ap-brace-tooltip.js's checkbox-wrapping labels need (1): false but
+    // (2): true - they must NOT claim the click as their own open/close
+    // (the checkbox already owns that click; see opts.tapToggle's comment
+    // above), but a click still needs suppressing or the ordinary "tap
+    // outside" listener force-closes the tooltip that focus alone just
+    // legitimately opened (confirmed via instrumented timing: with no
+    // click listener registered at all, both the real click AND the
+    // label's forwarded second click - see opts.wrapsControl below -
+    // bubble straight to that document listener unblocked and toggle
+    // everything closed, twice, within the same tap). So these are now
+    // separately gated: opts.tapToggle guards the open/close toggle
+    // below, opts.wrapsControl guards only the suppression, and a trigger
+    // can opt into either, both, or neither.
+    //
+    // opts.wrapsControl: pass true for a trigger that's a <label> wrapping
+    // its own checkbox/input (as opposed to a for="" label pointing at a
+    // sibling, or a plain non-form trigger) - see ap-brace-tooltip.js's
+    // own comment on why only that specific shape needs this. Tapping the
+    // label anywhere but the control itself makes the browser dispatch a
+    // SECOND click straight at the wrapped control, which bubbles back up
+    // through this same label - so this trigger can see two click events
+    // per tap, not one, and each needs to independently suppress the
+    // document listener rather than relying on one flag surviving across
+    // both (see the loop-friendly design below: every qualifying click
+    // sets its own flag right before it reaches document, so it's always
+    // fresh regardless of how many clicks land or how the browser
+    // schedules the second one).
+    if (opts.tapToggle !== false || opts.wrapsControl) {
       trigger.addEventListener("click", function (evt) {
         if (trigger.closest(".rotation-line.practice-mode")) return;
+
+        if (opts.tapToggle === false) {
+          // wrapsControl-only path: consume the click so it doesn't reach
+          // the document listener below, but don't touch entry.state.open
+          // at all - the checkbox's own toggle is this click's real job,
+          // and this trigger's tooltip should only ever open via hover
+          // (mouse) or focus (keyboard tab, or the wrapped checkbox
+          // itself receiving focus - focusin bubbles up to this label
+          // same as any other descendant), never via tap-toggle.
+          suppressNextDocumentClose = true;
+          setTimeout(function () { suppressNextDocumentClose = false; }, 0);
+          return;
+        }
+
         if (entry.state.open) {
           entry.state.open = false;
           refresh(entry);
