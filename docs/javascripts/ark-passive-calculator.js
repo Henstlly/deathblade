@@ -1329,59 +1329,27 @@
   // Keen Blunt Weapon's actual in-game downside: attacks have a 10% chance
   // to deal -20% damage, i.e. an expected-value multiplier of
   // 1 - 0.10*0.20 = 0.98 on every hit, independent of the Crit Dmg bonus
-  // it grants. That EV hit applies to the WHOLE post-KBW damage total, not
-  // just KBW's own slice of it, so it can't be folded into
-  // marginalCritDmgGainPct's generic contribution/withoutTerm shape - the
-  // malus has to land on withTerm before taking the ratio.
-  //
-  // Takes the engraving's own Crit Dmg value AND its Ability Stone's Crit
-  // Dmg value together (stone value optional/0 for callers that only want
-  // the engraving alone, e.g. the Base/Best Setup cards when no stone is
-  // slotted) and removes BOTH from critDmgTotal in a single joint
-  // with/without ratio, rather than computing "engraving alone" and "stone
-  // alone" as two separate ratios against the same full critDmgTotal and
-  // summing the two percentages. That summing approach used to live here
-  // and in kbwContributionGain - it looks reasonable (both are "% you'd
-  // lose if removed" fractions) but critDmgTotal's contribution to the
-  // final multiplier is affine, not linear through the origin, so two
-  // marginals computed against the SAME full baseline understate the
-  // combined effect of removing both at once (each one's "without" term
-  // still has the other's value cushioning it). Removing both together
-  // here, in one ratio, is the correct joint counterfactual and is what
-  // actually matches the source spreadsheet's own combined (compounded,
-  // not summed) Relic Engraving + Lv.4 Stone figure for Keen Blunt Weapon.
+  // it grants. Applied once, flat, on top of the whole post-KBW damage
+  // total whenever KBW is actually equipped - see combinedMultiplier's own
+  // kbwActive gate below for where this actually lands.
   const KBW_EV_MALUS = 0.98;
-  function kbwEngravingGainPct(effCrit, onCrit, critDmgTotal, kbwValue, kbwStoneValue) {
-    const totalValue = kbwValue + (kbwStoneValue || 0);
-    if (!totalValue) return 0;
-    const withTerm = (1 - effCrit) + effCrit * (1 + onCrit) * critDmgTotal;
-    const withTermAdjusted = withTerm * KBW_EV_MALUS;
-    const withoutTerm = (1 - effCrit) + effCrit * (1 + onCrit) * (critDmgTotal - totalValue);
-    if (withoutTerm <= 0) return 0;
-    return (withTermAdjusted / withoutTerm - 1) * 100;
-  }
 
-  // Real, re-optimized replacement for kbwEngravingGainPct wherever KBW's
-  // row is compared against Setup A/B's own "vs No Setup" methodology
-  // (bestStats.kbwGain and kbwContributionGain below - NOT baseStats.kbwGain,
-  // which uses fixed pre-keystone effCrit/onCrit that never compete against
-  // anything, so it has nothing to re-optimize and stays on the closed form).
-  // kbwEngravingGainPct's closed form silently assumes the winning
-  // keystone+split cell is IDENTICAL with and without KBW's Crit Dmg value -
-  // true only some of the time. KBW's value feeds straight into
-  // shared.critDmgTotal (see computeShared), which is part of the grid
-  // formula itself, so removing it can genuinely flip which of the 9 cells
-  // bestComboFor picks (e.g. Master's higher effCrit stops being worth it
-  // once Critical's on-crit multiplier no longer has KBW's larger Crit Dmg
-  // to amplify) - confirmed live: a default-settings run had KBW's own best
-  // cell at Master+Pulverize/LB1-KS2 while the true no-KBW baseline actually
-  // preferred Critical+Pulverize/LB1-KS2, a difference the closed form has
-  // no way to see since it only ever holds one fixed cell's effCrit/onCrit
-  // and subtracts KBW's value out of critDmgTotal underneath it. Setup A/B's
-  // own vsNeither ratio never had this problem (bestComboFor already
-  // re-searches all 9 cells for both the "with" and "without" candidate), so
-  // this reuses that exact approach instead of the affine shortcut, at the
-  // cost of a second real grid search rather than an O(1) formula.
+  // Keen Blunt Weapon's realized DPS gain: a real re-optimized with/without
+  // comparison, not a closed-form ratio - KBW's Crit Dmg value feeds
+  // straight into shared.critDmgTotal (see computeShared), which is part
+  // of the grid formula itself, so removing it can genuinely flip which of
+  // the 9 keystone+split cells bestComboFor picks (e.g. Master's higher
+  // effCrit stops being worth it once Critical's on-crit multiplier no
+  // longer has KBW's larger Crit Dmg to amplify) - confirmed live: a
+  // default-settings run had KBW's own best cell at Master+Pulverize/LB1-KS2
+  // while the true no-KBW baseline actually preferred Critical+Pulverize/
+  // LB1-KS2, a difference a fixed-cell formula has no way to see. Reuses
+  // Setup A/B's own vsNeither approach instead (bestComboFor re-searches
+  // all 9 cells for both the "with" and "without" candidate), at the cost
+  // of a second real grid search rather than an O(1) formula. Engraving +
+  // Ability Stone are zeroed together below, not as two separate
+  // marginals - see kbwContributionGain's own comment for why the combined
+  // removal is the correct joint counterfactual.
   function kbwRealizedGainPct(candidateInputs) {
     const kbwValue = KBW_TABLE[candidateInputs.kbw] || 0;
     const kbwStoneValue = KBW_STONE_TABLE[candidateInputs.kbwStone] || 0;
@@ -1463,8 +1431,8 @@
     return p * blendCritTerms(base + bonus, rest) + (1 - p) * blendCritTerms(base, rest);
   }
 
-  // Downstream (combinedMultiplier's mult, kbwEngravingGainPct,
-  // marginalCritDmgGainPct) all take effCrit as an already-fixed scalar
+  // Downstream (combinedMultiplier's mult, marginalCritDmgGainPct) all
+  // take effCrit as an already-fixed scalar
   // and are affine in it / in critDmgTotal with effCrit held constant, so
   // fixing the value at this one computation point is sufficient -
   // E[mult] = mult(E[effCrit]) exactly, no need to re-derive those
@@ -1567,8 +1535,8 @@
     // computeShared, as a plain malus-free add) is in play. Gated on
     // inputs.kbw being active rather than a flag, since this function
     // has no flags parameter and every caller already threads live KBW
-    // state through inputs.kbw (see computeShared/kbwUsed for the same
-    // check used elsewhere). Do NOT also apply this in
+    // state through inputs.kbw (same active-check shape used elsewhere,
+    // e.g. kbwRealizedGainPct above). Do NOT also apply this in
     // engravingCandidateMultiplier - that would double it.
     const kbwActive = inputs.kbw && inputs.kbw !== "Not Used" && (KBW_TABLE[inputs.kbw] || 0) > 0;
     if (kbwActive) mult *= KBW_EV_MALUS;
@@ -1607,20 +1575,14 @@
     const maxMult = best ? best.mult : 1;
     cells.forEach(c => c.pctOfBest = (c.mult / maxMult) * 100);
 
-    // Keen Blunt Weapon's engraving bonus and its Ability Stone are both
-    // flat adds into critDmgTotal (see computeShared) - pull their two
-    // values back out here so each can be shown as its own isolated %
-    // damage gain rather than only ever appearing baked into the combined
-    // Crit Dmg stat.
-    const kbwValue = KBW_TABLE[inputs.kbw] || 0;
-    const kbwStoneValue = KBW_STONE_TABLE[inputs.kbwStone] || 0;
-    const kbwUsed = inputs.kbw !== "Not Used" && kbwValue > 0;
-    const kbwStoneUsed = kbwStoneValue > 0;
-
     // Base stats for verification - effCrit/onCrit here match the "no
     // keystone selected" values baseStats already reports above (S5, the
     // capped raw Crit Rate; onCritDmgBase, the pre-Critical-keystone on-crit
     // multiplier), so the gain % is consistent with the rest of the card.
+    // (KBW's isolated Dmg contribution used to get its own row here - moved
+    // to the Engraving Comparison section's reference table below, which
+    // already covers it via kbwContributionGain, so it isn't duplicated on
+    // this card anymore.)
     const baseEffCrit = effectiveCritRate(inputs, 0, 0);
     const baseStats = {
       critRate: critRateTotal(inputs, 0) * 100,
@@ -1628,16 +1590,13 @@
       onCritDmg: shared.onCritDmgBase * 100,
       evoDmg: (shared.yearningEvo + shared.evoKarmaEvo + STANDING_STRIKER_EVO_DMG) * 100,
       addDmg: shared.addDmgBase * 100,
-      kbwUsed,
-      kbwStoneUsed,
-      kbwGain: kbwEngravingGainPct(baseEffCrit, shared.onCritDmgBase, shared.critDmgTotal, kbwValue, kbwStoneValue),
       // Marginal DPS gain from Breaking Moon's average per-cast Crit Dmg
-      // add (see breakingMoonContribution), same closed-form ratio KBW's
-      // engraving line uses via marginalCritDmgGainPct - unlike KBW there's
-      // no EV malus to fold in, so the generic helper applies directly.
-      // Varies with effCrit like kbwGain does, so Base and Best Setup can
-      // legitimately show different values here (unlike the old flat-add
-      // display, which was identical between the two cards).
+      // add (see breakingMoonContribution), same closed-form ratio
+      // marginalCritDmgGainPct provides generically - no EV malus to fold
+      // in here, so the generic helper applies directly. Varies with
+      // effCrit, so Base and Best Setup can legitimately show different
+      // values here (unlike the old flat-add display, which was identical
+      // between the two cards).
       breakingMoonActive: shared.breakingMoonActive,
       breakingMoonGain: marginalCritDmgGainPct(baseEffCrit, shared.onCritDmgBase, shared.critDmgTotal, shared.breakingMoonAdd),
     };
@@ -1685,21 +1644,14 @@
         };
       }
 
-      // Real re-optimized with/without ratio (kbwRealizedGainPct), NOT the
-      // same closed-form calc the Base card above uses - the Base card's
-      // effCrit/onCrit never come from a competition (no keystone has been
-      // picked yet at that point), so nothing there can flip; this row's
-      // effCrit/onCrit DO come from a 9-cell competition (best.effCrit is
-      // whichever cell won WITH kbw active), and removing KBW's Crit Dmg
-      // can change which cell would actually win - see kbwRealizedGainPct's
-      // own comment for the confirmed live example. Re-searches the grid
-      // with kbw/kbwStone zeroed rather than assuming best's own cell stays
-      // optimal without it.
-      bestStats.kbwUsed = kbwUsed;
-      bestStats.kbwStoneUsed = kbwStoneUsed;
-      bestStats.kbwGain = kbwRealizedGainPct(inputs);
       // Same marginal-gain calc as baseStats.breakingMoonGain, just using
-      // the winning cell's own effCrit/on-crit multiplier like kbwGain does.
+      // the winning cell's own effCrit/on-crit multiplier instead of the
+      // pre-keystone one. (KBW's isolated Dmg contribution used to get its
+      // own row here too, via kbwRealizedGainPct - see that function's own
+      // comment for why it needs a real re-optimized with/without search
+      // rather than a closed form - moved to the Engraving Comparison
+      // section's reference table below instead, so it isn't duplicated on
+      // this card anymore.)
       bestStats.breakingMoonActive = shared.breakingMoonActive;
       bestStats.breakingMoonGain = marginalCritDmgGainPct(best.effCrit, bestStats.onCritDmg / 100, shared.critDmgTotal, shared.breakingMoonAdd);
     }
@@ -3809,9 +3761,32 @@
     return withAp / withoutAp - 1;
   }
 
-  function adrenalineContributionGain(inputs, engrInputs, best) {
-    const { keenSense, limitBreak } = best.split;
-    const pair = best.keystone;
+  // Adrenaline's realized grid-side gain: the same re-optimized with/without
+  // search kbwRealizedGainPct uses for KBW (see that function's own
+  // comment for the confirmed live example of why this matters), applied
+  // to Adrenaline instead. Adrenaline's Crit Rate value feeds into
+  // critRateTotal -> effCrit (see computeShared), which is part of the
+  // 9-cell keystone+split grid formula itself, so removing it can flip
+  // which cell wins - exactly the same failure mode a fixed-cell ratio has
+  // for KBW. This used to be a fixed-cell combinedMultiplier ratio (held
+  // one caller-supplied cell fixed on both the "with" and "without" side),
+  // which silently assumed that cell stayed optimal either way - not
+  // reliably true for the same reason it wasn't reliably true for KBW.
+  // Returns a plain ratio (not a %), since adrenalineContributionGain below
+  // still needs to multiply it against the AP-side ratio before converting
+  // to a final gain. Returns the neutral ratio 1 when Adrenaline isn't
+  // equipped, so multiplying it in is always a safe no-op.
+  function adrenalineGridRatio(candidateInputs) {
+    if (candidateInputs.adrenaline === "Not Used") return 1;
+    const withBest = bestComboFor(candidateInputs);
+    if (!withBest || withBest.mult <= 0) return 1;
+    const withoutInputs = Object.assign({}, candidateInputs, { adrenaline: "Not Used", adrenalineStone: "0 Lv." });
+    const withoutBest = bestComboFor(withoutInputs);
+    if (!withoutBest || withoutBest.mult <= 0) return 1;
+    return withBest.mult / withoutBest.mult;
+  }
+
+  function adrenalineContributionGain(inputs, engrInputs) {
     // "full" reuses `inputs` for everything EXCEPT adrenaline/adrenalineStone,
     // which are overridden with this section's own isolated Node level (see
     // readEngravingInputs) and isolated Stone slot (engravingStoneLevel) -
@@ -3829,17 +3804,13 @@
       adrenaline: engrInputs.adrenalineLevel,
       adrenalineStone: engravingStoneLevel("adrenaline", engrInputs),
     });
-    const shared = computeShared(full);
-    const fullMult = combinedMultiplier(full, shared, keenSense, limitBreak, pair);
-    const off = Object.assign({}, full, { adrenaline: "Not Used", adrenalineStone: "0 Lv." });
-    const offShared = computeShared(off);
-    const baselineMult = combinedMultiplier(off, offShared, keenSense, limitBreak, pair);
-    const gridRatio = baselineMult > 0 ? fullMult / baselineMult : 1;
+    const gridRatio = adrenalineGridRatio(full);
 
     let apRatio = 1;
     const wp = full.gearWp;
     const mainStat = full.gearMainStat;
     if (wp > 0 && mainStat > 0) {
+      const off = Object.assign({}, full, { adrenaline: "Not Used", adrenalineStone: "0 Lv." });
       const baseApBonus = engravingStoneImpliesBaseAp(engrInputs) ? ABILITY_STONE_BASE_AP_BONUS : 0;
       const baseApMult = 1 + (full.gearGemBaseAp + baseApBonus) / 100;
       const flatAp = full.gearFlatAp + gearChaosStarFlat(full.gearApChaosStar);
@@ -4288,28 +4259,6 @@
     };
   }
 
-  // Keen Blunt Weapon's isolated contribution, reusing the exact same
-  // closed-form kbwEngravingGainPct methodology computeGridAndSummary's
-  // own bestStats.kbwGain uses (so the two can never disagree when nothing
-  // here is overridden) - EXCEPT the Node level comes from this section's
-  // own isolated selector
-  // (engrInputs.kbwLevel), never the live tracked value, and the Ability
-  // Stone half comes solely from this section's own isolated stone slots
-  // (engravingStoneLevel) - "0 Lv." if neither targets Keen Blunt Weapon,
-  // never a fallback to the live tracked Stone select. A plain ratio
-  // (combinedMultiplier with/without) still can't be reused here instead:
-  // combinedMultiplier now DOES apply KBW_EV_MALUS (gated on the live
-  // inputs.kbw - see its own comment), but that malus is a flat scalar on
-  // the whole multiplier, so it cancels out identically in a with/without
-  // ratio built from the live tracked value and tells us nothing about
-  // this section's isolated selector. kbwEngravingGainPct's own closed
-  // form is what actually threads the malus onto THIS section's
-  // engrInputs.kbwLevel value instead. (The best-combo search below gets
-  // its malus for free now, since bestComboFor's own combinedMultiplier
-  // call already carries it whenever candidateInputs.kbw is active - see
-  // engravingCandidateMultiplier's comment - so this row and that search
-  // stay consistent with each other despite using two different
-  // methodologies to get there.)
   // Isolated Ark Passive-grid inputs for Keen Blunt Weapon's own row +
   // stone breakdown ONLY (kbwContributionGain and the kbw entry in
   // stoneBreakdown below). kbwContributionGain's closed form needs a real
@@ -4408,7 +4357,7 @@
       { label: "Ambush Master", gain: ambushMasterGain(engrInputs, inputs) },
       {
         label: "Adrenaline",
-        gain: adrenalineContributionGain(isolatedInputs, engrInputs, isolatedBest),
+        gain: adrenalineContributionGain(isolatedInputs, engrInputs),
         // Same inline "i" icon (native `title`, see renderComparisonRows'
         // own identical .ap-brace-info-icon use above) rather than a
         // permanent note line - just a quick pointer that this row's AP
@@ -4796,18 +4745,9 @@
       if (evoEl) evoEl.textContent = base.evoDmg.toFixed(2) + "%";
       if (addEl) addEl.textContent = base.addDmg.toFixed(2) + "%";
 
-      // KBW's engraving line and its Ability Stone used to get their own
-      // separate rows here - folded into one combined "KBW Dmg" row now
-      // that the Engraving Comparison section (below) already breaks the
-      // stone's own isolated value out on its own, making a second stone
-      // row here redundant. kbwGain already computes engraving+stone
-      // jointly (see kbwEngravingGainPct's own comment for why that has to
-      // be one combined ratio rather than two summed marginals), so this
-      // just displays that single number.
-      const kbwRow = root.querySelector(".ap-stat-card-row--kbw-base");
-      const kbwEl = root.querySelector(".ap-summary-base-kbw");
-      if (kbwRow) kbwRow.classList.toggle("ap-stat-card-row--hidden", !base.kbwUsed && !base.kbwStoneUsed);
-      if (kbwEl) kbwEl.textContent = "+" + base.kbwGain.toFixed(2) + "%";
+      // KBW's Dmg contribution used to get its own row here - removed, the
+      // Engraving Comparison section's reference table below already
+      // covers it (via kbwContributionGain), so it was a duplicate.
 
       // Breaking Moon (Surge 111 only) - a flat Crit Dmg add already
       // folded into critDmgTotal (see breakingMoonContribution), surfaced
@@ -4838,11 +4778,7 @@
       if (evoEl) evoEl.textContent = best.evoDmg.toFixed(2) + "%";
       if (addEl) addEl.textContent = best.addDmg.toFixed(2) + "%";
 
-      // Same fold as the Base card above - one combined "KBW Dmg" row.
-      const kbwRow = root.querySelector(".ap-stat-card-row--kbw-best");
-      const kbwEl = root.querySelector(".ap-summary-best-kbw");
-      if (kbwRow) kbwRow.classList.toggle("ap-stat-card-row--hidden", !best.kbwUsed && !best.kbwStoneUsed);
-      if (kbwEl) kbwEl.textContent = "+" + best.kbwGain.toFixed(2) + "%";
+      // Same removal as the Base card above - no more KBW Dmg row here.
 
       // Same flat Breaking Moon add as the Base card above.
       const bmRow = root.querySelector(".ap-stat-card-row--breakingmoon-best");

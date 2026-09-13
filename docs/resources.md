@@ -438,7 +438,6 @@
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--oncrit">Crit Hit Dmg</span><span class="ap-summary-base-oncrit ap-summary-value">—</span></div>
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--evodmg">Evo Dmg</span><span class="ap-summary-base-evodmg ap-summary-value">—</span></div>
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--adddmg">Add Dmg</span><span class="ap-summary-base-adddmg ap-summary-value">—</span></div>
-        <div class="ap-stat-card-row ap-stat-card-row--kbw-base ap-stat-card-row--hidden"><span class="ap-summary-label ap-summary-label--critdmg" title="Actual DPS gain from Keen Blunt Weapon (engraving + Ability Stone combined), factoring in its -20% dmg on 10% of hits - not the raw Crit Dmg % it grants.">KBW Dmg</span><span class="ap-summary-base-kbw ap-summary-value">—</span></div>
         <div class="ap-stat-card-row ap-stat-card-row--breakingmoon-base ap-stat-card-row--hidden"><span class="ap-summary-label ap-summary-label--critdmg" title="Actual DPS gain from Breaking Moon's average per-cast Crit Dmg add (Surge 111 only) - not the raw Crit Dmg % it grants.">T→Z Dmg</span><span class="ap-summary-base-breakingmoon ap-summary-value">—</span></div>
       </div>
 
@@ -449,7 +448,6 @@
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--oncrit">Crit Hit Dmg</span><span class="ap-summary-best-oncrit ap-summary-value">—</span></div>
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--evodmg">Evo Dmg</span><span class="ap-summary-best-evodmg ap-summary-value">—</span></div>
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--adddmg">Add Dmg</span><span class="ap-summary-best-adddmg ap-summary-value">—</span></div>
-        <div class="ap-stat-card-row ap-stat-card-row--kbw-best ap-stat-card-row--hidden"><span class="ap-summary-label ap-summary-label--critdmg" title="Actual DPS gain from Keen Blunt Weapon (engraving + Ability Stone combined), factoring in its -20% dmg on 10% of hits - not the raw Crit Dmg % it grants.">KBW Dmg</span><span class="ap-summary-best-kbw ap-summary-value">—</span></div>
         <div class="ap-stat-card-row ap-stat-card-row--breakingmoon-best ap-stat-card-row--hidden"><span class="ap-summary-label ap-summary-label--critdmg" title="Actual DPS gain from Breaking Moon's average per-cast Crit Dmg add (Surge 111 only) - not the raw Crit Dmg % it grants.">T→Z Dmg</span><span class="ap-summary-best-breakingmoon ap-summary-value">—</span></div>
       </div>
 
