@@ -388,9 +388,9 @@
       <span class="ap-value-display" data-for="ap-yearning"></span>
       <input type="checkbox" id="ap-yearning" class="ap-yearning" checked>
     </div>
-    <div class="ap-calc-field-row">
+    <div class="ap-calc-field-row ap-calc-field-row-muted">
       <label class="ap-calc-field-label" for="ap-flash-orb-uptime" title="+15% Crit Rate, scaled by the Support's Drops of Ether engraving.">Flash Orb Uptime %</label>
-      <span class="ap-brace-warn-icon ap-flash-orb-warn" title="Getting these orbs at all is pure RNG - they'll likely shift your best keystone pair once they land, but they're not worth building or planning a setup around.">WARN</span>
+      <span class="ap-brace-warn-icon ap-flash-orb-warn" title="Getting these orbs at all is pure RNG - they'll shift your best setup, but they're not worth planning around unless you like seeing white numbers most of the time.">WARN</span>
       <span class="ap-value-display" data-for="ap-flash-orb-uptime"></span>
       <input type="number" id="ap-flash-orb-uptime" class="ap-flash-orb-uptime" min="0" max="100" step="1" value="0">
     </div>

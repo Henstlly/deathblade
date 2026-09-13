@@ -3937,6 +3937,38 @@ h3 { color: var(--dbc-teal); }
 .md-typeset .ap-calc-field-row input[type="number"]:out-of-range {
   border-color: var(--dbc-red);
 }
+/* Flash Orb Uptime is pure RNG (see .ap-flash-orb-warn's own tooltip on
+   the row) - dashed/muted styling here is the same "probably leave this
+   alone unless you know why you're touching it" visual cue the CPM
+   calculator's Base Multiplier field already uses (see
+   .cpm-calc-field-muted above), not a disabled/invalid look. The field
+   stays fully editable; only the resting appearance changes - hover,
+   focus, and :out-of-range below all still work exactly like every
+   other .ap-calc-field-row input. Deliberately lighter-touch than the
+   WARN badge already on this row: that's an active "read this" flag,
+   this is just the field's own quiet "not usually touched" resting
+   state. */
+.md-typeset .ap-calc-field-row-muted label.ap-calc-field-label {
+  color: var(--dbc-slate);
+}
+.md-typeset .ap-calc-field-row-muted input[type="number"] {
+  background-color: transparent;
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  color: var(--dbc-muted-text-alt);
+}
+.md-typeset .ap-calc-field-row-muted input[type="number"]:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: var(--dbc-lilac);
+}
+.md-typeset .ap-calc-field-row-muted input[type="number"]:focus {
+  border-color: var(--dbc-purple);
+  border-style: solid;
+  color: var(--md-default-fg-color);
+}
+.md-typeset .ap-calc-field-row-muted input[type="number"]:out-of-range {
+  border-color: var(--dbc-red);
+  border-style: solid;
+}
 /* Mana Food's row pairs a checkbox label with a select (12000 DEX is the
    widest option) - inside the narrower In-Raid Variables card (paired
    2-up against Engravings now, not full-width) there's no longer enough
