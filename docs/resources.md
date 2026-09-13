@@ -1189,7 +1189,7 @@
         </div>
       </div>
     </div>
-    <p class="ap-brace-compare-intro">Competing engravings, searched for the best 2-slot combination. Inputs here are isolated to this section.</p>
+    <p class="ap-brace-compare-intro">Competing engravings, searched for the best 2-slot combination, against your Best Setup above.</p>
 
     <!-- Engravings (Core + Competing Pool merged into one card) and
          In-Raid Variables as the two side-by-side cards, same visual
