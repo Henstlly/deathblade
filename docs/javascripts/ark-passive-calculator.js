@@ -1585,7 +1585,17 @@
     // this card anymore.)
     const baseEffCrit = effectiveCritRate(inputs, 0, 0);
     const baseStats = {
-      critRate: critRateTotal(inputs, 0) * 100,
+      // critRate is the capped, uptime-weighted value DPS math actually
+      // uses (effectiveCritRate) - this is what the card's primary "Crit
+      // Rate" row should show. critRateRaw is the old critRateTotal sum:
+      // Adrenaline/Back Attack/Flash Orb averaged in uncapped, so it can
+      // read over 100% even when the real crit chance is capped at 100%.
+      // Kept as a secondary row (see blendCritTerms's own comment for why
+      // the two numbers legitimately differ) rather than dropped, since
+      // it's still useful to see how much headroom is being "wasted"
+      // above the cap.
+      critRate: baseEffCrit * 100,
+      critRateRaw: critRateTotal(inputs, 0) * 100,
       critDmg: shared.critDmgTotal,
       onCritDmg: shared.onCritDmgBase * 100,
       evoDmg: (shared.yearningEvo + shared.evoKarmaEvo + STANDING_STRIKER_EVO_DMG) * 100,
@@ -1605,6 +1615,13 @@
     let bestStats = null;
     if (best) {
       const { keenSense, limitBreak } = best.split;
+      // critRate/critRateRaw below reuse best.effCrit/best.rawCrit
+      // directly - computeGridAndSummary already worked these out for
+      // this exact cell above (same getKeystoneComponents call the comps
+      // lookups below would just be repeating), so there's no need to
+      // recompute them per branch. Same effective-vs-raw split as
+      // baseStats above: critRate is what the DPS math in mult actually
+      // uses, critRateRaw is the uncapped sum shown as a secondary row.
       let comps;
       if (best.keystone === "crit+master") {
         comps = {
@@ -1613,7 +1630,8 @@
         };
         bestStats = {
           critDmg: shared.critDmgTotal,
-          rawCrit: comps.master.rawCrit * 100,
+          critRate: best.effCrit * 100,
+          critRateRaw: best.rawCrit * 100,
           onCritDmg: comps.critical.onCrit * 100,
           evoDmg: comps.master.evo * 100,
           addDmg: comps.master.add * 100,
@@ -1625,7 +1643,8 @@
         };
         bestStats = {
           critDmg: shared.critDmgTotal,
-          rawCrit: comps.critical.rawCrit * 100,
+          critRate: best.effCrit * 100,
+          critRateRaw: best.rawCrit * 100,
           onCritDmg: comps.critical.onCrit * 100,
           evoDmg: comps.pulverize.evo * 100,
           addDmg: comps.critical.add * 100,
@@ -1637,7 +1656,8 @@
         };
         bestStats = {
           critDmg: shared.critDmgTotal,
-          rawCrit: comps.master.rawCrit * 100,
+          critRate: best.effCrit * 100,
+          critRateRaw: best.rawCrit * 100,
           onCritDmg: shared.onCritDmgBase * 100,
           evoDmg: comps.pulverize.evo * 100,
           addDmg: comps.master.add * 100,
@@ -4364,11 +4384,23 @@
         // half isn't a flat number, it's already following whatever
         // Adrenaline Uptime % is set to in the Ark Passive section above
         // (see adrenalineApFraction's own comment for why that's now the
-        // case).
-        note: "Follows Adrenaline Uptime % from the Ark Passive section above.",
+        // case). Also covers the same "realized, re-optimized" caveat KBW's
+        // note below explains - both rows share the identical methodology
+        // (kbwRealizedGainPct/adrenalineGridRatio's own with-vs-without
+        // grid search), so one shared note text keeps them consistent
+        // instead of drifting into two slightly different wordings.
+        note: "Realized DPS gain: recomputes the best setup with vs without Adrenaline, so the winning keystone/split can flip. Not a flat layer like the rows above. AP half follows Adrenaline Uptime % from the Ark Passive section above.",
       },
       { label: "Raid Captain", gain: raidCaptainGain(engrInputs, inputs) },
-      { label: "Keen Blunt Weapon", gain: kbwContributionGain(isolatedInputs) },
+      {
+        label: "Keen Blunt Weapon",
+        gain: kbwContributionGain(isolatedInputs),
+        // Same methodology note as Adrenaline's above, worded for KBW
+        // specifically (no uptime/AP half to mention here) - see that
+        // row's own comment for why the two share this note's first
+        // sentence verbatim rather than each inventing their own phrasing.
+        note: "Realized DPS gain: recomputes the best setup with vs without Keen Blunt Weapon, so the winning keystone/split can flip. Not a flat layer like the rows above.",
+      },
       { label: "Cursed Doll", gain: cursedDollGain(engrInputs, inputs) },
       // Mass Increase stays Surge-only in this reference table too, same
       // reasoning as the pool/candidateFlagSets exclusion above (RE never
@@ -4730,15 +4762,25 @@
     const base = result.baseStats;
     if (base) {
       const rateEl = root.querySelector(".ap-summary-base-critrate");
+      const rateRawEl = root.querySelector(".ap-summary-base-critrate-raw");
       const dmgEl = root.querySelector(".ap-summary-base-critdmg");
       const onCritEl = root.querySelector(".ap-summary-base-oncrit");
       const evoEl = root.querySelector(".ap-summary-base-evodmg");
       const addEl = root.querySelector(".ap-summary-base-adddmg");
 
-      if (rateEl) {
-        const rate = base.critRate;
-        rateEl.textContent = rate.toFixed(2) + "%";
-        rateEl.classList.toggle("ap-summary-value-warn", rate > 100);
+      // Primary row: effective (capped) Crit Rate - this is the number
+      // the DPS math (mult) actually uses, so it can never exceed 100%
+      // (blendCritTerms's base case is Math.min(base, 1)) and never
+      // needs the warn styling.
+      if (rateEl) rateEl.textContent = base.critRate.toFixed(2) + "%";
+      // Secondary row: the old uncapped averaged sum. THIS is the one
+      // that can legitimately read over 100% (see critRateRaw's own
+      // comment above), so the warn class belongs here now, not on the
+      // effective row.
+      if (rateRawEl) {
+        const raw = base.critRateRaw;
+        rateRawEl.textContent = raw.toFixed(2) + "%";
+        rateRawEl.classList.toggle("ap-summary-value-warn", raw > 100);
       }
       if (dmgEl) dmgEl.textContent = (base.critDmg * 100).toFixed(2) + "%";
       if (onCritEl) onCritEl.textContent = base.onCritDmg.toFixed(2) + "%";
@@ -4763,15 +4805,18 @@
     const best = result.bestStats;
     if (best) {
       const critEl = root.querySelector(".ap-summary-best-crit");
+      const critRawEl = root.querySelector(".ap-summary-best-crit-raw");
       const dmgEl = root.querySelector(".ap-summary-best-critdmg");
       const onCritEl = root.querySelector(".ap-summary-best-oncrit");
       const evoEl = root.querySelector(".ap-summary-best-evodmg");
       const addEl = root.querySelector(".ap-summary-best-adddmg");
 
-      if (critEl) {
-        const raw = best.rawCrit;
-        critEl.textContent = raw.toFixed(2) + "%";
-        critEl.classList.toggle("ap-summary-value-warn", raw > 100);
+      // Same effective/raw split as the Base card above.
+      if (critEl) critEl.textContent = best.critRate.toFixed(2) + "%";
+      if (critRawEl) {
+        const raw = best.critRateRaw;
+        critRawEl.textContent = raw.toFixed(2) + "%";
+        critRawEl.classList.toggle("ap-summary-value-warn", raw > 100);
       }
       if (dmgEl) dmgEl.textContent = (best.critDmg * 100).toFixed(2) + "%";
       if (onCritEl) onCritEl.textContent = best.onCritDmg.toFixed(2) + "%";

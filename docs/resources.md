@@ -433,7 +433,8 @@
 
       <div class="ap-stat-card">
         <div class="ap-stat-card-title">Base Setup</div>
-        <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--critrate">Crit Rate</span><span class="ap-summary-base-critrate ap-summary-value">—</span></div>
+        <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--critrate" title="The capped, uptime-weighted Crit Rate the DPS math actually uses (accounts for buffs overlapping and hitting the 100% cap).">Eff. Crit Rate</span><span class="ap-summary-base-critrate ap-summary-value">—</span></div>
+        <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--critrate" title="Uncapped sum of every Crit Rate source, before the 100% cap - can read over 100% even when Eff. Crit Rate above is capped.">Raw Crit Rate</span><span class="ap-summary-base-critrate-raw ap-summary-value">—</span></div>
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--critdmg">Crit Dmg</span><span class="ap-summary-base-critdmg ap-summary-value">—</span></div>
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--oncrit">Crit Hit Dmg</span><span class="ap-summary-base-oncrit ap-summary-value">—</span></div>
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--evodmg">Evo Dmg</span><span class="ap-summary-base-evodmg ap-summary-value">—</span></div>
@@ -443,7 +444,8 @@
 
       <div class="ap-stat-card ap-stat-card-best">
         <div class="ap-stat-card-title">Best Setup</div>
-        <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--critrate">Crit Rate</span><span class="ap-summary-best-crit ap-summary-value">—</span></div>
+        <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--critrate" title="The capped, uptime-weighted Crit Rate the DPS math actually uses (accounts for buffs overlapping and hitting the 100% cap).">Eff. Crit Rate</span><span class="ap-summary-best-crit ap-summary-value">—</span></div>
+        <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--critrate" title="Uncapped sum of every Crit Rate source, before the 100% cap - can read over 100% even when Eff. Crit Rate above is capped.">Raw Crit Rate</span><span class="ap-summary-best-crit-raw ap-summary-value">—</span></div>
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--critdmg">Crit Dmg</span><span class="ap-summary-best-critdmg ap-summary-value">—</span></div>
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--oncrit">Crit Hit Dmg</span><span class="ap-summary-best-oncrit ap-summary-value">—</span></div>
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--evodmg">Evo Dmg</span><span class="ap-summary-best-evodmg ap-summary-value">—</span></div>
