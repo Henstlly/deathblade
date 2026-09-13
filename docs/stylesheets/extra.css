@@ -5839,6 +5839,22 @@ h3 { color: var(--dbc-teal); }
   padding-top: 0.7em;
   border-top: 1px dashed rgba(255, 255, 255, 0.08);
 }
+/* .ap-engr-overall-best-note sits directly under the Best Combo/Runner-Up
+   cards, answering a follow-on question about THAT same pair ("best combo
+   for my current food" vs "best combo+food overall") - it's a footnote of
+   the panel above it, not the start of what comes next (the "Setup A vs.
+   Setup B" collapsible section immediately below it). The generic dashed
+   border-top every other .ap-brace-compare-footer-note gets visually cut
+   it away from the cards it's actually explaining and left it reading as
+   a lead-in to the unrelated section that follows instead. Dropped the
+   rule and tightened the top margin so it sits with the cards it belongs
+   to; the Setup A vs. Setup B <summary> right after it already provides
+   its own visual break as a collapsible section header. */
+.md-typeset .ap-engr-overall-best-note {
+  border-top: none;
+  padding-top: 0;
+  margin-top: 0.6em;
+}
 /* Feast icon appended (in JS - see renderEngravingComparison's
    appendFeastIcon) after the Move Speed/Attack Speed readouts above,
    since both readouts' base stats already assume an Atk/Move Speed
@@ -6268,6 +6284,21 @@ h3 { color: var(--dbc-teal); }
 }
 .md-typeset .ap-esvs-summary p {
   margin: 0.3em 0;
+}
+/* .ap-esvs-overall-best-note reuses .ap-brace-compare-footer-note for its
+   text/color treatment, but NOT that class's dashed border-top - the
+   disclaimer note right after this whole .ap-esvs-summary block (a
+   sibling, outside this selector's reach) already supplies one dashed
+   rule closing out the Setup A vs. Setup B subsection. Letting this note
+   keep its own on top of that sandwiched a single line of text between
+   two dashed rules just a few pixels apart (one right above it, one right
+   below), which read as clutter rather than two meaningful boundaries -
+   this note is a continuation of the "Setup A wins by..." pill right
+   above it, not a new subsection of its own. */
+.md-typeset .ap-esvs-summary .ap-brace-compare-footer-note {
+  border-top: none;
+  padding-top: 0;
+  margin-top: 0.5em;
 }
 /* "Running neither" is context for the two cards above, not the
    takeaway of this whole subsection - same dimmed-footnote treatment

@@ -1135,7 +1135,7 @@
         <div class="ap-bvb-summary">
           <p class="ap-bvb-neither">Running neither: <span class="ap-bvb-no-bracelet-keystone">—</span></p>
           <p class="ap-bvb-diff-wrap"><span class="ap-bvb-diff">—</span></p>
-          <p class="ap-brace-compare-flip-note ap-bvb-keystone-note" hidden>Bracelet A and B land on different best keystones - the comparison above already accounts for that, each running its own.</p>
+          <p class="ap-brace-compare-flip-note ap-bvb-keystone-note" hidden>Bracelet A and B land on different best keystones - the comparison above already accounts for that.</p>
         </div>
       </div>
       <p class="ap-brace-compare-footer-note">Only as accurate as the Ark Passive, Character Data, and Bracelet inputs above are - fill everything in first or else.</p>
@@ -1296,7 +1296,7 @@
         <p class="ap-gear-card-title">In-Raid Variables</p>
         <div class="ap-calc-field-row">
           <label class="ap-calc-field-label" title="% of the fight Maelstrom's buffs are active as you attack the boss - a flat +12.8 Move Speed/Atk. Speed bonus.">Maelstrom Uptime %</label>
-          <input type="number" class="ap-engr-maelstrom-uptime" min="0" max="100" step="1" value="80">
+          <input type="number" class="ap-engr-maelstrom-uptime" min="0" max="100" step="1" value="85">
         </div>
         <div class="ap-calc-field-row ap-engr-manafood-row">
           <label class="ap-engr-checkbox-label" title="Only accurate if the Main Stat input in Character Data doesn't already include Mana Food's Main Stat bonus."><input type="checkbox" class="ap-engr-manafood" checked> <span class="ap-engr-manafood-label">Mana Food (+Maelstrom Bleed)</span></label>
@@ -1406,7 +1406,7 @@
 
     <div class="ap-bvb-cards ap-engr-best-panel">
       <div class="ap-bvb-card ap-bvb-card--best">
-        <p class="ap-gear-card-title ap-bvb-card-title">Best Combo</p>
+        <p class="ap-gear-card-title ap-bvb-card-title">Best Combo<span class="ap-brace-info-icon ap-engr-best-combo-food-icon" role="img" aria-label="Ranked for the selected food only. See Overall Best Setup below." title="Ranked for the selected food only. See Overall Best Setup below.">i</span></p>
         <div class="ap-stat-card-row"><span class="ap-summary-label">Combo</span><span class="ap-engr-best-combo ap-summary-value">—</span></div>
         <div class="ap-stat-card-row"><span class="ap-summary-label">Best Keystone</span><span class="ap-engr-best-keystone ap-summary-value">—</span></div>
         <div class="ap-stat-card-row"><span class="ap-summary-label">vs Runner-Up</span><span class="ap-engr-best-vs-runnerup ap-summary-value">—</span></div>
@@ -1423,6 +1423,14 @@
         <div class="ap-stat-card-row ap-bvb-breakdown-row"><span class="ap-summary-label">Ability Stone Base AP</span><span class="ap-engr-runnerup-stone-ap ap-summary-value">—</span></div>
       </div>
     </div>
+    <!-- Answers the OTHER question Best Combo above doesn't: not "best
+         combo for the food I have selected" but "best complete combo+food
+         setup if I'm free to choose both" - see
+         computeOverallBestEngravingSetup's own comment for the full
+         methodology. Surge only (RE has no Wine/Mana Food combat choice
+         to compare), hidden via display:none by renderEngravingComparison
+         otherwise. -->
+    <p class="ap-brace-compare-footer-note ap-engr-overall-best-note">—</p>
 
     <!-- Setup A vs. Setup B: compares two WHOLE named engraving loadouts
          (which 2 competing engravings, their Node levels, and where each
@@ -1440,7 +1448,7 @@
     <details class="ap-esvs" open>
       <summary>Setup A vs. Setup B</summary>
       <div class="ap-brace-compare-body">
-        <p class="ap-brace-compare-intro">Two loadouts, compared against each other. Core Engravings and In-Raid Variables above apply.</p>
+        <p class="ap-brace-compare-intro">Two loadouts, compared against each other. Core Engravings and In-Raid Variables above apply.<span class="ap-brace-info-icon ap-esvs-food-icon" role="img" aria-label="Uses whichever food is currently selected. If either setup includes Raid Captain, switching food can change the winner here too - see the Overall Best Setup below." title="Uses whichever food is currently selected. If either setup includes Raid Captain, switching food can change the winner here too - see the Overall Best Setup below.">i</span></p>
         <div class="ap-esvs-cards">
           <div class="ap-esvs-card ap-esvs-card-a">
             <p class="ap-gear-card-title ap-esvs-card-title">Setup A</p>
@@ -1615,7 +1623,15 @@
         <div class="ap-esvs-summary">
           <p class="ap-esvs-neither">Running neither: <span class="ap-esvs-no-setup-keystone">—</span></p>
           <p class="ap-esvs-diff-wrap"><span class="ap-esvs-diff">—</span></p>
-          <p class="ap-brace-compare-flip-note ap-esvs-keystone-note" hidden>Setup A and B land on different best keystones - the comparison above already accounts for that, each running its own.</p>
+          <p class="ap-brace-compare-flip-note ap-esvs-keystone-note" hidden>Setup A and B land on different best keystones - the comparison above already accounts for that.</p>
+          <!-- See computeOverallBestEngravingSetupAB's own JS comment -
+               aVsB above locks both sides to whichever food is currently
+               selected; this instead lets each named setup pick its own
+               best food before comparing, so it can point to a different
+               setup/food combination than the pill above. Surge only,
+               same display:none gate as the Best Combo panel's own
+               Overall Best Setup note. -->
+          <p class="ap-brace-compare-footer-note ap-esvs-overall-best-note">—</p>
         </div>
       </div>
       <p class="ap-brace-compare-footer-note">Only as accurate as the Ark Passive, Character Data, and Engraving inputs above are - fill everything in first or else.</p>

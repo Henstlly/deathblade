@@ -4206,7 +4206,7 @@
       cdLevel: getSelect(root, ".ap-engr-cd-level", "4 Nodes"),
       miLevel: getSelect(root, ".ap-engr-mi-level", "4 Nodes"),
       miOptIn: getCheckbox(root, ".ap-engr-mi-optin", true),
-      maelstromUptime: Math.max(0, Math.min(100, getNumber(root, ".ap-engr-maelstrom-uptime", 80))),
+      maelstromUptime: Math.max(0, Math.min(100, getNumber(root, ".ap-engr-maelstrom-uptime", 85))),
       rageRune: getCheckbox(root, ".ap-engr-rage-rune", true),
       supportAv: getCheckbox(root, ".ap-engr-support-av", false),
       wine: getCheckbox(root, ".ap-engr-wine", true),
@@ -4340,6 +4340,73 @@
       b: sideResult(b),
       aVsB: a.totalMult / b.totalMult - 1,
       keystonesDiffer: a.combo.pair + "|" + a.combo.split.key !== b.combo.pair + "|" + b.combo.split.key,
+    };
+  }
+
+  // Overall Best (Setup A vs. Setup B edition) - same gap
+  // computeOverallBestEngravingSetup fills for Best Combo/Runner-Up,
+  // applied here instead: aVsB above locks BOTH sides to whichever food
+  // is currently selected, but Setup A/B is exactly the case where that
+  // can mislead - a side with Raid Captain is the only one Wine ever
+  // does anything for (see raidCaptainMoveSpeed, the only place
+  // engrInputs.wine is even read), so a non-RC side gets literally zero
+  // benefit from Wine in this model and should always prefer Mana Food's
+  // free stat+Bleed instead. That means the CURRENT aVsB gap (or even
+  // its winner) can be an artifact of a shared food choice that isn't
+  // actually optimal for one or both named setups, not a real reflection
+  // of which setup is better. This reruns computeEngravingSetup for both
+  // sides under both food scenarios (reusing the same `neither` baseline,
+  // which is food-independent since it never includes Raid Captain -
+  // see computeEngravingCandidate/`neither` above), folds in each
+  // scenario's own manaFoodContributionGain the same way
+  // computeOverallBestEngravingSetup does, and picks the best of all 4
+  // (Setup A/B x Wine/Mana Food) combinations. Surge only, same gate as
+  // computeOverallBestEngravingSetup.
+  function computeOverallBestEngravingSetupAB(inputs, base, svsA, svsB) {
+    if (base.spec !== "surge") return null;
+    const bareBase = Object.assign({}, base, {
+      stone1Target: "None", stone1Level: "0 Lv.",
+      stone2Target: "None", stone2Level: "0 Lv.",
+    });
+    const neither = computeEngravingCandidate(inputs, bareBase, {
+      includeRC: false, includeKbw: false, includeCD: false, includeMI: false,
+    });
+    function scenario(label, side, wine, manaFood) {
+      const scenarioBase = Object.assign({}, base, { wine, manaFood });
+      const r = computeEngravingSetup(inputs, scenarioBase, side, neither);
+      const foodGain = manaFoodContributionGain(scenarioBase, inputs);
+      return { label, index: r.totalMult * (1 + foodGain) };
+    }
+    // Each named setup picks its own best food scenario FIRST (Setup A's
+    // better of Wine/Mana Food, Setup B's better of Wine/Mana Food), THEN
+    // those two per-setup bests are compared against each other. Previously
+    // this pooled all 4 Setup x Food combinations into one sorted list and
+    // compared the winner to literal 2nd place - which silently could be
+    // the SAME winning setup's OTHER food option (e.g. Setup A+Mana Food
+    // beating Setup A+Wine by a hair) whenever a setup's own two food
+    // choices were close, even though Setup B was miles behind both. That
+    // produced a "vs the next-best combination" % totally disconnected
+    // from the aVsB pill's own Setup A vs Setup B gap directly above it
+    // (e.g. a real 18% A-vs-B gap next to a misleading <1% here) since the
+    // two lines were silently answering different questions. Comparing
+    // each setup's own best-of-2 keeps this line answering the same
+    // "Setup A vs Setup B" question as the rest of the section, just with
+    // each side free to pick its own best food before the comparison.
+    function bestOf(label, side) {
+      return [
+        scenario(label + " + Vernese Wine", side, true, false),
+        scenario(label + " + Mana Food + Bleed", side, false, true),
+      ].sort((x, y) => y.index - x.index)[0];
+    }
+    const aBest = bestOf("Setup A", svsA);
+    const bBest = bestOf("Setup B", svsB);
+    const aWins = aBest.index >= bBest.index;
+    const winner = aWins ? aBest : bBest;
+    const runnerUp = aWins ? bBest : aBest;
+    return {
+      winnerLabel: winner.label,
+      otherLabel: aWins ? "Setup B" : "Setup A",
+      pctVsRunnerUp: winner.index / runnerUp.index - 1,
     };
   }
 
@@ -4605,6 +4672,54 @@
       moveSpeed: raidCaptainMoveSpeed(engrInputs, inputs.yearning),
       wineVsManaFood: raidCaptainWineVsManaFood(engrInputs, inputs),
       spec: engrInputs.spec,
+    };
+  }
+
+  // ----- Overall Best Setup (best combo AND best food together) -----
+  //
+  // Best Combo above deliberately answers "best 2-engraving combo for the
+  // FOOD YOU CURRENTLY HAVE SELECTED" - it excludes Mana Food's own Main
+  // Stat + Bleed contribution from the ranking on purpose, since that
+  // bonus applies equally to every candidate and would just be dead
+  // weight riding along on every candidate's totalMult (see
+  // engravingCandidateMultiplier's own comment). That's the right call
+  // for "which combo wins under this food", but it means Best Combo can
+  // legitimately flip between Wine and Mana Food (Raid Captain's own
+  // Move Speed-driven gain shrinks on Mana Food, see raidCaptainGain)
+  // without that flip telling the reader anything about which food to
+  // actually eat - Setup A/B and this section's own Mana Food note
+  // already answer that half separately, but nothing on the page
+  // combined the two questions into one "just tell me the actual best
+  // complete setup" answer. This does that, without changing Best
+  // Combo's own math at all: it reruns the exact same search (
+  // computeEngravingComparison) once per food scenario, then - ONLY
+  // here, comparing full setups against each other rather than ranking
+  // combos within one setup - multiplies each scenario's winning combo by
+  // that scenario's own manaFoodContributionGain (the common bonus Best
+  // Combo leaves out) before comparing the two totals. Surge only: RE's
+  // Mana Food is Main-Stat-only and deliberately excluded from every DPS
+  // number on the page (manaFoodContributionGain's own comment), so
+  // there's no second food scenario to compare it against there.
+  function computeOverallBestEngravingSetup(inputs, engrInputs) {
+    if (engrInputs.spec !== "surge") return null;
+    function scenario(wine, manaFood) {
+      const scenarioEngrInputs = Object.assign({}, engrInputs, { wine, manaFood });
+      const cmp = computeEngravingComparison(inputs, scenarioEngrInputs);
+      if (!cmp || !cmp.winner) return null;
+      const foodGain = manaFoodContributionGain(scenarioEngrInputs, inputs);
+      return { comboLabel: engravingComboLabel(cmp.winner.flags), index: cmp.winner.totalMult * (1 + foodGain) };
+    }
+    const wineScenario = scenario(true, false);
+    const foodScenario = scenario(false, true);
+    if (!wineScenario || !foodScenario) return null;
+    const foodWins = foodScenario.index >= wineScenario.index;
+    const winnerScenario = foodWins ? foodScenario : wineScenario;
+    const otherScenario = foodWins ? wineScenario : foodScenario;
+    return {
+      comboLabel: winnerScenario.comboLabel,
+      foodLabel: foodWins ? "Mana Food + Bleed" : "Vernese Wine",
+      otherFoodLabel: foodWins ? "Vernese Wine" : "Mana Food + Bleed",
+      pctVsOther: winnerScenario.index / otherScenario.index - 1,
     };
   }
 
@@ -5219,7 +5334,7 @@
   // Contribution rows are a single value per engraving (not a Low/Mid/
   // High trio), so this doesn't reuse renderComparisonRows - closer to
   // renderArkGridComparison's own bespoke-shape renderer just above.
-  function renderEngravingComparison(root, result, engrInputs) {
+  function renderEngravingComparison(root, result, engrInputs, overallBest) {
     const isSurge = engrInputs.spec === "surge";
     const rageRuneRow = root.querySelector(".ap-engr-rage-rune-row");
     if (rageRuneRow) rageRuneRow.style.display = isSurge ? "" : "none";
@@ -5242,6 +5357,18 @@
     if (miRow) miRow.style.display = isSurge ? "" : "none";
     const miOptinRow = root.querySelector(".ap-engr-mi-optin-row");
     if (miOptinRow) miOptinRow.style.display = isSurge ? "" : "none";
+
+    // "Ranked for the selected food only..." only means anything where a
+    // food choice (Wine vs. Mana Food) actually exists to rank around -
+    // RE has no Wine/Mana Food combat choice at all (manaFoodContributionGain's
+    // own comment: RE's Mana Food is Main-Stat-only and deliberately left
+    // out of every DPS number on the page), so on RE this note pointed at
+    // a food-based caveat, and an "Overall Best Setup below" that's ALSO
+    // hidden for RE (computeOverallBestEngravingSetup returns null
+    // there), neither of which exist. Same isSurge gate as the row
+    // toggles above it.
+    const bestComboFoodIcon = root.querySelector(".ap-engr-best-combo-food-icon");
+    if (bestComboFoodIcon) bestComboFoodIcon.style.display = isSurge ? "" : "none";
 
     if (!result) return;
 
@@ -5296,9 +5423,21 @@
       } else {
         foodNoteEl.style.display = "";
         const pct = result.wineVsManaFood * 100;
-        const winner = pct >= 0 ? "Mana Food" : "Vernese Wine";
+        const winner = pct >= 0 ? "Mana Food + Bleed" : "Vernese Wine";
+        const loser = pct >= 0 ? "Vernese Wine" : "Mana Food + Bleed";
+        // Worded as a complete-setup comparison (not "Raid Captain gained
+        // X%") because that's what raidCaptainWineVsManaFood actually
+        // computes - it multiplies RC's own food-dependent Move Speed
+        // swing together with Mana Food's Main Stat + Bleed contribution
+        // (see that function's own comment), so this % is "how much
+        // better is the whole setup", not RC's isolated share of it.
+        // Also worth noting for future edits here: raidCaptainWineVsManaFood
+        // only swaps wine/manaFood - RC's Node level/Stone, Maelstrom
+        // Uptime %, Rage Rune, and Support AV all come straight from
+        // whatever's currently configured above, food is the only axis
+        // actually being varied between the two sides of this comparison.
         foodNoteEl.textContent =
-          "For Raid Captain, " + winner + " is currently better by " + Math.abs(pct).toFixed(2) + "%.";
+          "Raid Captain setups: " + winner + " beats " + loser + " by " + Math.abs(pct).toFixed(2) + "%.";
       }
     }
 
@@ -5403,6 +5542,23 @@
         vsEl.textContent = "—";
       }
     }
+
+    // Overall Best Setup: see computeOverallBestEngravingSetup's own
+    // comment for why this is a separate question from Best Combo above
+    // it (best combo for THIS food vs. best complete combo+food setup
+    // overall) - Surge only, same gate as the Mana Food note above.
+    const overallBestEl = root.querySelector(".ap-engr-overall-best-note");
+    if (overallBestEl) {
+      if (!overallBest) {
+        overallBestEl.style.display = "none";
+      } else {
+        overallBestEl.style.display = "";
+        const pct = overallBest.pctVsOther * 100;
+        overallBestEl.textContent =
+          "Overall Best Setup: " + overallBest.comboLabel + " with " + overallBest.foodLabel +
+          " (+" + Math.abs(pct).toFixed(2) + "% vs the best " + overallBest.otherFoodLabel + " setup).";
+      }
+    }
   }
 
   // ----- Setup A vs. Setup B rendering -----
@@ -5430,7 +5586,20 @@
     set(".ap-esvs-" + prefix + "-stone-ap", formatBvbPct(side.breakdown.stoneBaseApGain));
   }
 
-  function renderEngravingSetupComparison(root, result) {
+  function renderEngravingSetupComparison(root, result, overallBest, isSurge) {
+    // "Uses whichever food is currently selected..." only means anything
+    // where a food choice (Wine vs. Mana Food) exists to select between -
+    // RE has no such choice (same manaFoodContributionGain gate as every
+    // other food-specific note on this page), so on RE this icon was
+    // pointing at a caveat, and an "Overall Best Setup below" that's ALSO
+    // hidden for RE (computeOverallBestEngravingSetupAB returns null
+    // there), that don't exist. Checked ahead of the `!result` guard
+    // below since computeEngravingSetupComparison itself isn't spec-gated
+    // (Setup A/B's core comparison still runs on RE) - only this food
+    // caveat is Surge-only.
+    const foodIcon = root.querySelector(".ap-esvs-food-icon");
+    if (foodIcon) foodIcon.style.display = isSurge ? "" : "none";
+
     if (!result) return;
     renderEngravingSvsCard(root, "a", result.a);
     renderEngravingSvsCard(root, "b", result.b);
@@ -5452,6 +5621,24 @@
 
     const keystoneNoteEl = root.querySelector(".ap-esvs-keystone-note");
     if (keystoneNoteEl) keystoneNoteEl.hidden = !result.keystonesDiffer;
+
+    // See computeOverallBestEngravingSetupAB's own comment: aVsB above is
+    // locked to whichever food is currently selected, this instead lets
+    // each named setup use its own best food before comparing. Surge
+    // only, same gate/hide pattern as the Best Combo panel's own overall-
+    // best note.
+    const overallBestEl = root.querySelector(".ap-esvs-overall-best-note");
+    if (overallBestEl) {
+      if (!overallBest) {
+        overallBestEl.style.display = "none";
+      } else {
+        overallBestEl.style.display = "";
+        const pct = overallBest.pctVsRunnerUp * 100;
+        overallBestEl.textContent =
+          "Overall Best: " + overallBest.winnerLabel +
+          " (+" + pct.toFixed(2) + "% vs the best " + overallBest.otherLabel + " setup).";
+      }
+    }
   }
 
 
@@ -5831,10 +6018,20 @@
     renderAccessoryVsAccessory(root, computeAccessoryVsAccessory(inputs));
     renderArkGridComparison(root, computeArkGridComparison(inputs));
     const engrInputs = readEngravingInputs(root);
-    renderEngravingComparison(root, computeEngravingComparison(inputs, engrInputs), engrInputs);
+    renderEngravingComparison(
+      root,
+      computeEngravingComparison(inputs, engrInputs),
+      engrInputs,
+      computeOverallBestEngravingSetup(inputs, engrInputs)
+    );
     const svsA = readEngravingSvsSide(root, "a");
     const svsB = readEngravingSvsSide(root, "b");
-    renderEngravingSetupComparison(root, computeEngravingSetupComparison(inputs, engrInputs, svsA, svsB));
+    renderEngravingSetupComparison(
+      root,
+      computeEngravingSetupComparison(inputs, engrInputs, svsA, svsB),
+      computeOverallBestEngravingSetupAB(inputs, engrInputs, svsA, svsB),
+      engrInputs.spec === "surge"
+    );
   }
 
   // Chaos Core: Flashy Attack, Chaos Core: Stable Attack, and Chaos
