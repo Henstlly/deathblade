@@ -1179,7 +1179,7 @@
          here (the active chip's label and color already say RE vs
          Surge, so a separate "Playstyle: RE" line next to it stays
          redundant). -->
-    <p class="ap-brace-compare-intro">Competing engravings, searched for the best 2-slot combination, against your Best Setup above.</p>
+    <p class="ap-brace-compare-intro">Competing engravings, searched for the best 2-slot combination, against your Best Setup above.<span class="ap-brace-info-icon" title="This section's inputs are isolated from the rest of the calculator - nothing here affects your tracked setup above.">i</span></p>
 
     <!-- Engravings (Core + Competing Pool merged into one card) and
          Raid Captain Variables as the two side-by-side cards, same visual
