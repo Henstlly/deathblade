@@ -3,7 +3,7 @@
 <div class="setup-panel" data-accent="pink" markdown>
 <div class="setup-notes" markdown>
 
-<p class="food-required-lead">Atk/Move Speed food and feast are <strong>highly advised</strong> to play Surge optimally. Food is sold at Peyto Island.</p>
+<p class="food-required-lead">Atk/Move Speed food and feast are <strong>recommended</strong> to play Surge optimally. Food is sold at Peyto Island.</p>
 
 <div class="food-options" markdown>
 
@@ -34,7 +34,7 @@ Atk/Move Speed Feast
 <details class="setup-note" data-kind="example" open markdown>
 <summary><span class="setup-note-tag">alt</span>Mana Food + Maelstrom Bleed<span class="setup-note-arrow"></span></summary>
 
-- Alternatively, use ![](../assets/shared/icon-striploin.png){: .food-option-icon } <span class="food-option-connector">or</span> ![](../assets/shared/icon-steak.png){: .food-option-icon } <span class="food-option-connector">or</span> ![](../assets/shared/icon-azena.png){: .food-option-icon } <span class="food-option-connector food-option-connector-plus">+</span> ![](../assets/shared/icon-feast.png){: .food-option-icon } and equip <span class="skill-mention" data-rune-name="Bleed" data-rune-tier="legendary">Legendary Bleed</span> rune on Maelstrom.
+- Otherwise, use ![](../assets/shared/icon-striploin.png){: .food-option-icon } <span class="food-option-connector">or</span> ![](../assets/shared/icon-steak.png){: .food-option-icon } <span class="food-option-connector">or</span> ![](../assets/shared/icon-azena.png){: .food-option-icon } <span class="food-option-connector food-option-connector-plus">+</span> ![](../assets/shared/icon-feast.png){: .food-option-icon } and equip <span class="skill-mention" data-rune-name="Bleed" data-rune-tier="legendary">Legendary Bleed</span> rune on Maelstrom. Higher ceiling, lower floor.
 
 </details>
 
