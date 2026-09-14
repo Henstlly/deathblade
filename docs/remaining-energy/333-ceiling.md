@@ -62,7 +62,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "Ark Passive"
     D4D17B7F291340AAD2E9831A065E7F9870B3612FFA798E77FC1FFEE9E4D68E400597FDB2A3DCAA11D5DB53B85812DF1042A685249158B4E08BB87A614E428350
     ```
 
-    - Uses <span class="skill-mention" data-ap-id="orbcirculation" data-level="5">Orb Circulation 5</span>, which makes this build more forgiving at a ~3% DPS loss. 
+    - Uses <span class="skill-mention" data-ap-id="orbcirculation" data-level="5">Orb Circulation 5</span>, which makes this build more forgiving at a ~3% DPS loss.
     - Additionally, it uses <span class="skill-mention" data-rune-name="Wealth" data-rune-tier="legendary">Legendary Wealth</span> on Soul Absorber, which would not be possible otherwise.
 
 ## Ark Setup

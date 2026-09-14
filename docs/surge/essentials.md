@@ -52,16 +52,16 @@ Atk/Move Speed Feast
 
 <!-- TODO: drop this whole block once the September balance patch ships -->
 <details class="setup-note" data-kind="danger" markdown>
-<summary><span class="setup-note-tag">Warn</span>Balance Patch<span class="setup-note-arrow"></span></summary>
+<summary><span class="setup-note-tag">Warn</span>Upcoming Balance Patch<span class="setup-note-arrow"></span></summary>
 
-- Death Trance no longer auto-deactivates mid-stack via a side node.
-- Stack cap increased from 60 to 80. Extra stacks now roll over.
-- Breaking Moon changes to a Normal skill and gives 60 stacks on hit.
-- Complete rework of 222 cores and playstyle. It's actually good now.
-- Blitz Rush gains a 27% cast speed <span class="skill-mention" data-glossary-id="tripod">tripod</span> and 20% more attack range.
-- Turning Slash and Surprise Attack's after-effects now also apply <span class="skill-mention" data-glossary-id="synergy">Synergy</span>.
-- Overall damage increases, Surge is now competitive with RE.
-- Surge post-cast delay was removed, animation cancelling is no longer needed.
+- Death Trance will no longer auto-deactivate mid-stack via a side node.
+- Stack cap goes from 60 to 80, and extra stacks will roll over.
+- Breaking Moon becomes a Normal skill and will give 60 stacks on hit.
+- Complete rework of 222 cores and playstyle. It's actually good after this.
+- Blitz Rush will gain a 27% cast speed <span class="skill-mention" data-glossary-id="tripod">tripod</span> and 20% more attack range.
+- Turning Slash and Surprise Attack's after-effects will also apply <span class="skill-mention" data-glossary-id="synergy">Synergy</span>.
+- Overall damage goes up, and Surge becomes competitive with RE.
+- Surge's post-cast delay is removed, so animation cancelling will no longer be needed.
 
 </details>
 
@@ -153,7 +153,7 @@ Pair with <span class="skill-mention" data-skill-id="curseddoll">Cursed Doll</sp
 
 **Pros:**{: .best-for } Highest damage bonus.
 
-**Cons:**{: .tradeoff } Requires <span class="skill-mention" data-skill-id="maelstrom">Maelstrom</span> management for gameplay, which can correlate to damage.
+**Cons:**{: .tradeoff } Requires <span class="skill-mention" data-skill-id="maelstrom">Maelstrom</span> management to maintain damage and offset the Attack Speed penalty.
 
 </div>
 </details>

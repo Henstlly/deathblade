@@ -1477,6 +1477,29 @@
       }
       return null;
     }
+    // Every button whose label looks like a loadout tab, matched loosely
+    // (contains "loadout", case-insensitive) rather than by the two exact
+    // strings findRaidLoadoutButton needs. This exists purely to tell two
+    // very different situations apart when findRaidLoadoutButton returns
+    // null, which the old code could not do and collapsed into "confirmed":
+    //   - length 0: this character has no loadout tab strip at all, so
+    //     there is nothing to switch to and whatever is rendered IS the
+    //     one loadout. Safe.
+    //   - length > 0: a tab strip DOES exist, but none of its buttons
+    //     matched the exact labels above. That means Bible relabeled the
+    //     tab (e.g. a new "Raid Loadout (Estimated)" variant) and the
+    //     auto-click silently did not happen - the single most likely way
+    //     this file breaks in the future, since it hard-codes two literal
+    //     strings against someone else's frontend. Must warn.
+    function findLoadoutTabButtons() {
+      var buttons = document.querySelectorAll("button");
+      var out = [];
+      for (var i = 0; i < buttons.length; i++) {
+        var t = (buttons[i].textContent || "").trim();
+        if (t && t.length < 60 && t.toLowerCase().indexOf("loadout") !== -1) out.push(t);
+      }
+      return out;
+    }
     // Diagnostic only: outerHTML/class/aria-* of the "Raid Loadout" button
     // (or null if not found), so its ACTUAL markup - not just whether the
     // exact text "Raid Loadout" is present somewhere - is visible. If this
@@ -1538,12 +1561,34 @@
         }, 400);
         return;
       }
-      // No "Raid Loadout" button at all - either already on Raid (the
-      // common case, and correctly treated as confirmed) or the button
-      // markup changed and it can't be found at all (rare, and this can't
-      // tell the two apart) - unlike the old header-text check, there's no
-      // known false-positive here, so this is treated as confirmed.
-      finish(lines, true);
+      // No "Raid Loadout" button found. This used to unconditionally
+      // finish(lines, true), which was the one genuinely SILENT wrong-data
+      // path left in this file: if Bible ever relabels that tab, the click
+      // never happens, nothing warns, and Chaos-loadout accessories/gems/
+      // engravings import as if they were confirmed raid data. Split into
+      // the two real cases instead.
+      var loadoutTabs = findLoadoutTabButtons();
+      if (window.console && console.log) {
+        console.log("[Bible import] no exact \"Raid Loadout\" button; loadout-ish tab labels seen: " + JSON.stringify(loadoutTabs));
+      }
+      if (loadoutTabs.length) {
+        // A tab strip exists and we couldn't find the raid tab in it - we
+        // are looking at some OTHER loadout and never switched. Warn, and
+        // log the labels so the fix is a one-line string update here.
+        finish(lines, false);
+        return;
+      }
+      // No tab strip at all, so there is only one loadout and it is by
+      // definition this account's default - which is exactly what the
+      // "Current Loadout (Raid)" / "Estimated Raid Loadout" text reports.
+      // That text is unreliable as an ACTIVE-TAB signal (see
+      // parseVisibleText's comment - it never changes on click, which is
+      // why it was dropped), but in the no-tabs case there is no clicking
+      // to track and it is exactly the right signal: raid text means the
+      // one rendered loadout is the raid one, its absence means we are
+      // reading a Chaos-only character and should say so.
+      var singleLoadoutIsRaid = lines.indexOf("Current Loadout (Raid)") !== -1 || lines.indexOf("Estimated Raid Loadout") !== -1;
+      finish(lines, singleLoadoutIsRaid);
     } catch (e) {
       alert("Bible import failed: " + e.message);
     }

@@ -34,7 +34,7 @@
 
 ## Ark Passive Calculator
 
-*Finds the optimal setup for your deathblade and party composition. See spreadsheets [1](https://docs.google.com/spreadsheets/d/1RKpzg6sPNe7fuPDudJHAs0qbFukOwSyhMynDOijfoKY/edit?usp=sharing) or [2](https://docs.google.com/spreadsheets/d/1_0J7liyM_yw16pyn6TKlF1YGaIt5n_A9hSoLnT3yTUc/edit?usp=sharing) for verification.*
+*Finds the optimal setup for your Deathblade and party composition. See spreadsheets [1](https://docs.google.com/spreadsheets/d/1RKpzg6sPNe7fuPDudJHAs0qbFukOwSyhMynDOijfoKY/edit?usp=sharing) or [2](https://docs.google.com/spreadsheets/d/1_0J7liyM_yw16pyn6TKlF1YGaIt5n_A9hSoLnT3yTUc/edit?usp=sharing) for verification.*
 
 <div class="ap-calc">
 
@@ -2011,7 +2011,7 @@
 
 ## CPM Calculator
 
-<p class="page-banner page-banner-warning">Not applicable to NA/EU servers yet</p>
+<p class="page-banner page-banner-warning">Not applicable to NA/EU servers yet.</p>
 
 *Compares Trixion damage to raid damage across builds. Watch [this](https://www.youtube.com/watch?v=dlUS8vUaNLA) to learn about Trixion multipliers.*
 

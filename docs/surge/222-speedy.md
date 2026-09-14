@@ -1,6 +1,6 @@
 # 222 (Speedy) 🐆
 
-<p class="page-banner page-banner-warning">Not available in NA/EU servers yet, rotations subject to change</p>
+<p class="page-banner page-banner-warning">Not available on NA/EU servers yet. Rotations are subject to change.</p>
 
 <div class="build-card-row" markdown>
 <div class="build-card" data-updated="2026-09-16" markdown>
@@ -119,7 +119,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "Ark Passive"
 <summary><span class="setup-note-tag">Tip</span>Ark Passive<span class="setup-note-arrow"></span></summary>
 
 - Use the [Ark Passive Calculator](../resources.md#ark-passive-calculator) to optimize Evolution nodes.
-- <span class="skill-mention" data-ap-id="chaosinfusion" data-level="1">Chaos Infusion 1</span> + <span class="skill-mention" data-ap-id="orbcontrol" data-level="1">Orb Control 1</span> can be used if your Surge dps share is consistently over 50%.
+- <span class="skill-mention" data-ap-id="chaosinfusion" data-level="1">Chaos Infusion 1</span> + <span class="skill-mention" data-ap-id="orbcontrol" data-level="1">Orb Control 1</span> can be used if your Surge DPS share is consistently over 50%.
 - This build is capable of using <span class="skill-mention" data-skill-id="raidcaptain">Raid Captain</span> + <span class="skill-mention" data-skill-id="massincrease">Mass Increase</span> with the least drawbacks.
 
 </details>

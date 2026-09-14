@@ -1,6 +1,6 @@
 # 333 (Blitz) <span class="tiger-emoji" title="rawr">🐯</span>
 
-<p class="page-banner page-banner-warning">Not available in NA/EU servers yet, rotations subject to change</p>
+<p class="page-banner page-banner-warning">Not available on NA/EU servers yet. Rotations are subject to change.</p>
 
 <div class="build-card-row" markdown>
 <div class="build-card" data-updated="2026-09-16" markdown>
@@ -13,7 +13,7 @@
      all update together from that one place. -->
 <div class="build-stats" data-build="333-blitz" data-family="surge"></div>
 
-**Best For:**{: .best-for } Erm.
+**Best For:**{: .best-for } Nothing, currently.
 
 **Tradeoff:**{: .tradeoff } The juice is not worth the squeeze.
 
@@ -188,7 +188,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "Ark Passive"
 - You can use the Quick Prep <span class="skill-mention" data-glossary-id="tripod">tripod</span> on Blade Dance at lower gem levels.
 - Earth Explosion tripod on Earth Cleaver is up to personal preference.
     - Increased cast speed, but greatly lowers mobility and damage.
-- Thick Sword Energy tripod increases Wind Cut range but builds less stacks.
+- Thick Sword Energy tripod increases Wind Cut range but builds fewer stacks.
 - Head Hunt can be used instead of Earth Cleaver at a DPS loss if you prefer.
 
 </details>

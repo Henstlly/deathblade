@@ -3,7 +3,7 @@
 <div class="setup-panel" data-accent="pink" markdown>
 <div class="setup-notes" markdown>
 
-<p class="food-required-lead">Mana food and Atk/Move Speed feast are <strong>required</strong> to play <span class="skill-mention" data-glossary-id="arkgrid">Ark Grid</span> Remaining Energy optimally.</p>
+<p class="food-required-lead">Mana food and Atk/Move Speed feast are <strong>required</strong> to play <span class="skill-mention" data-glossary-id="arkgrid">Ark Grid</span> Remaining Energy as intended.</p>
 
 <div class="food-options" markdown>
 
@@ -70,12 +70,12 @@ Atk/Move Speed Feast
 
 <!-- TODO: drop this whole block once the September balance patch ships -->
 <details class="setup-note" data-kind="danger" markdown>
-<summary><span class="setup-note-tag">Warn</span>Balance Patch<span class="setup-note-arrow"></span></summary>
+<summary><span class="setup-note-tag">Warn</span>Upcoming Balance Patch<span class="setup-note-arrow"></span></summary>
 
-- Blitz Rush gains a 27% cast speed tripod and 20% more attack range.
-- Turning Slash's after-effect now also applies <span class="skill-mention" data-glossary-id="synergy">Synergy</span>.
-- Surge's buffed coefficient increases DPS for all RE builds by ~1%.
-- Buffed Ark Grid cores increase 111 HH DPS by ~2% and 313 DPS by ~1%.
+- Blitz Rush will gain a 27% cast speed tripod and 20% more attack range.
+- Turning Slash's after-effect will also apply <span class="skill-mention" data-glossary-id="synergy">Synergy</span>.
+- Surge's buffed coefficient will increase DPS for all RE builds by ~1%.
+- Buffed Ark Grid cores will increase 111 HH DPS by ~2% and 313 DPS by ~1%.
 - See [333 (Ceiling)](333-ceiling.md) or [313 (High Floor)](313-high-floor.md) for build-specific <span class="skill-mention" data-glossary-id="tripod">tripod</span>/gem adjustments.
 
 </details>

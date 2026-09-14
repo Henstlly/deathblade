@@ -1,6 +1,6 @@
 # Deathblade Class Guide
 
-MkDocs Material site, deploys to GitHub Pages on push to `main`. Just markdown + images, no real build step. Not real code, just what works for me and it's prettier than google docs.
+MkDocs Material site, deploys to GitHub Pages on push to `main`. Just markdown + images, no separate application build system; GitHub Actions runs `mkdocs gh-deploy` for you. Not real code, just what works for me and it's prettier than google docs.
 
 ## Forking this for your own spin
 
@@ -23,7 +23,7 @@ This one's more work, since the class's skills, identity mechanic, and Ark Passi
 - **INFRA** files (`site-utils.js`, `bid-calculator.js`, `image-lightbox.js`, `extra.js`) are generic site stuff with nothing class-specific in them either, also fine to leave alone. `extra.js` has one small exception noted in its comment (a 333 Blitz easter egg you'll probably want to cut).
 - **DEATHBLADE-SPECIFIC** files (`ark-passive-calculator.js`, `cpm-calculator.js`) are hardcoded to Deathblade's own numbers and mechanics. Don't try to just edit the data in these, either delete them or rewrite the math for your class.
 
-If you end up adding/removing/reordering scripts, there's a comment above `extra_javascript` in `mkdocs.yml` explaining the load order (a few widgets need a data file or `site-utils.js` loaded before they run).
+If you end up adding/removing/reordering scripts, there's a comment above `extra_javascript` in `mkdocs.yml` explaining the load order (a few widgets need a data file or `site-utils.js` loaded before they run). Note that the five calculator files aren't listed there at all: they're only used by `resources.md`, so `lazy-calculators.js` pulls them in on demand instead of on every page. Their order and their `?v=` cache-bust numbers live in that file.
 
 ### Other stuff to change
 

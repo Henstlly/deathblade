@@ -242,10 +242,10 @@ The opener stacks <span class="skill-mention" data-skill-id="adrenaline">Adrenal
 </script>
 </div>
 
-1. <span class="skill-inline" data-skill-id="deathlyslash"><span class="skill-inline-name">Deathly Slash</span></span> is only available every other rotation, just keep going if it's on cooldown.
+1. <span class="skill-inline" data-skill-id="deathlyslash"><span class="skill-inline-name">Deathly Slash</span></span> is only available every other rotation. Just keep going if it's on cooldown.
 2. Use Spincutter during downtime to reposition, or hold it to dodge upcoming attacks.
 3. Use <span class="skill-inline" data-skill-id="bladeassault"><span class="skill-inline-name">Blade Assault</span></span> for damage, or hold it for Hyper Awakening or a clutch recovery.
-4. The rotation is bottle-necked entirely by Soul Absorber's cooldown, it is what it is.
+4. The rotation is bottlenecked entirely by Soul Absorber's cooldown. It is what it is.
     - You can skip Earth Cleaver if Soul Absorber's off cooldown already.
 
 *Recovery:*

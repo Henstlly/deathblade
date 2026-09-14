@@ -1,6 +1,6 @@
 # 111 (Classic) 🦁
 
-<p class="page-banner page-banner-warning">Not available in NA/EU servers yet, rotations subject to change</p>
+<p class="page-banner page-banner-warning">Not available on NA/EU servers yet. Rotations are subject to change.</p>
 
 <div class="build-card-row" markdown>
 <div class="build-card" data-updated="2026-09-16" markdown>
@@ -189,7 +189,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "Ark Passive"
 - You can keep the Quick Prep <span class="skill-mention" data-glossary-id="tripod">tripod</span> on Blade Dance at lower gem levels.
 - Earth Explosion tripod on Earth Cleaver is up to personal preference.
     - Increased cast speed, but greatly lowers mobility and damage.
-- Thick Sword Energy tripod increases Wind Cut range but builds less stacks.
+- Thick Sword Energy tripod increases Wind Cut range but builds fewer stacks.
 - Dark Axel (1-1-2 tripods) can be used instead of Spincutter if you prefer it.
 
 </details>

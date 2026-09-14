@@ -38,10 +38,15 @@ extra_css:
 # before they run. Each widget's own file-top comment says what it
 # needs loaded first if you're moving things around; rough shape below:
 #   1. site-utils.js first - shared DOM helpers every widget below uses
-#   2. extra.js, cpm-calculator.js, bid-calculator.js,
-#      ark-passive-calculator.js, bible-import.js (after
-#      ark-passive-calculator.js - reuses its Import popover) - standalone,
-#      no cross-file deps
+#   1b. lazy-calculators.js - loads the five resources.md-only files
+#      (cpm-calculator.js, bid-calculator.js, ark-passive-calculator.js,
+#      bible-import.js, ap-brace-tooltip.js) on demand instead of on every
+#      page. They are deliberately NOT listed here: they were 543 KB of
+#      this site's 851 KB and no guide page uses any of them. Their load
+#      order, and their ?v= CACHE-BUST NUMBERS, live in that file's
+#      LAZY_BUNDLE array - bump them THERE after editing any of the five,
+#      not here. Everything still listed below bumps here as usual.
+#   2. extra.js - standalone, no cross-file deps
 #   3. data files: build-data.js, skill-data.js, skill-names.js,
 #      ap-node-names.js, ap-node-effects.js, core-options-data.js
 #   4. renderer widgets that read those data files: build-stats-badge.js,
@@ -54,7 +59,9 @@ extra_css:
 #      AND dps-chart.js), ark-passive-tooltip.js AND rune-tooltip.js AND
 #      glossary-tooltip.js (each after skill-tooltip.js - all three reuse
 #      the latter's SkillTooltip.wireCustom; glossary-tooltip.js also
-#      needs glossary-data.js loaded first)
+#      needs glossary-data.js loaded first). ap-brace-tooltip.js belongs to
+#      this group too but is lazy-loaded (see 1b) - skill-tooltip.js is
+#      global and therefore always in place well before it arrives.
 #
 # Forking for another class? Every file above has its own "FORK GUIDE:"
 # comment at the very top - DATA (rewrite the whole file), ENGINE/INFRA
@@ -63,11 +70,8 @@ extra_css:
 # for the full breakdown.
 extra_javascript:
   - javascripts/site-utils.js?v=10
+  - javascripts/lazy-calculators.js?v=1
   - javascripts/extra.js?v=2
-  - javascripts/cpm-calculator.js?v=6
-  - javascripts/bid-calculator.js?v=5
-  - javascripts/ark-passive-calculator.js?v=52
-  - javascripts/bible-import.js?v=12
   - javascripts/build-data.js?v=4
   - javascripts/build-stats-badge.js?v=1
   - javascripts/skill-data.js?v=8
@@ -84,7 +88,6 @@ extra_javascript:
   - javascripts/pentagon-badge.js?v=4
   - javascripts/rotation-line.js?v=4
   - javascripts/skill-tooltip.js?v=10
-  - javascripts/ap-brace-tooltip.js?v=4
   - javascripts/ark-passive-tooltip.js?v=4
   - javascripts/rune-tooltip.js?v=6
   - javascripts/glossary-data.js?v=3
