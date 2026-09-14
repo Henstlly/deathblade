@@ -513,10 +513,12 @@ h3 { color: var(--dbc-teal); }
    don't fit a phone width once the Tags column's own 140px min-width
    (below) is honored, so let THIS scroll horizontally rather than the
    whole page, with a min-width on the table so columns keep their
-   shape until the scrollbar takes over. */
+   shape until the scrollbar takes over.
+   No -webkit-overflow-scrolling here - see the removal note next to
+   .quick-jump-pills further down in this file for why every horizontal
+   scroller on the site had that declaration deliberately dropped. */
 .md-typeset .skills-table {
   overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
 }
 /* Card treatment matching .build-compare table's own polish (lavender
    border/tint + tinted header row + uppercase header text) rather than
@@ -1909,10 +1911,11 @@ h3 { color: var(--dbc-teal); }
      floor width and letting only this wrapper scroll horizontally means
      every column keeps its desktop proportions and nothing gets clipped
      - you just pan across it - while the table's own layout/overflow
-     rules (and desktop, where this wrapper is a no-op) stay untouched. */
+     rules (and desktop, where this wrapper is a no-op) stay untouched.
+     No -webkit-overflow-scrolling - see .quick-jump-pills' removal note
+     further down for why. */
   .md-typeset .build-compare-table-scroll {
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
   }
   .md-typeset .build-compare-table-scroll table {
     width: auto;
@@ -5225,9 +5228,9 @@ h3 { color: var(--dbc-teal); }
      session introduced): scroll sideways here instead of overflowing
      the page. No-op at the other .ap-brace-compare-inputs usage further
      down (Bracelet Line Comparison's plain field rows), which never has
-     anything wide enough to scroll. */
+     anything wide enough to scroll. No -webkit-overflow-scrolling - see
+     .quick-jump-pills' removal note further down for why. */
   overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
 }
 /* Bracelet Comparison's own .ap-brace-compare-inputs (the OTHER usage
    the comment above refers to) now wraps nothing but the hidden
@@ -5396,9 +5399,9 @@ h3 { color: var(--dbc-teal); }
      itself instead of relying on an ancestor wrapper fixes that
      directly and is a no-op for Character Data's usage (that wrapper
      already scrolls first, so this box itself never overflows within
-     its own bounds there). */
+     its own bounds there). No -webkit-overflow-scrolling - see
+     .quick-jump-pills' removal note further down for why. */
   overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
 }
 /* No container-type here (there used to be one, for a per-card narrow-
    mode breakpoint) - .ap-gear-cards' auto-fit above already keeps a
@@ -7275,12 +7278,37 @@ h3 { color: var(--dbc-teal); }
 .quick-jump-pills {
   display: none;
 }
+/* -webkit-overflow-scrolling: touch used to be here (and on every other
+   horizontal scroller in this file: .skills-table, .build-compare-table-scroll,
+   .ap-gear-cards' phone-width wrapper, and .ap-brace-compare-inputs) -
+   removed sitewide, all five, in the same pass. Root cause of the
+   "pinch-zoom on iPhone 12 leaves the header with a gap on the right,
+   or on Essentials pages leaves the whole page zoomed way out and
+   unable to snap back" bug report: -webkit-overflow-scrolling: touch is
+   a pre-iOS-13 property that forces its container onto its own native
+   UIScrollView/compositing layer, and that layer is known to desync
+   from the visual viewport that position:fixed elements (here, .md-header
+   itself) track after a pinch-zoom gesture - documented as far back as
+   iOS 5 and still reported against iOS 13.4 (see e.g.
+   github.com/angular/components/issues/19374, "webkit-overflow-scrolling
+   break position fixed behavior on IOS 13.4 Safari"); MDN lists the
+   property as non-standard/deprecated for exactly this reason. It's also
+   flatly redundant now: every iOS version this site supports already
+   gives plain `overflow-x: auto` native momentum scrolling without it.
+   Essentials pages got hit harder than build pages in the report because
+   .skills-table AND .build-compare-table-scroll both sit on that page
+   family (an essentials page embeds a .build-compare block too), so two
+   of these layers stacked instead of one - consistent with a compositing
+   bug that compounds with each extra touch-scroll layer on the page.
+   Quick-jump-pills is call it out here since it's the one every build
+   page has (hence "most pages" in the report vs. Essentials' harsher
+   variant), but the fix is the removal across all five, not just this
+   one. */
 @media screen and (max-width: 768px) {
   .quick-jump-pills {
     display: flex;
     gap: 0.5em;
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
     margin: 0 0 1.2em;
     padding-bottom: 0.2em;
     scrollbar-width: none;
