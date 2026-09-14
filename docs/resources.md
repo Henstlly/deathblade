@@ -91,7 +91,7 @@
     <div class="ap-calc-field-row">
       <label class="ap-calc-field-label" for="ap-crit-stat" title="Crit Stat as shown in your character profile.">Crit Stat</label>
       <span class="ap-value-display" data-for="ap-crit-stat"></span>
-      <input type="number" id="ap-crit-stat" class="ap-crit-stat" min="0" max="750" step="1" value="658">
+      <input type="number" id="ap-crit-stat" class="ap-crit-stat" min="0" max="900" step="1" value="658">
     </div>
     <div class="ap-calc-field-row ap-calc-field-row-pair">
       <label class="ap-calc-field-label">Rings</label>
@@ -803,11 +803,15 @@
            ap-brace-spec-build select both write to. Lives in this
            section's own header rather than the master's exact chip
            style/size so switching build here, mid-Bracelet-Comparison,
-           doesn't require scrolling back up. Shares this row with the
-           Crit Stat field below (--inline strips its own standalone
-           row's margin/padding/border - see that class's own CSS
-           comment) rather than sitting on its own row above, since both
-           are compact controls and don't each need a full row. -->
+           doesn't require scrolling back up. Sits inside
+           .ap-brace-compare-inputs's own flex row rather than as a
+           full-width row of its own (--inline strips its own standalone
+           row's margin/padding/border, leaving .ap-brace-compare-inputs's
+           border-bottom as the row's only divider - see that class's own
+           CSS comment). Used to share this row with a "Current
+           Bracelet's Crit Stat" field, removed once the Bracelet
+           Comparison no-bracelet baseline started deriving from
+           CRIT_BASE instead (see ark-passive-calculator.js). -->
       <div class="ap-build-toggle-row ap-build-toggle-row--echo ap-build-toggle-row--inline">
         <span class="ap-build-toggle-label">Build</span>
         <div class="ap-build-toggle ap-build-toggle--echo" role="group" aria-label="Build">
@@ -826,11 +830,6 @@
           </div>
         </div>
       </div>
-      <div class="ap-calc-field-row">
-        <label class="ap-calc-field-label" for="ap-brace-crit-stat-equipped" title="Subtracted from your total Crit Stat to build the no-bracelet baseline, so your Crit Stat isn't double-counted. Use 0 if your bracelet has no Crit Stat line at all.">Current Bracelet's Crit Stat</label>
-        <input type="number" id="ap-brace-crit-stat-equipped" class="ap-brace-crit-stat-equipped" min="0" max="120" step="1" value="82">
-      </div>
-
       <!-- ap-brace-spec-build is the single real source of truth for the
            active build (this Spec Scaling math, the primary Ark Passive
            grid, and Engraving Comparison's derived RE/Surge Playstyle all

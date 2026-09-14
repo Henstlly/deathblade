@@ -680,25 +680,19 @@
       var braceEnd = blockEnd(braceIdx);
       var i0 = braceIdx + 1;
       if (/rolls remaining/i.test(lines[i0] || "")) i0++;
-      var rateList = [], dmgList = [], addAList = [], addBList = [], dualCount = 0, critStat = null;
+      var rateList = [], dmgList = [], addAList = [], addBList = [], dualCount = 0;
       for (var bi2 = i0; bi2 < braceEnd; bi2++) {
         // Regex matches all 6 flat combat-stat lines a bracelet can roll
-        // (Crit/Specialization/Swiftness/Domination/Endurance/Expertise),
-        // but only Crit is ever stored - confirmed intentional, not a
-        // gap: the calculator has exactly one importable field for a
-        // bracelet's flat stat (ap-brace-crit-stat-equipped, used to
-        // remove the bracelet's Crit Stat from a no-bracelet baseline).
-        // Its Specialization counterpart (ap-brace-spec-build) is a
-        // build-type dropdown (RE 111/313/333, Surge 111/222/333), not a
-        // raw-number field - there's nothing to import a flat "Specialization
-        // +N" line into, so Swiftness/Domination/Endurance/Expertise are
-        // matched here only so they fall through to `continue` instead of
-        // being misread as an effect-description clause below.
+        // (Crit/Specialization/Swiftness/Domination/Endurance/Expertise) -
+        // none of them are stored (the calculator has no importable field
+        // for a bracelet's flat stat: Crit Stat's no-bracelet baseline
+        // derives from CRIT_BASE instead of a per-bracelet reading now,
+        // and Specialization's counterpart, ap-brace-spec-build, is a
+        // build-type dropdown with no raw-number field to import into).
+        // Matched here only so all 6 fall through to `continue` instead
+        // of being misread as an effect-description clause below.
         var statM = (lines[bi2] || "").match(/^(Crit|Specialization|Swiftness|Domination|Endurance|Expertise) \+(-?\d+)$/);
-        if (statM) {
-          if (statM[1] === "Crit") critStat = parseInt(statM[2], 10);
-          continue;
-        }
+        if (statM) continue;
         var clauses = parseBraceClauses(lines[bi2]);
         for (var ci = 0; ci < clauses.length; ci++) {
           var label = clauses[ci][0], val = clauses[ci][1];
@@ -716,7 +710,6 @@
           }
         }
       }
-      out.braceCritStat = critStat;
       out.braceRateLines = rateList;
       out.braceDmgLines = dmgList;
       out.braceDualHitDmgCount = dualCount;
@@ -966,20 +959,12 @@
     // overwritten by whatever's actually found. This has to cover TWO
     // separate gaps, not just one: (1) a character with literally no
     // bracelet equipped (braceIdx === -1 in parseVisibleText, so
-    // braceCritStat/braceRateLines/etc. are all left undefined) leaves
-    // every one of these fields unwritten with the old code; (2) even
-    // WITH a bracelet equipped, ap-bracelet-addA/addB had NO fallback at
-    // all (unlike -rate/-dmg's "|| None") - a relic bracelet very
-    // commonly rolls only one of the two Additional Damage types, or
-    // neither, which hit gap (2) on every run for a large fraction of
-    // real bracelets.
-    // "0" here is a real, valid reading (not a placeholder) - it means
-    // this bracelet has no Crit stat line at all (rolled a different
-    // flat stat instead), so there's nothing to subtract for it. See
-    // ap-brace-crit-stat-equipped's min="0" in resources.md and the
-    // matching clamp in ark-passive-calculator.js - a real Crit roll is
-    // always 60-120, but 0 has to be separately supported for this case.
-    data["ap-brace-crit-stat-equipped"] = text.braceCritStat != null ? String(text.braceCritStat) : "0";
+    // braceRateLines/etc. are all left undefined) leaves every one of
+    // these fields unwritten with the old code; (2) even WITH a bracelet
+    // equipped, ap-bracelet-addA/addB had NO fallback at all (unlike
+    // -rate/-dmg's "|| None") - a relic bracelet very commonly rolls
+    // only one of the two Additional Damage types, or neither, which hit
+    // gap (2) on every run for a large fraction of real bracelets.
     data["ap-bracelet-rate"] = "None";
     data["ap-bracelet-rate-2"] = "None";
     data["ap-bracelet-dmg"] = "None";

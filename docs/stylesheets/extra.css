@@ -4795,12 +4795,24 @@ h3 { color: var(--dbc-teal); }
   gap: 0.75em;
   margin: 1.8em 0 1.3em;
 }
-.md-typeset .ap-section-divider::before,
+/* Fades toward each outer edge instead of a flat solid line, matching
+   the same fade-to-transparent language the site already uses for
+   every other divider (.md-typeset hr and the H2 top-border just above
+   it both use this exact gradient) - a flat rgba line here read as a
+   harsher, differently-styled rule than those, not a deliberate
+   variation. ::before fades IN toward the label (transparent at the far
+   left, solid approaching center); ::after mirrors it fading OUT. */
+.md-typeset .ap-section-divider::before {
+  content: "";
+  flex: 1 1 auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(var(--dbc-purple-rgb), 0.2));
+}
 .md-typeset .ap-section-divider::after {
   content: "";
   flex: 1 1 auto;
   height: 1px;
-  background: rgba(var(--dbc-purple-rgb), 0.35);
+  background: linear-gradient(90deg, rgba(var(--dbc-purple-rgb), 0.2), transparent);
 }
 .md-typeset .ap-section-divider-label {
   flex: 0 0 auto;
@@ -5537,15 +5549,16 @@ h3 { color: var(--dbc-teal); }
   flex: 0 0 auto;
   margin-bottom: 0;
 }
-/* Bracelet Comparison's compact Build toggle echo sits as one flex item
-   alongside the Crit Stat field on the SAME row, inside
-   .ap-brace-compare-inputs's own flex row, instead of a separate row
-   above it - saves vertical space now that both are compact controls
-   that don't need a full row each. Strips the standalone toggle row's
-   own bottom margin/padding/border-bottom since .ap-brace-compare-inputs
-   already supplies that shared divider for the whole combined row (see
-   its own rule above); .ap-build-toggle-row's flex/gap/align-items are
-   left alone so the label+chips still lay out correctly as one item. */
+/* Bracelet Comparison's compact Build toggle echo sits inside
+   .ap-brace-compare-inputs's own flex row instead of a separate row
+   above it. Strips the standalone toggle row's own bottom margin/
+   padding/border-bottom since .ap-brace-compare-inputs already supplies
+   that divider (see its own rule above); .ap-build-toggle-row's flex/
+   gap/align-items are left alone so the label+chips still lay out
+   correctly. Used to share this row with a "Current Bracelet's Crit
+   Stat" field (removed - see resources.md's comment on the Build toggle
+   echo), which is why this rule still exists even though the toggle is
+   now the row's only item. */
 .md-typeset .ap-build-toggle-row--inline {
   margin: 0;
   padding: 0;

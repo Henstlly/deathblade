@@ -730,6 +730,22 @@
   const SPEC_REF = 1855; // reference Spec the share percentages are anchored to
   const SPEC_SKILL_COEFFICIENT = 0.86;
   const AWAKENING_COEFFICIENT = 0.1528;
+  // CRIT_BASE (576): same fixed-reference treatment as SPEC_BASE right
+  // above, applied to Crit Stat instead - a flat constant, NOT derived
+  // from the reader's live .ap-crit-stat (see zeroedBraceletInputs'
+  // comment on this, it's a subtle enough distinction that an earlier
+  // draft of this got the direction backwards). Built from lv 10 Crit
+  // Ark Passive (500) + roster/card bonuses (76): the non-bracelet
+  // portion of a typical 658 Crit Stat total (658 - 82 current-bracelet
+  // Crit = 576). Used ONLY as the Bracelet Comparison "no bracelet"
+  // baseline (see zeroedBraceletInputs below), replacing the old second
+  // "current bracelet's Crit Stat" input entirely. Like SPEC_BASE, this
+  // isn't exact for every reader (roster/card totals vary a little, and
+  // future balance passes may shift them) - readers whose non-bracelet
+  // Crit differs from 576 will see a correspondingly off no-bracelet
+  // baseline here, the same approximation SPEC_BASE already carries for
+  // Spec.
+  const CRIT_BASE = 576;
   // awakeningShare is per-CLASS, not per-build: it's the Awakening skill's
   // own share of total DPS (see the big comment above
   // deathbladeSpecMultiplier), which doesn't vary between e.g. RE 111 and
@@ -1035,7 +1051,7 @@
 
   function readInputs(root) {
     return {
-      critStat: Math.max(0, Math.min(750, getNumber(root, ".ap-crit-stat", 658))),
+      critStat: Math.max(0, Math.min(900, getNumber(root, ".ap-crit-stat", 658))),
       weaponQuality: Math.max(0, Math.min(100, getNumber(root, ".ap-weapon-quality", 100))),
       astrogemLv: Math.max(0, Math.min(120, getNumber(root, ".ap-astrogem-lv", 59))),
 
@@ -1095,18 +1111,6 @@
       // just leaving it at the default anyway, so the input was pure
       // clutter for a number that basically never varies.
       demonDmgPct: 7,
-      // Clamped to 0-120, not 60-120: a real equipped bracelet's Crit
-      // Stat roll is always 60-120 when present, but plenty of real
-      // bracelets don't roll Crit at all (rolled Spec/Swiftness/etc
-      // instead) - for those, the correct value to subtract is 0, not
-      // 60. Flooring at 60 here used to silently force even a genuine
-      // "no Crit stat" 0 up to 60, over-subtracting 60 Crit Stat the
-      // bracelet never actually granted (and making 0 - a value bible-
-      // import.js writes on purpose for exactly this case - permanently
-      // unusable, since resources.md's own min="60" also rejected it as
-      // invalid input). 0 is now a legitimate, fully supported reading;
-      // anything above 0 still gets clamped up to a real roll's 60-120 range.
-      braceCritStatEquipped: Math.max(0, Math.min(120, getNumber(root, ".ap-brace-crit-stat-equipped", 82))),
       braceSpecBuild: normalizeBraceSpecBuild(getSelect(root, ".ap-brace-spec-build", "re-333")),
 
       // Bracelet vs. Bracelet: two full 5-line candidate bracelets, read
@@ -1782,8 +1786,11 @@
   //     calculator doesn't otherwise track Spec as a build stat. RE vs
   //     Surge Deathblade use structurally different formulas (see
   //     SPEC_BASE and friends above) picked by the master Build toggle
-  //     (see BRACE_SPEC_BUILDS) living alongside Crit Stat in
-  //     .ap-brace-compare-inputs.
+  //     (see BRACE_SPEC_BUILDS) living in .ap-brace-compare-inputs.
+  //     Crit Stat +80/100/120 below now takes the same approach via
+  //     CRIT_BASE (576) - no live "current bracelet's Crit Stat" input
+  //     either anymore, just the reader's own full .ap-crit-stat minus
+  //     the fixed CRIT_BASE.
   // Baseline: your actual Best Setup, but with every bracelet-sourced
   // Crit Rate/Crit Dmg/Additional Dmg field reset to None first -
   // including critRateDual/critDmgDual, since those two checkboxes ARE
@@ -1792,8 +1799,9 @@
   // HTML) - leaving them at the user's real state here would silently
   // keep crediting a bonus this baseline is supposed to be excluding.
   // Also strips the crit stat your CURRENT bracelet's own substat roll
-  // contributes to the 658-style Crit Stat total (see .ap-brace-crit-stat-
-  // equipped) - without this, the Crit Stat +80/100/120 candidate below
+  // contributes to the 658-style Crit Stat total, via CRIT_BASE (see its
+  // own comment above) rather than a second "current bracelet's Crit
+  // Stat" input - without this, the Crit Stat +80/100/120 candidate below
   // would silently double-count whatever your equipped bracelet already
   // grants, the same double-counting bug the dual checkboxes had before.
   // Shared by computeBraceletComparison (one line at a time, against the
@@ -1809,7 +1817,14 @@
       braceletAddB: "None",
       critRateDual: false,
       critDmgDual: false,
-      critStat: Math.max(0, inputs.critStat - inputs.braceCritStatEquipped),
+      // The no-bracelet baseline IS CRIT_BASE - a fixed constant, same
+      // as SPEC_BASE just above, not derived from the reader's live
+      // .ap-crit-stat. (Earlier draft of this line computed
+      // inputs.critStat - CRIT_BASE, which backwards-computes the
+      // bracelet's OWN contribution, not what's left without it - wrong
+      // direction entirely, caught via before/after screenshot diffing
+      // per the verify workflow.)
+      critStat: CRIT_BASE,
     });
     return { inputsNB, sharedNB: computeShared(inputsNB) };
   }
