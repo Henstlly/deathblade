@@ -269,6 +269,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "Ark Passive"
     - ~1.5% DPS loss but CPM and playability increases make up for it.
     - Void Strike is raised to Lv 13 and Blitz Rush is lowered to Lv 12.
     - Gem priority of Void Strike and Blitz Rush is swapped.
+- Magick Control may become the default Head Hunt tripod.
 - Apply changes manually if the guide is not updated in time.
 - See [Essentials](essentials.md) for class-wide changes.
 
