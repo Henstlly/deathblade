@@ -38,10 +38,13 @@
 
 <div class="ap-calc">
 
-<!-- Master Build toggle - upstream of all three layers this calculator
-     has (the primary Ark Passive grid below, Bracelet Comparison, and
-     Engraving Comparison's derived Playstyle) rather than living inside
-     just one of them. Real pill-chip buttons, not a plain <select> or
+<!-- Build dock - ONE instance of the Family/Variant toggle, docked and
+     scoped to .ap-calc's own box (see initBuildDock in
+     ark-passive-calculator.js and the ap-build-dock rules in extra.css)
+     instead of being repeated inside Bracelet Comparison's and
+     Engraving Comparison's own headers as separate "echo" copies (the
+     former approach - see git history/old comment on this block if it
+     still exists). Real pill-chip buttons, not a plain <select> or
      radio dots, since "one vivid, rest muted" needs every option visible
      at once - a collapsed <select> can't show that.
      Two tiers, not one flat row of 6: Family (RE/Surge) plus Variant
@@ -54,24 +57,46 @@
      shown; the other is hidden by syncBuildToggleUI, same
      hidden-unless-active convention as the Breaking Moon summary row.
      Writes to the real ap-brace-spec-build <select> further down (see
-     that select's own comment) and two-way syncs with its compact echo
-     copies inside Bracelet Comparison's and Engraving Comparison's own
-     headers. -->
-<div class="ap-build-toggle-row ap-build-toggle-row--master">
-  <span class="ap-build-toggle-label">Build</span>
-  <div class="ap-build-toggle ap-build-toggle--master" role="group" aria-label="Build">
-    <div class="ap-build-toggle-tier ap-build-toggle-tier--family">
-      <button type="button" class="ap-build-chip ap-build-family-chip" data-family="re">RE</button>
-      <button type="button" class="ap-build-chip ap-build-family-chip" data-family="surge">Surge</button>
-    </div>
-    <div class="ap-build-toggle-tier ap-build-toggle-tier--variant ap-build-toggle-tier--variant-re">
-      <button type="button" class="ap-build-chip ap-build-variant-chip" data-build="re-111">111/313</button>
-      <button type="button" class="ap-build-chip ap-build-variant-chip" data-build="re-333">333</button>
-    </div>
-    <div class="ap-build-toggle-tier ap-build-toggle-tier--variant ap-build-toggle-tier--variant-surge">
-      <button type="button" class="ap-build-chip ap-build-variant-chip" data-build="surge-111">111</button>
-      <button type="button" class="ap-build-chip ap-build-variant-chip" data-build="surge-222">222</button>
-      <button type="button" class="ap-build-chip ap-build-variant-chip" data-build="surge-333">333</button>
+     that select's own comment).
+     Desktop (>900px, matching .ap-calc-layout's own breakpoint):
+     .ap-build-dock is position:sticky to the top of the viewport (same
+     offset as .ap-calc-live) for as long as you're anywhere inside
+     .ap-calc - releases naturally once you scroll into CPM Calculator/
+     Useful Links, since .ap-calc's own box ends right there. The trigger
+     button is display:none and .ap-build-dock-panel is forced visible
+     (see the ap-build-dock-panel media-query override in extra.css -
+     it deliberately does NOT use the [hidden] attribute the way
+     .ap-calc-popover does, to avoid the same display-vs-[hidden]
+     specificity fight documented on .ap-brace-info-icon[hidden] et al.;
+     see the JS/CSS comments for why a plain --open class is used
+     instead).
+     Mobile (<=900px): collapses to just the ap-build-dock-trigger pill
+     (label kept in sync with the resolved build by syncBuildToggleUI),
+     sticky to the BOTTOM of the viewport instead, same .ap-calc-scoped
+     release. Tapping it opens .ap-build-dock-panel as a small popover
+     above the pill; tapping a chip, tapping the pill again, clicking
+     outside, or Escape closes it (see initBuildDock). -->
+<div class="ap-build-dock">
+  <button type="button" class="ap-build-dock-trigger" aria-haspopup="true" aria-expanded="false">
+    <span class="ap-build-dock-trigger-label">Build</span>
+    <span class="ap-build-dock-trigger-chevron" aria-hidden="true">&#9662;</span>
+  </button>
+  <div class="ap-build-toggle-row ap-build-toggle-row--master ap-build-dock-panel">
+    <span class="ap-build-toggle-label">Build</span>
+    <div class="ap-build-toggle ap-build-toggle--master" role="group" aria-label="Build">
+      <div class="ap-build-toggle-tier ap-build-toggle-tier--family">
+        <button type="button" class="ap-build-chip ap-build-family-chip" data-family="re">RE</button>
+        <button type="button" class="ap-build-chip ap-build-family-chip" data-family="surge">Surge</button>
+      </div>
+      <div class="ap-build-toggle-tier ap-build-toggle-tier--variant ap-build-toggle-tier--variant-re">
+        <button type="button" class="ap-build-chip ap-build-variant-chip" data-build="re-111">111/313</button>
+        <button type="button" class="ap-build-chip ap-build-variant-chip" data-build="re-333">333</button>
+      </div>
+      <div class="ap-build-toggle-tier ap-build-toggle-tier--variant ap-build-toggle-tier--variant-surge">
+        <button type="button" class="ap-build-chip ap-build-variant-chip" data-build="surge-111">111</button>
+        <button type="button" class="ap-build-chip ap-build-variant-chip" data-build="surge-222">222</button>
+        <button type="button" class="ap-build-chip ap-build-variant-chip" data-build="surge-333">333</button>
+      </div>
     </div>
   </div>
 </div>
@@ -797,51 +822,21 @@
   <summary>Bracelet Comparison</summary>
   <div class="ap-brace-compare-body">
     <div class="ap-brace-compare-inputs">
-      <!-- Compact echo copy of the master Build toggle at the top of the
-           calculator (same two-tier Family/Variant shape - see that
-           toggle's own comment) - two-way synced through the shared
-           ap-brace-spec-build select both write to. Lives in this
-           section's own header rather than the master's exact chip
-           style/size so switching build here, mid-Bracelet-Comparison,
-           doesn't require scrolling back up. Sits inside
-           .ap-brace-compare-inputs's own flex row rather than as a
-           full-width row of its own (--inline strips its own standalone
-           row's margin/padding/border, leaving .ap-brace-compare-inputs's
-           border-bottom as the row's only divider - see that class's own
-           CSS comment). Used to share this row with a "Current
-           Bracelet's Crit Stat" field, removed once the Bracelet
-           Comparison no-bracelet baseline started deriving from
-           CRIT_BASE instead (see ark-passive-calculator.js). -->
-      <div class="ap-build-toggle-row ap-build-toggle-row--echo ap-build-toggle-row--inline">
-        <span class="ap-build-toggle-label">Build</span>
-        <div class="ap-build-toggle ap-build-toggle--echo" role="group" aria-label="Build">
-          <div class="ap-build-toggle-tier ap-build-toggle-tier--family">
-            <button type="button" class="ap-build-chip ap-build-family-chip" data-family="re">RE</button>
-            <button type="button" class="ap-build-chip ap-build-family-chip" data-family="surge">Surge</button>
-          </div>
-          <div class="ap-build-toggle-tier ap-build-toggle-tier--variant ap-build-toggle-tier--variant-re">
-            <button type="button" class="ap-build-chip ap-build-variant-chip" data-build="re-111">111/313</button>
-            <button type="button" class="ap-build-chip ap-build-variant-chip" data-build="re-333">333</button>
-          </div>
-          <div class="ap-build-toggle-tier ap-build-toggle-tier--variant ap-build-toggle-tier--variant-surge">
-            <button type="button" class="ap-build-chip ap-build-variant-chip" data-build="surge-111">111</button>
-            <button type="button" class="ap-build-chip ap-build-variant-chip" data-build="surge-222">222</button>
-            <button type="button" class="ap-build-chip ap-build-variant-chip" data-build="surge-333">333</button>
-          </div>
-        </div>
-      </div>
-      <!-- ap-brace-spec-build is the single real source of truth for the
+      <!-- Build toggle now lives once, docked at the top of .ap-calc (see
+           that block's own comment) instead of an echo copy here -
+           removed so switching build mid-Bracelet-Comparison no longer
+           needed its own duplicate row.
+           ap-brace-spec-build is the single real source of truth for the
            active build (this Spec Scaling math, the primary Ark Passive
            grid, and Engraving Comparison's derived RE/Surge Playstyle all
            read it) - kept as a real <select> so the existing generic
            input/select listener loop and the localStorage/Export/Import
            machinery (both keyed by element id, see collectFieldData/
            applyFieldData) keep working unmodified. Hidden because the
-           actual controls the reader sees/clicks are the master Build
-           toggle at the top of the calculator plus this section's and
-           Engraving Comparison's own compact echo copies - all real
-           <button>s (now two tiers, Family + Variant - see the master
-           toggle's own comment) that write into this select's value and
+           actual control the reader sees/clicks is the single docked
+           Build toggle - a real <button> group (two tiers, Family +
+           Variant - see the ap-build-dock comment) that writes into this
+           select's value and
            dispatch its "change" event (see initApCalcRoot's build-chip
            wiring), so clicking any one of them recomputes the whole
            calculator exactly as if this select had been changed
@@ -1164,33 +1159,13 @@
 <details class="ap-engr-compare">
   <summary>Engraving Comparison</summary>
   <div class="ap-brace-compare-body">
-    <!-- Same compact echo copy of the master Build toggle as Bracelet
-         Comparison's own header (see that section's comment) - without
-         this, switching Build while working in Engraving Comparison
-         (collapsed lower on the page) meant scrolling all the way back
-         up to the master toggle and back down again. Doubles as the
-         RE/Surge Playstyle indicator that used to be its own derived-only
-         row here (the active chip's label and color already say RE vs
-         Surge, so a separate "Playstyle: RE" line next to it was
-         redundant once this toggle existed). -->
-    <div class="ap-build-toggle-row ap-build-toggle-row--echo">
-      <span class="ap-build-toggle-label">Build</span>
-      <div class="ap-build-toggle ap-build-toggle--echo" role="group" aria-label="Build">
-        <div class="ap-build-toggle-tier ap-build-toggle-tier--family">
-          <button type="button" class="ap-build-chip ap-build-family-chip" data-family="re">RE</button>
-          <button type="button" class="ap-build-chip ap-build-family-chip" data-family="surge">Surge</button>
-        </div>
-        <div class="ap-build-toggle-tier ap-build-toggle-tier--variant ap-build-toggle-tier--variant-re">
-          <button type="button" class="ap-build-chip ap-build-variant-chip" data-build="re-111">111/313</button>
-          <button type="button" class="ap-build-chip ap-build-variant-chip" data-build="re-333">333</button>
-        </div>
-        <div class="ap-build-toggle-tier ap-build-toggle-tier--variant ap-build-toggle-tier--variant-surge">
-          <button type="button" class="ap-build-chip ap-build-variant-chip" data-build="surge-111">111</button>
-          <button type="button" class="ap-build-chip ap-build-variant-chip" data-build="surge-222">222</button>
-          <button type="button" class="ap-build-chip ap-build-variant-chip" data-build="surge-333">333</button>
-        </div>
-      </div>
-    </div>
+    <!-- Build toggle now lives once, docked at the top of .ap-calc, and
+         stays reachable (sticky) while this section is open, so no echo
+         copy is needed here anymore. It still doubles as the RE/Surge
+         Playstyle indicator that used to be its own derived-only row
+         here (the active chip's label and color already say RE vs
+         Surge, so a separate "Playstyle: RE" line next to it stays
+         redundant). -->
     <p class="ap-brace-compare-intro">Competing engravings, searched for the best 2-slot combination, against your Best Setup above.</p>
 
     <!-- Engravings (Core + Competing Pool merged into one card) and
@@ -1659,27 +1634,10 @@
 <details class="ap-acc-compare">
   <summary>Accessory Comparison</summary>
   <div class="ap-brace-compare-body">
-    <!-- Compact echo copy of the master Build toggle - see Bracelet
-         Comparison's own copy above for the full comment (two-way
-         synced through the same shared ap-brace-spec-build select). -->
-    <div class="ap-build-toggle-row ap-build-toggle-row--echo">
-      <span class="ap-build-toggle-label">Build</span>
-      <div class="ap-build-toggle ap-build-toggle--echo" role="group" aria-label="Build">
-        <div class="ap-build-toggle-tier ap-build-toggle-tier--family">
-          <button type="button" class="ap-build-chip ap-build-family-chip" data-family="re">RE</button>
-          <button type="button" class="ap-build-chip ap-build-family-chip" data-family="surge">Surge</button>
-        </div>
-        <div class="ap-build-toggle-tier ap-build-toggle-tier--variant ap-build-toggle-tier--variant-re">
-          <button type="button" class="ap-build-chip ap-build-variant-chip" data-build="re-111">111/313</button>
-          <button type="button" class="ap-build-chip ap-build-variant-chip" data-build="re-333">333</button>
-        </div>
-        <div class="ap-build-toggle-tier ap-build-toggle-tier--variant ap-build-toggle-tier--variant-surge">
-          <button type="button" class="ap-build-chip ap-build-variant-chip" data-build="surge-111">111</button>
-          <button type="button" class="ap-build-chip ap-build-variant-chip" data-build="surge-222">222</button>
-          <button type="button" class="ap-build-chip ap-build-variant-chip" data-build="surge-333">333</button>
-        </div>
-      </div>
-    </div>
+    <!-- Build toggle now lives once, docked at the top of .ap-calc and
+         sticky while this section is open - see Bracelet Comparison's
+         own comment for why the echo copy that used to sit here was
+         removed. -->
     <p class="ap-brace-compare-intro">Candidate accessory lines, valued as if each were the only line on that slot, against your Best Setup above.</p>
 
     <div class="ap-acc-panel ap-acc-necklace-panel">

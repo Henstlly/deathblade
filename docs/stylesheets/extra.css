@@ -4648,19 +4648,17 @@ h3 { color: var(--dbc-teal); }
   color: var(--dbc-slate);
   font-size: 0.92em;
 }
-/* Master Build toggle (top of calculator) and its compact echo copies in
-   Bracelet/Engraving Comparison - real pill-chip <button>s so every
-   option is visible and comparable at once ("one vivid, rest muted"),
-   unlike a plain <select> which only ever shows the current value
-   collapsed, or radio dots which don't carry a strong enough
+/* Docked Build toggle (top of calculator) - real pill-chip <button>s so
+   every option is visible and comparable at once ("one vivid, rest
+   muted"), unlike a plain <select> which only ever shows the current
+   value collapsed, or radio dots which don't carry a strong enough
    active/inactive contrast at a glance. Two tiers per group (Family:
    RE/Surge, Variant: 2 or 3 chips depending which family's active - see
-   .ap-build-toggle-tier below and resources.md's master toggle comment
-   for why RE only has 2). All three groups share the same .ap-build-chip
-   look; only size differs (see .ap-build-toggle--echo below) - see
-   ark-passive-calculator.js's syncBuildToggleUI for how the active
-   class/tier visibility gets applied to all three groups together from
-   the one real ap-brace-spec-build <select> they all write to. */
+   .ap-build-toggle-tier below and resources.md's Build dock comment for
+   why RE only has 2). See ark-passive-calculator.js's syncBuildToggleUI
+   for how the active class/tier visibility is applied, and initBuildDock
+   just below it for the sticky/collapse behavior this single instance
+   needs now that it's not duplicated per-section anymore. */
 .md-typeset .ap-build-toggle-row {
   display: flex;
   flex-wrap: wrap;
@@ -4668,12 +4666,7 @@ h3 { color: var(--dbc-teal); }
   gap: 0.7em;
 }
 .md-typeset .ap-build-toggle-row--master {
-  margin: 0 0 1.1em;
-}
-.md-typeset .ap-build-toggle-row--echo {
-  margin-bottom: 0.9em;
-  padding-bottom: 0.7em;
-  border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+  margin: 0;
 }
 .md-typeset .ap-build-toggle-label {
   color: var(--dbc-lavender);
@@ -4744,30 +4737,285 @@ h3 { color: var(--dbc-teal); }
   background-color: var(--dbc-teal);
   border-color: var(--dbc-teal);
 }
-/* Compact sizing - smaller chips, tighter gaps - now shared by the
-   master toggle at the top of the calculator AND its echo copies in
-   Bracelet/Accessory/Engraving Comparison, so all four read as the same
-   scale of control rather than the master looking like a separate,
-   larger widget. (Kept as a shared --echo rule rather than renaming the
-   class, since "echo" already describes what these copies are; the
-   master toggle just opts into the same look via the selector list
-   below instead of getting its own near-duplicate block.) */
-.md-typeset .ap-build-toggle--master,
-.md-typeset .ap-build-toggle--echo {
+/* Compact sizing - smaller chips, tighter gaps - so the docked toggle
+   reads as a lightweight control that rides along with you, not a
+   full-size widget bar. */
+.md-typeset .ap-build-toggle--master {
   gap: 0.35em;
 }
-.md-typeset .ap-build-toggle--master .ap-build-chip,
-.md-typeset .ap-build-toggle--echo .ap-build-chip {
+.md-typeset .ap-build-toggle--master .ap-build-chip {
   font-size: 0.72em;
   padding: 0.2em 0.6em;
 }
-.md-typeset .ap-build-toggle--master .ap-build-toggle-tier,
-.md-typeset .ap-build-toggle--echo .ap-build-toggle-tier {
+.md-typeset .ap-build-toggle--master .ap-build-toggle-tier {
   gap: 0.35em;
 }
-.md-typeset .ap-build-toggle--master .ap-build-toggle-tier--variant,
-.md-typeset .ap-build-toggle--echo .ap-build-toggle-tier--variant {
+.md-typeset .ap-build-toggle--master .ap-build-toggle-tier--variant {
   padding-left: 0.5em;
+}
+/* .ap-build-dock is the positioning shell around the docked toggle: the
+   trigger pill (mobile only) plus .ap-build-dock-panel (the actual
+   .ap-build-toggle-row from above). Scoped to sit anywhere inside
+   .ap-calc - on desktop, position: sticky's release point is its own
+   DOM parent's box, so it naturally stops sticking once .ap-calc itself
+   (the whole calculator, Bracelet/Accessory/Engraving Comparison
+   included) scrolls past, right before CPM Calculator/Useful Links,
+   with no JS scroll math needed there. Mobile does NOT get this for
+   free - it uses position: fixed instead of sticky (see the mobile
+   media query's own comment further down for why sticky doesn't work
+   for this element at all on that axis) - so its equivalent release is
+   done in JS instead; see .ap-build-dock--offscreen and
+   updateDockStuckState in ark-passive-calculator.js. The rest of this
+   comment block, where it talks about sticky's release behavior,
+   describes the desktop case only. z-index: 3 keeps it above
+   .ap-calc-live's sticky column
+   (z-index: 2) if their sticky boxes ever overlap during scroll. */
+.md-typeset .ap-build-dock {
+  position: sticky;
+  z-index: 3;
+}
+/* Desktop (matches .ap-calc-layout's own 900px breakpoint): sticks to
+   the top of the viewport, with an opaque background+padding so
+   scrolled content doesn't show through the bar. Nothing to collapse
+   here, so the trigger pill is hidden entirely and the panel is forced
+   visible regardless of .ap-build-dock-panel--open. This override does
+   NOT need to fight [hidden]'s UA-stylesheet specificity the way
+   .ap-brace-info-icon[hidden] et al. do elsewhere in this file - the
+   open/close state below is a plain class, not the [hidden] attribute
+   .ap-calc-popover uses, specifically so this responsive swap has
+   nothing to out-specificity.
+
+   top is deliberately NOT the same 4.4rem .ap-calc-live uses. That
+   value matches Material's *expanded* header (title bar + tabs row).
+   .ap-calc-live gets away with it because it's transparent - once you
+   scroll down far enough for a sticky element to actually engage,
+   Material has already collapsed the tabs row down to just the title
+   bar (title bar alone renders at 48px regardless of the 125% root
+   font-size Material sets, so this is a plain px value, not rem), and
+   an invisible 40px gap above transparent content is unnoticeable. The
+   dock has a background, so that same gap rendered as a floating black
+   band with dead space above it. 48px matches the steady-state
+   (scrolled, tabs collapsed) header exactly, which is the case the dock
+   is actually visible in almost all the time. The only trade-off is a
+   brief moment right after a scroll-up gesture re-expands the tabs row,
+   where the dock can sit a sliver under the header until the collapse
+   re-triggers - far less visible than a permanent gap on every scroll.
+   Background is --dbc-header-footer-bg (the same "site chrome" surface
+   the header/footer already use) rather than the raw page background,
+   so the bar reads as an extension of that chrome instead of an
+   arbitrary dark slab.
+
+   Deliberately NO border-bottom here. Every card the dock scrolls over
+   (.ap-calc-group, Party & Positioning) already has its own top border
+   at the exact pixel line where the dock's bottom edge sits once stuck
+   - a border-bottom on the dock collides with the card's own top border
+   on that same line, two adjacent strokes reading as one doubled/
+   overlapping line cutting across the card's rounded top corner. A
+   flat, borderless slab has no hard line of its own to collide with
+   anything - when a card's top border passes the dock's bottom edge it
+   just cleanly appears from underneath, one single stroke, no seam.
+
+   The background+shadow live on ::before rather than directly on
+   .ap-build-dock, and only paint at all while the JS-driven
+   .ap-build-dock--stuck class is present (see the scroll listener in
+   ark-passive-calculator.js) - two separate problems this solves:
+
+   1) box-shadow alone, unconditionally, painted even while the dock is
+      still sitting in normal flow (before it's actually engaged, at
+      the very top of .ap-calc) and again during the brief release
+      window at the very bottom (once .ap-calc's own box ends and the
+      dock unpins - see this comment's own note on the release point
+      above). Sticky has no cross-browser ":stuck" selector, so the JS
+      does one rect.top-vs-offset check and toggles the class; the CSS
+      just reacts to it, keeping the shadow scoped to the moments the
+      dock is actually a floating bar over content instead of showing
+      up on a bar that's sitting flush in the normal document flow.
+
+   2) The bar needs to look like an extension of the calculator's own
+      chrome - reaching .ap-calc's own left/right border edges (the
+      padding-box the bar was sitting inset inside of, per .ap-calc's
+      own `padding: 1em 1.2em 1.2em`), not just the width of whatever
+      was visually narrower still inside it. This is scoped to .ap-calc
+      itself, NOT the full viewport - .ap-build-dock is a direct child
+      of .ap-calc, so ::before bleeding by exactly -1.2em on each side
+      (matching .ap-calc's own left/right padding, a fixed em value so
+      it tracks that padding regardless of viewport width) lands it
+      exactly flush with .ap-calc's border, no further and no less -
+      the sidebar/TOC gutters beyond that are not part of "the
+      calculator" and were never meant to be covered. top:0/bottom:0
+      sizes it to .ap-build-dock's own padding box height, same as
+      before. Sits behind the chip content at z-index:-1 within
+      .ap-build-dock's own stacking context (established by its
+      z-index:3 below). The shadow value itself (0 0 .2rem #0000001a,
+      0 .2rem .4rem #0003) is copied directly from Material's own
+      .md-header--shadow rule, so the dock's stuck shadow reads as the
+      same weight as the real header's rather than a heavier one-off -
+      matching that rule's weight is the only thing borrowed from the
+      header here, not its full-viewport span.
+
+   margin-bottom keeps a strip of plain page background between the
+   dock and .ap-calc-layout right at the moment the dock first engages
+   (before that, the dock is still in normal flow and this is just
+   ordinary spacing) - a few extra pixels of buffer before the flat
+   occlusion edge starts covering the grid, so the transition isn't
+   instant. It does not, and can't, prevent the dock from eventually
+   sliding over card content deeper in the grid as you keep scrolling -
+   that's inherent to any sticky occluding bar and is fine now that the
+   only edge treatment left (the soft shadow above) has nothing hard
+   enough to conflict with whatever border is under it. */
+@media screen and (min-width: 901px) {
+  .md-typeset .ap-build-dock {
+    top: 48px;
+    padding: 0.6em 0 0.7em;
+    margin-bottom: 0.8em;
+  }
+  .md-typeset .ap-build-dock::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -1.2em;
+    right: -1.2em;
+    z-index: -1;
+    background-color: var(--dbc-header-footer-bg);
+    box-shadow: none;
+    transition: box-shadow 0.2s ease;
+  }
+  /* Background above stays on regardless of stuck state - it's just the
+     bar's normal chrome, on-screen the moment .ap-build-dock is in the
+     viewport at all. Only the shadow is conditional: it's meaningless
+     (and looked wrong) while the bar sits in normal flow rather than
+     actually floating over content underneath it. */
+  .md-typeset .ap-build-dock.ap-build-dock--stuck::before {
+    box-shadow: 0 0 0.2rem #0000001a, 0 0.2rem 0.4rem #0003;
+  }
+  .md-typeset .ap-build-dock-trigger {
+    display: none;
+  }
+  .md-typeset .ap-build-dock-panel {
+    display: flex;
+  }
+}
+/* Mobile: collapses to just the trigger pill, docked to the BOTTOM of
+   the viewport instead (the top is already Material's own mobile
+   header). pointer-events: none on the row and auto on just the pill/
+   panel keeps the empty transparent width from swallowing taps on
+   whatever page content sits underneath it.
+
+   position: fixed here, NOT sticky - this used to be `position: sticky;
+   bottom: 0.8em` (inherited from the base .ap-build-dock rule further
+   up), which looks like the obvious choice but doesn't actually work
+   for this element: bottom-anchored sticky only pins a box while
+   scrolling UP INTO it (the classic case is an element sitting at the
+   END of a container, catching itself against the viewport's bottom
+   edge as you scroll back toward the top). .ap-build-dock sits at the
+   very TOP of .ap-calc's DOM instead, and a reader scrolls DOWN through
+   it - the exact opposite direction bottom-sticky catches - so it just
+   never engaged at all; the "pill" was actually a perfectly ordinary
+   in-flow block the whole time, scrolling away with the page 1:1
+   (confirmed with a Playwright getBoundingClientRect() sweep: its
+   position tracked `staticY - scrollY` exactly, no pinning, at every
+   scroll offset tested). That also explains both symptoms reported:
+   nothing ever moved it TO the bottom of the screen (so it never read
+   as "docked"), and at the top of the page its ordinary in-flow
+   position sits right before .ap-calc-layout's first card with only
+   normal margin between them, which is easy to misread as an
+   overlapping border once you're expecting a floating bar there.
+
+   Fixed position needed the .md-content__inner transform bug fixed
+   first (see that rule's own comment) - fixed-position elements anchor
+   to the nearest transformed ancestor's box instead of the true
+   viewport, which was silently retargeting this to the whole article
+   regardless of what position/inset values were used here.
+
+   left/right: 0 replaces sticky's old horizontal behavior (which was
+   just "stay in normal in-flow width" - sticky only had `bottom` set,
+   nothing horizontal, so the row naturally spanned .ap-calc's content
+   width and justify-content pushed the pill to its right edge). Fixed
+   positioning has no in-flow width to inherit, so it needs an explicit
+   span - full viewport width is fine here since Material's mobile
+   layout has already dropped the sidebar/TOC by this breakpoint, so
+   .ap-calc's content width and the viewport width are effectively the
+   same at <=900px.
+
+   Visibility (.ap-build-dock--offscreen) is JS-driven the same way
+   .ap-build-dock--stuck is on desktop (see updateDockStuckState in
+   ark-passive-calculator.js) - fixed positioning has no native "release
+   once my container scrolls past" behavior the way sticky does, so the
+   same scroll listener that already runs for the desktop shadow now
+   also hides this pill outside of .ap-calc's own vertical range,
+   keeping the ".ap-calc-scoped release" this dock was always meant to
+   have (see .ap-build-dock's own comment above) - just done in JS
+   instead of getting it for free from sticky, since sticky was never
+   actually capable of doing it here. */
+@media screen and (max-width: 900px) {
+  .md-typeset .ap-build-dock {
+    position: fixed;
+    bottom: 0.8em;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 0.9em;
+    pointer-events: none;
+  }
+  .md-typeset .ap-build-dock.ap-build-dock--offscreen {
+    display: none;
+  }
+  .md-typeset .ap-build-dock-trigger,
+  .md-typeset .ap-build-dock-panel {
+    pointer-events: auto;
+  }
+  .md-typeset .ap-build-dock-panel {
+    display: none;
+    position: absolute;
+    bottom: 2.7em;
+    right: 0.9em;
+    background-color: var(--dbc-chip-surface);
+    border: 1px solid rgba(var(--dbc-purple-rgb), 0.35);
+    border-radius: 10px;
+    padding: 0.6em 0.7em;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+    z-index: 30;
+  }
+  .md-typeset .ap-build-dock-panel.ap-build-dock-panel--open {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5em;
+  }
+}
+/* display isn't set here on purpose - it's fully governed by the two
+   media queries above (mobile: flex, desktop: none). This block used to
+   also declare `display: flex` unconditionally, which - being equal
+   specificity to and later in the source than the desktop media query's
+   `display: none` above - silently won on desktop and left the trigger
+   pill visible there at all times, alongside the panel that's ALSO
+   force-visible on desktop (see that media query's own comment on why
+   the panel doesn't need to fight [hidden] there - the trigger had the
+   same cascade-order issue that comment was written to avoid). */
+.md-typeset .ap-build-dock-trigger {
+  border: 1px solid rgba(var(--dbc-purple-rgb), 0.4);
+  background-color: var(--dbc-chip-surface);
+  color: var(--dbc-lavender);
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.78em;
+  font-weight: 600;
+  padding: 0.4em 0.9em;
+  align-items: center;
+  gap: 0.4em;
+  cursor: pointer;
+}
+.md-typeset .ap-build-dock-trigger:hover {
+  border-color: rgba(var(--dbc-purple-rgb), 0.7);
+}
+.md-typeset .ap-build-dock-trigger-chevron {
+  font-size: 0.7em;
+  transition: transform 0.15s ease;
+}
+.md-typeset .ap-build-dock-trigger[aria-expanded="true"] .ap-build-dock-trigger-chevron {
+  transform: rotate(180deg);
 }
 .md-typeset .ap-brace-compare-inputs {
   display: flex;
@@ -4986,6 +5234,23 @@ h3 { color: var(--dbc-teal); }
      anything wide enough to scroll. */
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+}
+/* Bracelet Comparison's own .ap-brace-compare-inputs (the OTHER usage
+   the comment above refers to) now wraps nothing but the hidden
+   ap-brace-spec-build select - the visible echo copy of the Build
+   toggle it used to hold was removed once the docked toggle became the
+   single source of truth (see resources.md's own comment on that
+   select). The base rule's margin-bottom/padding-bottom/border-bottom
+   was sized for that visible row; with nothing left to separate FROM,
+   it now renders as a stray dashed line floating above "Candidate
+   bracelet lines..." with nothing above it. Zero out spacing and the
+   border here the same way the Character Data usage above already
+   does, rather than deleting the wrapper div itself (still a real,
+   non-hidden element in the DOM - the select inside it just is). */
+.md-typeset .ap-brace-compare-body > .ap-brace-compare-inputs {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
 }
 /* Gear Comparisons group: the 5 boxes above (Character Data, Bracelet/
    Engraving/Accessory/Chaos Core Comparison) used to each be a fully
@@ -5360,7 +5625,8 @@ h3 { color: var(--dbc-teal); }
    without this the grid's last card ran straight into it with no
    breathing room. Plain margin alone read as "some gap" rather than "a
    section break" though, so this also gets the same dashed-line
-   language as .ap-build-toggle-row--echo's own bottom border above and
+   language used throughout this stylesheet for section breaks (e.g.
+   .ap-build-toggle-row--master's own bottom border above) and
    .ap-gear-card-subtitle inside the card. This used to sit on the title
    <p> itself (back when it was .ap-gear-cards' immediate sibling on its
    own line) - now that the title lives inside Stone 1's row instead,
@@ -5548,21 +5814,6 @@ h3 { color: var(--dbc-teal); }
 .md-typeset .ap-brace-compare-inputs .ap-calc-field-row {
   flex: 0 0 auto;
   margin-bottom: 0;
-}
-/* Bracelet Comparison's compact Build toggle echo sits inside
-   .ap-brace-compare-inputs's own flex row instead of a separate row
-   above it. Strips the standalone toggle row's own bottom margin/
-   padding/border-bottom since .ap-brace-compare-inputs already supplies
-   that divider (see its own rule above); .ap-build-toggle-row's flex/
-   gap/align-items are left alone so the label+chips still lay out
-   correctly. Used to share this row with a "Current Bracelet's Crit
-   Stat" field (removed - see resources.md's comment on the Build toggle
-   echo), which is why this rule still exists even though the toggle is
-   now the row's only item. */
-.md-typeset .ap-build-toggle-row--inline {
-  margin: 0;
-  padding: 0;
-  border-bottom: none;
 }
 /* Attack Power % sources card no longer carries its own background tint
    (used to be its own visually distinct nested box inside one wide
@@ -6903,13 +7154,45 @@ h3 { color: var(--dbc-teal); }
    swaps in a fresh .md-content__inner element on every transition too, so
    this naturally replays on instant navigations as well - no JS retrigger
    needed. Already covered by the prefers-reduced-motion block above for
-   anyone who's turned that off. */
+   anyone who's turned that off.
+
+   Opacity only - deliberately does NOT also animate transform (this used
+   to include `transform: translateY(6px) -> translateY(0)` for a subtle
+   rise-in alongside the fade). fill-mode: both keeps whichever
+   properties this animation touches "held" on .md-content__inner
+   forever after the 0.35s finishes, not just during it - both/forwards
+   bakes in the end state as a standing override rather than releasing
+   the element once the animation completes. For `transform` specifically
+   this is a real problem, and changing the "to" keyframe to
+   `transform: none` (an earlier attempt at fixing this) did NOT fix it:
+   a getComputedStyle read of a HELD (fill-mode: both/forwards, no longer
+   actively ticking) transform animation reports the interpolated result
+   as a resolved matrix even when the specified keyframe value is the
+   `none` keyword, and Chromium treats that held animation as making
+   .md-content__inner the containing block for every position:fixed
+   descendant on the page regardless of the resolved value being the
+   identity - confirmed with a throwaway repro: getAnimations() showed
+   the held effect's final keyframe as literally `transform: "none"`
+   with playState "finished", yet getComputedStyle().transform still
+   read a matrix and a position:fixed test element inside it still
+   tracked page scroll 1:1 instead of staying pinned to the viewport.
+   Dropping `transform` from the animation entirely (this version) was
+   the only thing that actually fixed it in that same repro - opacity
+   alone doesn't establish a containing block for fixed descendants, so
+   nothing is fighting position:fixed once the property being animated
+   isn't transform at all. This is also why the mobile Build dock pill
+   (.ap-build-dock, position: fixed on mobile - see extra.css's own
+   comment on that rule) needed this fixed first: no amount of fixing
+   its own rules would have made it track the viewport while this was
+   still silently retargeting it to .md-content__inner instead. Loses
+   the 6px rise, keeping just the fade - a small trade for not silently
+   breaking every position:fixed element added to the page from here on. */
 .md-content__inner {
   animation: page-fade-in 0.35s ease both;
 }
 @keyframes page-fade-in {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* ---------- Site-wide emoji hover wiggle ---------- */

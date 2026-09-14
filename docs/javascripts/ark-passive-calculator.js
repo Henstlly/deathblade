@@ -858,11 +858,9 @@
     "surge-333": "re-333",
   };
 
-  // Keeps every Build-toggle chip row (the master one at the top of the
-  // calculator, its Family/Variant tiers, and Bracelet/Engraving
-  // Comparison's compact echo copies) visually in sync with the real
-  // ap-brace-spec-build select's current value - called at the top of
-  // update() so every path that can change the select (a chip click,
+  // Keeps the docked Build toggle's chip row visually in sync with the
+  // real ap-brace-spec-build select's current value - called at the top
+  // of update() so every path that can change the select (a chip click,
   // Import/Export, a preset load/switch/reset, or initial page load)
   // re-applies the "one vivid, rest muted" look without each of those
   // call sites needing to know about chips at all. Also self-heals a
@@ -882,10 +880,12 @@
       chip.classList.toggle("ap-build-chip-active", isActive);
       chip.setAttribute("aria-pressed", isActive ? "true" : "false");
     });
+    let activeVariantLabel = "";
     root.querySelectorAll(".ap-build-variant-chip").forEach((chip) => {
       const isActive = chip.dataset.build === active;
       chip.classList.toggle("ap-build-chip-active", isActive);
       chip.setAttribute("aria-pressed", isActive ? "true" : "false");
+      if (isActive) activeVariantLabel = chip.textContent;
     });
     // Only one Variant tier (RE's 2 chips or Surge's 3) is ever shown at
     // once - the other family's tier is hidden rather than removed, same
@@ -894,6 +894,15 @@
       const tierFamily = tier.classList.contains("ap-build-toggle-tier--variant-surge") ? "surge" : "re";
       tier.classList.toggle("ap-build-toggle-tier--hidden", tierFamily !== family);
     });
+    // Mobile's collapsed trigger pill has no chip row of its own to read
+    // at a glance, so it carries the resolved build as its own label
+    // (e.g. "RE 111/313") - built straight from the currently-active
+    // variant chip's own text rather than a second hardcoded label map,
+    // so it can't drift out of sync with what the chips actually say.
+    const triggerLabel = root.querySelector(".ap-build-dock-trigger-label");
+    if (triggerLabel && activeVariantLabel) {
+      triggerLabel.textContent = (family === "surge" ? "Surge " : "RE ") + activeVariantLabel;
+    }
   }
 
   // RE and Surge use the identical formula now that the CDR-driven term
@@ -6754,6 +6763,36 @@
         });
       }
 
+      // Docked Build toggle's mobile trigger pill: opens/closes
+      // .ap-build-dock-panel as a small popover above the pill (see
+      // extra.css's .ap-build-dock rules - a plain --open class, not the
+      // [hidden] attribute .ap-calc-popover uses, since this same panel
+      // also needs to be force-visible on desktop regardless of state,
+      // and fighting [hidden]'s UA-stylesheet specificity for that would
+      // just reintroduce the bug .ap-brace-info-icon[hidden] et al. work
+      // around elsewhere in this file). Desktop hides the trigger
+      // entirely via CSS, so this listener is simply inert there.
+      const dockTriggerEl = root.querySelector(".ap-build-dock-trigger");
+      const dockPanelEl = root.querySelector(".ap-build-dock-panel");
+      if (dockTriggerEl && dockPanelEl) {
+        const setDockOpen = (open) => {
+          dockPanelEl.classList.toggle("ap-build-dock-panel--open", open);
+          dockTriggerEl.setAttribute("aria-expanded", open ? "true" : "false");
+        };
+        dockTriggerEl.addEventListener("click", () => {
+          setDockOpen(!dockPanelEl.classList.contains("ap-build-dock-panel--open"));
+        });
+        // Picking a build closes the panel back down so the reader lands
+        // straight back on the results instead of an open chip tray
+        // sitting over them - a plain click-anywhere-in-the-panel
+        // delegate rather than hanging this off each individual chip's
+        // own listener above, so any future chip added to this panel
+        // gets the same close-on-pick behavior for free.
+        dockPanelEl.addEventListener("click", (ev) => {
+          if (ev.target.closest(".ap-build-chip")) setDockOpen(false);
+        });
+      }
+
       // Mana Food's sensible default flips with Playstyle (RE vs Surge):
       // on RE it's purely informational (Main-Stat-only, doesn't compete
       // with anything - see renderEngravingComparison), so defaulting it
@@ -7133,6 +7172,105 @@
       if (!popoverEl.hidden) closePopover(popoverEl);
     });
   });
+
+  // Same outside-click/Escape dismissal for the docked Build toggle's
+  // mobile trigger panel - bound once at module scope rather than
+  // inside initApCalcRoot() for the same reason as the popover listeners
+  // just above (a per-root binding would leave another permanent
+  // document-level listener behind on every instant-nav revisit). Not
+  // folded into the .ap-calc-popover loop itself since this panel uses
+  // its own --open class rather than the [hidden] attribute (see
+  // extra.css's .ap-build-dock comment for why).
+  document.addEventListener("click", (ev) => {
+    document.querySelectorAll(".ap-build-dock-panel.ap-build-dock-panel--open").forEach((panelEl) => {
+      const triggerEl = panelEl.parentElement && panelEl.parentElement.querySelector(".ap-build-dock-trigger");
+      // ev.target === triggerEl only matched a click on the button's own
+      // padding - the trigger's actual visible content (the label/chevron
+      // spans) are child elements, so a real tap almost always lands on
+      // one of those instead, made ev.target the child, failed this
+      // equality check, and closed the panel this same click had just
+      // opened. .closest() catches the child-element case too.
+      if (panelEl.contains(ev.target) || (triggerEl && triggerEl.contains(ev.target))) return;
+      panelEl.classList.remove("ap-build-dock-panel--open");
+      if (triggerEl) triggerEl.setAttribute("aria-expanded", "false");
+    });
+  });
+  document.addEventListener("keydown", (ev) => {
+    if (ev.key !== "Escape") return;
+    document.querySelectorAll(".ap-build-dock-panel.ap-build-dock-panel--open").forEach((panelEl) => {
+      const triggerEl = panelEl.parentElement && panelEl.parentElement.querySelector(".ap-build-dock-trigger");
+      panelEl.classList.remove("ap-build-dock-panel--open");
+      if (triggerEl) triggerEl.setAttribute("aria-expanded", "false");
+    });
+  });
+
+  // Docked Build toggle's shadow (see .ap-build-dock--stuck in extra.css)
+  // should only paint while the dock is genuinely pinned under the
+  // header - sticky positioning alone can't express that, since the
+  // dock is *always* position:sticky whether or not it's currently
+  // engaged. Plain CSS also has no cross-browser ":stuck" selector, so
+  // this does the one geometry check that actually distinguishes the
+  // three states: normal flow at the very top of .ap-calc (rect.top is
+  // way more than the offset - hasn't engaged yet), genuinely pinned
+  // (rect.top sits exactly at the offset), and the release window at
+  // the very bottom of .ap-calc (rect.top drifts back above the offset
+  // as the dock unpins and scrolls away with the rest of the box - see
+  // the "release point" part of .ap-build-dock's own comment in
+  // extra.css). One check covers engage AND release symmetrically, so
+  // there's no separate "was it released" branch to maintain.
+  // Bound ONCE at module scope, same reasoning as the click-outside/
+  // Escape listeners just above (a per-root binding inside
+  // initApCalcRoot() would leave another permanent scroll listener
+  // behind on every instant-nav revisit) - queries `document` fresh
+  // inside the handler rather than caching the element, so it keeps
+  // working after instant nav swaps the DOM out from under a cached
+  // reference. There's normally just one .ap-build-dock per page, so
+  // querying from `document` costs nothing in practice.
+  //
+  // Mobile shares this same listener for a second, unrelated job: the
+  // dock is position:fixed there instead of sticky (see the mobile
+  // media query's own comment in extra.css for why bottom-anchored
+  // sticky can't work for an element that sits at the TOP of .ap-calc),
+  // and fixed positioning has no native "stop once my container
+  // scrolls past" behavior the way sticky does - so .ap-calc's own
+  // rect is checked directly here and .ap-build-dock--offscreen is
+  // toggled to hide the pill whenever .ap-calc isn't intersecting the
+  // viewport at all (above it - hasn't scrolled down that far yet - or
+  // below it - already scrolled past into CPM Calculator/Useful Links).
+  // This is what the "same .ap-calc-scoped release" part of the mobile
+  // media query's own comment refers to.
+  const DOCK_STUCK_OFFSET_PX = 48; // must match extra.css's desktop `top`
+  let dockStuckTicking = false;
+  const updateDockStuckState = () => {
+    dockStuckTicking = false;
+    const dockEl = document.querySelector(".ap-build-dock");
+    if (!dockEl) return;
+    const isDesktopDock = window.matchMedia("(min-width: 901px)").matches;
+    if (isDesktopDock) {
+      const isStuck = dockEl.getBoundingClientRect().top <= DOCK_STUCK_OFFSET_PX + 1;
+      dockEl.classList.toggle("ap-build-dock--stuck", isStuck);
+      dockEl.classList.remove("ap-build-dock--offscreen");
+      return;
+    }
+    dockEl.classList.remove("ap-build-dock--stuck");
+    const calcEl = document.querySelector(".ap-calc");
+    if (!calcEl) return;
+    const calcRect = calcEl.getBoundingClientRect();
+    const calcInView = calcRect.top < window.innerHeight && calcRect.bottom > 0;
+    dockEl.classList.toggle("ap-build-dock--offscreen", !calcInView);
+  };
+  const queueDockStuckUpdate = () => {
+    if (dockStuckTicking) return;
+    dockStuckTicking = true;
+    requestAnimationFrame(updateDockStuckState);
+  };
+  window.addEventListener("scroll", queueDockStuckUpdate, { passive: true });
+  window.addEventListener("resize", queueDockStuckUpdate);
+  // Also re-check right after every render (build switch, instant nav
+  // landing mid-scroll, etc.) instead of waiting for the next scroll/
+  // resize event, so the dock never briefly shows the wrong shadow
+  // state right after a re-render.
+  window.SiteUtils.registerRenderer(".ap-calc", queueDockStuckUpdate);
 
   // Was a hand-rolled document$-only subscription (see site-utils.js's
   // registerRenderer doc comment for why that's not safe to assume covers
