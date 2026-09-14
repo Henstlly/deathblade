@@ -112,7 +112,7 @@ Atk/Move Speed Feast
 
 **Pros:**{: .best-for } Highest damage bonus.
 
-**Cons:**{: .tradeoff } Requires Maelstrom management for damage.
+**Cons:**{: .tradeoff } Requires <span class="skill-mention" data-skill-id="maelstrom">Maelstrom</span> management for damage.
 
 </div>
 </details>
@@ -133,7 +133,7 @@ Pair with <span class="skill-mention" data-skill-id="curseddoll">Cursed Doll</sp
 
 **Pros:**{: .best-for } A safe default with few drawbacks.
 
-**Cons:**{: .tradeoff } Additive to 111's Breaking Moon Crit Dmg bonus.
+**Cons:**{: .tradeoff } Additive to 111's <span class="skill-mention" data-skill-id="breakingmoon">Breaking Moon</span> bonus.
 
 </div>
 </details>
@@ -153,7 +153,7 @@ Pair with <span class="skill-mention" data-skill-id="curseddoll">Cursed Doll</sp
 
 **Pros:**{: .best-for } Highest damage bonus.
 
-**Cons:**{: .tradeoff } Requires Maelstrom management for gameplay, which can correlate to damage.
+**Cons:**{: .tradeoff } Requires <span class="skill-mention" data-skill-id="maelstrom">Maelstrom</span> management for gameplay, which can correlate to damage.
 
 </div>
 </details>
@@ -177,7 +177,7 @@ Pair with <span class="skill-mention" data-skill-id="curseddoll">Cursed Doll</sp
 
 **Pros:**{: .best-for } This is ceiling. Fewer drawbacks for 222.
 
-**Cons:**{: .tradeoff } Doubles up on Maelstrom and food shackles.
+**Cons:**{: .tradeoff } Doubles up on <span class="skill-mention" data-skill-id="maelstrom">Maelstrom</span> and food shackles.
 
 </div>
 </details>
