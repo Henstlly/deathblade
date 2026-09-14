@@ -3486,6 +3486,31 @@
   // enforceGearSupportUptimeGate), unlike Rage Rune which is a Deathblade-
   // only source with no such dependency.
   const SUPPORT_AV_MOVE_SPEED = 8;
+  // Support: Paladin - another party-wide Move Speed source from a
+  // Support, same exclusivity idea as Wine/Mana Food's "only one thing is
+  // actually being eaten" but for "only one Support's kit is actually in
+  // the raid": Artist/Valkyrie and Paladin can never both be true at once
+  // (enforced by normalizeSupportMoveSpeedExclusivity and the dedicated
+  // "change" listener pair, same shape as Wine/Mana Food's own), so at
+  // most one of engrInputs.supportAv/supportPaladin is ever true here.
+  // Unlike Artist/Valkyrie's near-permanent Identity uptime though,
+  // Paladin's Move Speed comes from low-uptime skills (per the checkbox's
+  // own tooltip) - modeling it as a flat 100%-uptime add the way
+  // SUPPORT_AV_MOVE_SPEED is would overstate it, so this is instead
+  // treated as a genuine partial-uptime source, time-weighted the same
+  // way Maelstrom is (see raidCaptainMoveSpeed/raidCaptainSurgeRageMoveSpeed
+  // below - both expand Maelstrom x Paladin into their joint on/off
+  // combinations and cap EACH combination before averaging, not the other
+  // way around, for the same concavity reason Maelstrom's own comment
+  // explains: capping an already-summed EV overstates the real value
+  // whenever the baseline sits near the 140% cap).
+  const SUPPORT_PALADIN_MOVE_SPEED = 24.6;
+  // Fixed assumption baked into the checkbox itself, not a reader-facing
+  // slider like Maelstrom Uptime % - Paladin's Move Speed comes from a
+  // mix of skills with genuinely low, hard-to-pin-down uptime, so this is
+  // one representative number rather than something worth exposing as
+  // its own input.
+  const SUPPORT_PALADIN_MOVE_SPEED_UPTIME = 35;
   // Rage Rune on Surprise Attack (Surge only): 16% chance per cast of +16%
   // Move Speed AND +16% Attack Speed for 6s (the one proc grants both at
   // once). Surprise Attack is cast once every rotation guaranteed, plus a
@@ -3531,6 +3556,17 @@
     if (engrInputs.supportAv && yearning) restOfMs += SUPPORT_AV_MOVE_SPEED;
     if (engrInputs.spec === "surge" && engrInputs.wine && !engrInputs.manaFood) restOfMs += RAID_CAPTAIN_WINE_MOVE_SPEED;
 
+    // Paladin's bonus/uptime, isolated out of restOfMs (unlike Artist/
+    // Valkyrie's flat add above) since it needs to be time-weighted
+    // separately below rather than summed in and capped once - see
+    // SUPPORT_PALADIN_MOVE_SPEED's own comment. 0-value/0-probability
+    // whenever the checkbox is off (or Passionate Dance itself is off, or
+    // Artist/Valkyrie is checked instead - mutually exclusive with
+    // Paladin, see normalizeSupportMoveSpeedExclusivity) so both branches'
+    // math below stays correct without a separate on/off fork.
+    const paladinBonus = engrInputs.supportPaladin && yearning ? SUPPORT_PALADIN_MOVE_SPEED : 0;
+    const paladinUptime = paladinBonus > 0 ? SUPPORT_PALADIN_MOVE_SPEED_UPTIME / 100 : 0;
+
     if (engrInputs.spec !== "surge" || !engrInputs.rageRune) {
       // RE has no Maelstrom/Rage Rune overlap to model (Rage Rune is
       // Surge-only); Surge without Rage Rune taken has nothing stochastic
@@ -3545,12 +3581,24 @@
       // inflated relative to it, so toggling Rage Rune on jumped to the
       // (lower, correct) branch-capped number and looked like a
       // regression.
+      //
+      // Maelstrom and Paladin are modeled as independent uptime sources -
+      // no known correlation between a Paladin's skill usage and
+      // Maelstrom's cast timing, unlike Rage Rune's known correlation with
+      // it (see raidCaptainSurgeRageMoveSpeed below) - so this expands
+      // into the 4 joint on/off combinations and time-weights the CAPPED
+      // outcome of each, same concavity reasoning as the single-source
+      // case this replaces.
       const u = engrInputs.maelstromUptime / 100;
-      const ms = u * Math.min(restOfMs + MAELSTROM_SPEED_BONUS, RAID_CAPTAIN_MOVE_SPEED_CAP)
-        + (1 - u) * Math.min(restOfMs, RAID_CAPTAIN_MOVE_SPEED_CAP);
+      const cap = RAID_CAPTAIN_MOVE_SPEED_CAP;
+      const ms =
+        u * paladinUptime * Math.min(restOfMs + MAELSTROM_SPEED_BONUS + paladinBonus, cap) +
+        u * (1 - paladinUptime) * Math.min(restOfMs + MAELSTROM_SPEED_BONUS, cap) +
+        (1 - u) * paladinUptime * Math.min(restOfMs + paladinBonus, cap) +
+        (1 - u) * (1 - paladinUptime) * Math.min(restOfMs, cap);
       return ms;
     }
-    return raidCaptainSurgeRageMoveSpeed(restOfMs, engrInputs);
+    return raidCaptainSurgeRageMoveSpeed(restOfMs, engrInputs, paladinBonus, paladinUptime);
   }
 
   // Surge + Rage Rune: models the overlap between Maelstrom's own uptime
@@ -3586,7 +3634,17 @@
   // RAGE_RUNE_OVERHANG_CREDIT's own comment for why its tail-rescue value
   // is folded into pRescue at a fraction of the 2nd cast's, rather than
   // counted as its own independent segment).
-  function raidCaptainSurgeRageMoveSpeed(restOfMs, engrInputs) {
+  //
+  // paladinBonus/paladinUptime (from raidCaptainMoveSpeed above) fold in
+  // as a 3rd, independent on/off dimension inside blend() below - Paladin
+  // has no known correlation with either Maelstrom's cast timing or Rage
+  // Rune's proc timing, so unlike the Maelstrom x Rage Rune overlap this
+  // whole function exists to model, Paladin just gets a plain joint-
+  // probability expansion (same shape as raidCaptainMoveSpeed's own
+  // non-Rage-Rune branch) layered on top.
+  function raidCaptainSurgeRageMoveSpeed(restOfMs, engrInputs, paladinBonus, paladinUptime) {
+    paladinBonus = paladinBonus || 0;
+    paladinUptime = paladinUptime || 0;
     const cap = RAID_CAPTAIN_MOVE_SPEED_CAP;
     const withMael = restOfMs + MAELSTROM_SPEED_BONUS;
     const noMael = restOfMs;
@@ -3614,11 +3672,20 @@
       qNormal = share < 1 ? Math.max(0, 1 - excess / (1 - share)) : 0;
     }
 
-    // Probability-weighted average of the capped (proc, no-proc)
-    // outcomes for one segment, given whether Maelstrom is up in it.
+    // Probability-weighted average of the capped (proc, no-proc) x
+    // (Paladin up, Paladin down) outcomes for one segment, given whether
+    // Maelstrom is up in it - each of the 4 joint combinations gets
+    // capped on its own before being weighted in, same concavity
+    // reasoning as everywhere else on this page that averages a capped
+    // stat.
     function blend(rageChance, maelstromUp) {
       const base = maelstromUp ? withMael : noMael;
-      return rageChance * Math.min(base + bonus, cap) + (1 - rageChance) * Math.min(base, cap);
+      return (
+        rageChance * paladinUptime * Math.min(base + bonus + paladinBonus, cap) +
+        rageChance * (1 - paladinUptime) * Math.min(base + bonus, cap) +
+        (1 - rageChance) * paladinUptime * Math.min(base + paladinBonus, cap) +
+        (1 - rageChance) * (1 - paladinUptime) * Math.min(base, cap)
+      );
     }
 
     const normal = qNormal * blend(p1, true) + (1 - qNormal) * blend(p1, false);
@@ -4201,6 +4268,11 @@
       maelstromUptime: Math.max(0, Math.min(100, getNumber(root, ".ap-engr-maelstrom-uptime", 85))),
       rageRune: getCheckbox(root, ".ap-engr-rage-rune", true),
       supportAv: getCheckbox(root, ".ap-engr-support-av", false),
+      // Mutually exclusive with supportAv above - see
+      // normalizeSupportMoveSpeedExclusivity and the dedicated "change"
+      // listener pair in initApCalcRoot, same shape as Wine/Mana Food's
+      // own exclusivity just below.
+      supportPaladin: getCheckbox(root, ".ap-engr-support-paladin", false),
       wine: getCheckbox(root, ".ap-engr-wine", true),
       manaFood: getCheckbox(root, ".ap-engr-manafood", false),
       manaFoodAmount: getNumber(root, ".ap-engr-manafood-amount", 6000),
@@ -4296,7 +4368,7 @@
     // either slot - same "isolate exactly what's under test, zero
     // everything else" precedent computeBraceletVsBracelet's own
     // zeroedBraceletInputs sets for "no bracelet at all". Grudge/Ambush/
-    // Adrenaline and In-Raid Variables stay live from `base` since they
+    // Adrenaline and Raid Captain Variables stay live from `base` since they
     // aren't part of what Setup A/B are varying.
     const bareBase = Object.assign({}, base, {
       stone1Target: "None", stone1Level: "0 Lv.",
@@ -5429,8 +5501,11 @@
         // Uptime %, Rage Rune, and Support AV all come straight from
         // whatever's currently configured above, food is the only axis
         // actually being varied between the two sides of this comparison.
+        // No "RC:" prefix on the text itself - the card it sits in is
+        // named "Raid Captain Variables" now, so that context is already
+        // established without repeating it on every line inside it.
         foodNoteEl.textContent =
-          "RC: " + winner + " beats " + loser + " by " + Math.abs(pct).toFixed(2) + "%.";
+          winner + " beats " + loser + " by " + Math.abs(pct).toFixed(2) + "%.";
       }
     }
 
@@ -5799,6 +5874,7 @@
     normalizeChaosCoreExclusivity(root);
     normalizeWeaponCoreExclusivity(root);
     normalizeRaidContributionExclusivity(root);
+    normalizeSupportMoveSpeedExclusivity(root);
     normalizeSpeedChoiceExclusivity(root);
     syncSpeedChoiceFamilyTracking(root);
     syncFamilyVariantMemory(root);
@@ -5925,6 +6001,7 @@
     normalizeChaosCoreExclusivity(root);
     normalizeWeaponCoreExclusivity(root);
     normalizeRaidContributionExclusivity(root);
+    normalizeSupportMoveSpeedExclusivity(root);
     normalizeSpeedChoiceExclusivity(root);
     syncSpeedChoiceFamilyTracking(root);
     syncFamilyVariantMemory(root);
@@ -5965,17 +6042,23 @@
   // disabled-but-checked (hit the 3-synergy limit above while already on)
   // still means Support is active, so these fields should stay enabled in
   // that case - only an unchecked .ap-yearning turns them off. Support:
-  // Artist/Valkyrie (Engraving Comparison's own Move Speed checkbox) is
-  // the same shape - a support-only source, not tied to any
-  // character-side gear input, but the reader still shouldn't be able to
-  // claim it while Passionate Dance itself is off, so it rides the same
-  // gate as the others. Strength Orb and Flash Orb are both Support's
-  // Drops of Ether engraving, same "no Support, no orb" dependency as the
-  // AP buff.
+  // Artist/Valkyrie and Paladin (Engraving Comparison's own Move Speed
+  // checkboxes) are the same shape - support-only sources, not tied to
+  // any character-side gear input, but the reader still shouldn't be able
+  // to claim either while Passionate Dance itself is off, so both ride
+  // the same gate as the others. Strength Orb and Flash Orb are both
+  // Support's Drops of Ether engraving, same "no Support, no orb"
+  // dependency as the AP buff.
   function enforceGearSupportUptimeGate(root) {
     const yearningEl = root.querySelector(".ap-yearning");
     if (!yearningEl) return;
-    [".ap-gear-support-uptime", ".ap-gear-strength-orb-uptime", ".ap-flash-orb-uptime", ".ap-engr-support-av"].forEach((selector) => {
+    [
+      ".ap-gear-support-uptime",
+      ".ap-gear-strength-orb-uptime",
+      ".ap-flash-orb-uptime",
+      ".ap-engr-support-av",
+      ".ap-engr-support-paladin",
+    ].forEach((selector) => {
       const el = root.querySelector(selector);
       if (el) el.disabled = !yearningEl.checked;
     });
@@ -6077,6 +6160,27 @@
     if (!kazerosEl || !guardianEl) return;
     if (kazerosEl.checked && guardianEl.checked) {
       guardianEl.checked = false;
+    }
+  }
+
+  // Same idea again, for Engraving Comparison's own Support: Artist/
+  // Valkyrie vs Support: Paladin - only one Support's kit is ever
+  // actually in the raid, so only one of these two party-wide Move Speed
+  // sources can really be active at once. Called from the same bulk-
+  // mutation points as normalizeRaidContributionExclusivity above
+  // (switchPreset/applyImportText/initApCalcRoot, NOT resetInputs - both
+  // boxes default unchecked, so a plain reset can never leave a
+  // conflict); the live "change" listener pair further down (next to
+  // Wine/Mana Food's own) catches a real user click instead. Artist/
+  // Valkyrie wins on a stale/hand-edited conflict - arbitrary tie-break,
+  // same "pick one and document it" precedent as Wine winning over Mana
+  // Food.
+  function normalizeSupportMoveSpeedExclusivity(root) {
+    const avEl = root.querySelector(".ap-engr-support-av");
+    const paladinEl = root.querySelector(".ap-engr-support-paladin");
+    if (!avEl || !paladinEl) return;
+    if (avEl.checked && paladinEl.checked) {
+      paladinEl.checked = false;
     }
   }
 
@@ -6231,41 +6335,56 @@
   }
 
   // Only 2 Ability Stone slots exist in-game, so any section's own 2
-  // isolated slots can't both target the same engraving - picking one
-  // slot's target equal to the other's resets the OTHER back to "None",
-  // same "reset the other one instead of blocking the option" pattern
-  // normalizeChaosCoreExclusivity uses above. Also disables each slot's
-  // level select while its target is "None", matching
-  // enforceKbwStoneDependency's own disabled-while-unused treatment.
-  // Parameterized by class prefix so the Engraving Comparison section's
-  // own pair (ap-engr-stone1/2-*) and Setup A vs Setup B's two
-  // independent pairs (ap-esvs-a-stone1/2-*, ap-esvs-b-stone1/2-*) can
-  // all share one implementation instead of three copies of the same
-  // 6-line function.
+  // isolated slots can't both target the same engraving. Originally this
+  // let you pick a duplicate and then reset the OTHER slot back to
+  // "None" after the fact (the same pattern normalizeChaosCoreExclusivity
+  // uses) - fine for the old 2-separate-rows layout, but once Stone 1 and
+  // Stone 2 sat side by side in one merged row it read as a bug (you
+  // could select Stone 2 = Grudge while Stone 1 was already Grudge, and
+  // watch Stone 1 silently flip to None). Switched to the same "disable
+  // the option outright, don't let it be picked" approach
+  // enforceEngravingSvsSlotExclusivity already uses for its own
+  // Setup A/B slots - each select disables whichever non-"None" option
+  // the OTHER select currently holds, so a duplicate is never selectable
+  // to begin with. Also disables each slot's level select while its
+  // target is "None", matching enforceKbwStoneDependency's own
+  // disabled-while-unused treatment. Parameterized by class prefix so
+  // the Engraving Comparison section's own pair (ap-engr-stone1/2-*) and
+  // Setup A vs Setup B's two independent pairs (ap-esvs-a-stone1/2-*,
+  // ap-esvs-b-stone1/2-*) can all share one implementation instead of
+  // three copies of the same function.
   function enforceStoneSlotExclusivity(root, prefix) {
     const t1 = root.querySelector("." + prefix + "-stone1-target");
     const l1 = root.querySelector("." + prefix + "-stone1-level");
     const t2 = root.querySelector("." + prefix + "-stone2-target");
     const l2 = root.querySelector("." + prefix + "-stone2-level");
     if (!t1 || !l1 || !t2 || !l2) return;
+    // Safety net only - shouldn't be reachable via the UI anymore now
+    // that duplicate options are disabled below, but a programmatic path
+    // (preset load, Import, the bible-import bookmarklet) can still set
+    // .value directly and skip the disabled check entirely.
     if (t1.value !== "None" && t1.value === t2.value) t2.value = "None";
     if (t1.value === "None") l1.value = "0 Lv.";
     if (t2.value === "None") l2.value = "0 Lv.";
     l1.disabled = t1.value === "None";
     l2.disabled = t2.value === "None";
+    [[t1, t2], [t2, t1]].forEach(([self, other]) => {
+      Array.from(self.options).forEach((opt) => {
+        if (opt.value === "None") { opt.disabled = false; return; }
+        opt.disabled = other.value === opt.value;
+      });
+    });
   }
   function enforceEngravingStoneExclusivity(root) {
     enforceStoneSlotExclusivity(root, "ap-engr");
   }
 
   // Setup A vs Setup B's two engraving-slot selects (one competing
-  // engraving each) mirror enforceBvbLineExclusivity's "disable whatever
-  // the other row already picked" approach rather than
-  // enforceEngravingStoneExclusivity's "reset the other one" approach -
-  // there are only 2 slots here (not up to 5 candidate lines), so
-  // disabling the duplicate option outright is just as clear and avoids
-  // a slot silently reverting out from under whichever one the reader
-  // touched second. Mass Increase is additionally disabled whenever the
+  // engraving each) mirror enforceBvbLineExclusivity's and
+  // enforceStoneSlotExclusivity's "disable whatever the other slot
+  // already picked" approach - disabling the duplicate option outright
+  // avoids a slot silently reverting out from under whichever one the
+  // reader touched second. Mass Increase is additionally disabled whenever the
   // live Playstyle toggle is on RE (it's Surge-only - see
   // surgeEffectiveAttackSpeed's own comment on why RE has no use for it
   // at all), and a side already holding "mi" gets reset to "none" the
@@ -6556,6 +6675,7 @@
       normalizeChaosCoreExclusivity(root);
       normalizeWeaponCoreExclusivity(root);
       normalizeRaidContributionExclusivity(root);
+      normalizeSupportMoveSpeedExclusivity(root);
       normalizeSpeedChoiceExclusivity(root);
       syncSpeedChoiceFamilyTracking(root);
       syncFamilyVariantMemory(root);
@@ -6657,6 +6777,26 @@
         el.addEventListener("change", () => {
           if (el.checked) {
             speedChoiceEls.forEach((other) => {
+              if (other !== el) other.checked = false;
+            });
+          }
+        });
+      });
+
+      // Support: Artist/Valkyrie and Support: Paladin are another 2-way
+      // mutually exclusive pair - only one Support's kit is ever actually
+      // in the raid, so only one of these two party-wide Move Speed
+      // sources can be checked at once. Same "dedicated listeners,
+      // checking one unchecks the other" shape as Wine/Mana Food just
+      // above (see normalizeSupportMoveSpeedExclusivity for the bulk-
+      // mutation counterpart this pairs with).
+      const supportAvEl = root.querySelector(".ap-engr-support-av");
+      const supportPaladinEl = root.querySelector(".ap-engr-support-paladin");
+      const supportMoveSpeedEls = [supportAvEl, supportPaladinEl].filter(Boolean);
+      supportMoveSpeedEls.forEach((el) => {
+        el.addEventListener("change", () => {
+          if (el.checked) {
+            supportMoveSpeedEls.forEach((other) => {
               if (other !== el) other.checked = false;
             });
           }

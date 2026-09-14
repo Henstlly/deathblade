@@ -1154,9 +1154,21 @@
      also editing your real tracked setup above. Their Ability Stone level
      works the same way: whichever of the 2 isolated Stone 1/2 rows below
      (if either) targets them - never the live tracked Stone select. Every
-     field in this section is deliberately given NO id (class only) so
-     nothing here is saved/exported/reset-tracked - purely a sandbox for
-     trying things out, per the reader's own request. -->
+     field in this section was originally given NO id (class only) so
+     nothing here would be saved/exported/reset-tracked - purely a
+     sandbox for trying things out, per the reader's own request.
+     EXCEPTION: the Raid Captain Variables card's fields (Maelstrom Uptime,
+     Mana Food, Support: Artist/Valkyrie, Support: Paladin, Rage Rune,
+     Vernese Wine) deliberately DO have ids now - unlike the rest of this
+     sandbox, these represent the actual fight conditions the reader is
+     playing under, not a hypothetical they're trying out, so losing them
+     on every preset switch/reload was more annoying than useful. They
+     ride the same generic id-based collectFieldData/applyFieldData path
+     as every tracked field elsewhere on the page - no separate wiring
+     needed, adding the id was sufficient. The core engravings' Node
+     selectors, the competing-pool checkboxes, and the Ability Stone
+     Stone 1/2 rows below remain id-less on purpose - those really are
+     hypotheticals. -->
 <details class="ap-engr-compare">
   <summary>Engraving Comparison</summary>
   <div class="ap-brace-compare-body">
@@ -1170,7 +1182,7 @@
     <p class="ap-brace-compare-intro">Competing engravings, searched for the best 2-slot combination, against your Best Setup above.</p>
 
     <!-- Engravings (Core + Competing Pool merged into one card) and
-         In-Raid Variables as the two side-by-side cards, same visual
+         Raid Captain Variables as the two side-by-side cards, same visual
          language as the Character Data section's Weapon Power/Attack
          Power % cards above (.ap-gear-cards auto-fit grid of
          .ap-gear-card - title + border-left accent, see that section's
@@ -1178,14 +1190,18 @@
          too). Core and Competing Pool used to be their own separate
          cards in this grid - reader found that split (one card just for
          3 always-on rows) less useful than pairing Engravings against
-         In-Raid Variables, the section's other real "inputs" block, so
+         Raid Captain Variables, the section's other real "inputs" block, so
          they were merged into this single card. Core's own
-         ".ap-gear-card-subtitle">Core (always on)" label was later
-         dropped too (reader found a heading for 3 rows that are never
-         anything but on redundant) - Competing Pool is now the only
-         sub-group label left, so it's the only place inside this card
-         where .ap-gear-card-subtitle's dashed top border actually
-         shows. -->
+         ".ap-gear-card-subtitle">Core (always on)" label was dropped
+         first (reader found a heading for 3 rows that are never
+         anything but on redundant), and Competing Pool's own subtitle
+         was dropped in the same spirit later - all 7 engravings (Grudge/
+         Ambush Master/Adrenaline always-on, then Raid Captain/Keen Blunt
+         Weapon/Cursed Doll/Mass Increase competing) now just list
+         straight down with no sub-group heading breaking them up at
+         all. .ap-gear-card-subtitle itself is unused dead CSS now (see
+         its own comment in extra.css) - kept in case a future sub-group
+         actually needs it again, not currently applied anywhere. -->
     <div class="ap-gear-cards">
       <div class="ap-gear-card ap-gear-card--engr-core">
         <p class="ap-gear-card-title">Engravings</p>
@@ -1220,7 +1236,6 @@
           </select>
         </div>
 
-        <p class="ap-gear-card-subtitle">Competing Pool</p>
         <div class="ap-calc-field-row">
           <label class="ap-calc-field-label"><span class="skill-mention" data-skill-id="raidcaptain">Raid Captain</span></label>
           <select class="ap-engr-rc-level">
@@ -1264,92 +1279,102 @@
       </div>
 
       <div class="ap-gear-card ap-gear-card--engr-variables">
-        <p class="ap-gear-card-title">In-Raid Variables</p>
+        <p class="ap-gear-card-title">Raid Captain Variables</p>
         <div class="ap-calc-field-row">
           <label class="ap-calc-field-label" title="% of the fight Maelstrom's buffs are active as you attack the boss - a flat +12.8 Move Speed/Atk. Speed bonus.">Maelstrom Uptime %</label>
-          <input type="number" class="ap-engr-maelstrom-uptime" min="0" max="100" step="1" value="85">
+          <input type="number" id="ap-engr-maelstrom-uptime" class="ap-engr-maelstrom-uptime" min="0" max="100" step="1" value="85">
         </div>
         <div class="ap-calc-field-row ap-engr-manafood-row">
-          <label class="ap-engr-checkbox-label" title="Only accurate if the Main Stat input in Character Data doesn't already include Mana Food's Main Stat bonus."><input type="checkbox" class="ap-engr-manafood" checked> <span class="ap-engr-manafood-label">Mana Food (+Maelstrom Bleed)</span></label>
-          <select class="ap-engr-manafood-amount">
+          <label class="ap-engr-checkbox-label" title="Only accurate if the Main Stat input in Character Data doesn't already include Mana Food's Main Stat bonus."><input type="checkbox" id="ap-engr-manafood" class="ap-engr-manafood" checked> <span class="ap-engr-manafood-label">Mana Food (+Maelstrom Bleed)</span></label>
+          <select id="ap-engr-manafood-amount" class="ap-engr-manafood-amount">
             <option value="6000" selected>6000 DEX</option>
             <option value="12000">12000 DEX</option>
           </select>
         </div>
         <div class="ap-calc-field-row ap-engr-support-av-row">
-          <label class="ap-engr-checkbox-label" title="A high-uptime, party-wide Move Speed buff from an Artist or Valkyrie's Identity."><input type="checkbox" class="ap-engr-support-av"> Support: Artist/Valkyrie (+Move Speed)</label>
+          <label class="ap-engr-checkbox-label" title="A high-uptime, party-wide Move Speed buff from an Artist or Valkyrie's Identity."><input type="checkbox" id="ap-engr-support-av" class="ap-engr-support-av"> Support: Artist/Valkyrie (+Move Speed)</label>
+        </div>
+        <div class="ap-calc-field-row ap-engr-support-paladin-row">
+          <label class="ap-engr-checkbox-label" title="A low-uptime, party-wide Move Speed buff from a Paladin's skills."><input type="checkbox" id="ap-engr-support-paladin" class="ap-engr-support-paladin"> Support: Paladin (+Move Speed)</label>
         </div>
         <div class="ap-calc-field-row ap-engr-rage-rune-row">
-          <label class="ap-engr-checkbox-label" title="16% chance per skill cast for +16% Move Speed and +16% Atk. Speed for 6s."><input type="checkbox" class="ap-engr-rage-rune" checked> Rage Rune on Surprise Attack (Avg.)</label>
+          <label class="ap-engr-checkbox-label" title="16% chance per skill cast for +16% Move Speed and +16% Atk. Speed for 6s."><input type="checkbox" id="ap-engr-rage-rune" class="ap-engr-rage-rune" checked> Rage Rune on Surprise Attack (Avg.)</label>
         </div>
         <div class="ap-calc-field-row ap-engr-wine-row">
-          <label class="ap-engr-checkbox-label"><input type="checkbox" class="ap-engr-wine" checked> Vernese Wine (+3% Move Speed)</label>
+          <label class="ap-engr-checkbox-label"><input type="checkbox" id="ap-engr-wine" class="ap-engr-wine" checked> Vernese Wine (+3% Move Speed)</label>
         </div>
         <p class="ap-brace-compare-footer-note ap-engr-ms-readout">Raid Captain Efficiency: —</p>
         <p class="ap-brace-compare-footer-note ap-engr-manafood-note">—</p>
       </div>
     </div>
 
-    <!-- The title used to sit on its own centered line above Stone 1
-         (dashed top border via .ap-gear-cards + .ap-acc-panel-title),
-         which cost a whole extra line of vertical space while Stone 1/2's
-         own flex-end alignment (.ap-engr-stone-row below) still left the
-         entire left side of every row after it empty. Folding the title
-         into Stone 1's row instead - as a flex child before the Stone 1
-         label+selects group, with the row's justify-content flipped to
-         space-between just for this row (.ap-engr-stone-row--first) -
-         fills that dead space and removes the separate line in one move.
-         Stone 2's row right below is untouched: plain flex-end, no title.
-         The dashed-line section break moves from the old standalone
-         <p> onto this row itself (.ap-gear-cards + .ap-engr-stone-row--
-         first), since the title is no longer .ap-gear-cards' immediate
-         sibling on its own. -->
-    <div class="ap-calc-field-row ap-engr-stone-row ap-engr-stone-row--first">
-      <p class="ap-acc-panel-title ap-engr-contrib-title">Engraving and Ability Stone Values</p>
-      <span class="ap-engr-stone-label-group">
-        <label class="ap-calc-field-label" title="Pick which engraving your Ability Stone's first slot boosts, then that slot's level.">Stone 1</label>
-        <span class="ap-engr-stone-pair">
-          <select class="ap-engr-stone1-target">
-            <option value="None" selected>None</option>
-            <option value="grudge">Grudge</option>
-            <option value="ambush">Ambush Master</option>
-            <option value="adrenaline">Adrenaline</option>
-            <option value="kbw">Keen Blunt Weapon</option>
-            <option value="rc">Raid Captain</option>
-            <option value="cd">Cursed Doll</option>
-            <option value="mi">Mass Increase</option>
-          </select>
-          <select class="ap-engr-stone1-level">
-            <option value="0 Lv." selected>0 Lv.</option>
-            <option value="1 Lv.">1 Lv.</option>
-            <option value="2 Lv.">2 Lv.</option>
-            <option value="3 Lv.">3 Lv.</option>
-            <option value="4 Lv.">4 Lv.</option>
-          </select>
+    <!-- Stone 1 and Stone 2 merged into a single row (previously 2
+         separate .ap-engr-stone-row rows stacked on top of each other) -
+         the title itself shrank from "Engraving and Ability Stone Values"
+         to just "Ability Stone" in the same pass, which is what actually
+         made this fit: the old title's own length was most of what
+         forced Stone 1 onto a line by itself. Now a full .ap-gear-card
+         (see .ap-gear-card--engr-stone in extra.css) instead of a bare
+         dashed-separator row - since "Ability Stone" as a title already
+         says what both slots are, their own labels were shortened from
+         "Stone 1"/"Stone 2" down to just "1"/"2" in the same pass (the
+         tooltips still spell out "Ability Stone's first/second slot" in
+         full, so nothing readable is lost, just the redundant repeated
+         word in the visible label). .ap-engr-stone-groups wraps the 2
+         label+pair units (see .ap-engr-stone-label-group below) so the
+         row's own space-between only ever sees 2 children - title on
+         the left, both stones together on the right - instead of
+         spreading 3 children (title, Stone 1, Stone 2) evenly apart. See
+         extra.css's own comment chain on .ap-engr-stone-row--first /
+         .ap-engr-stone-groups for the responsive fallback once both
+         stones plus their selects no longer fit next to the title on one
+         line. -->
+    <div class="ap-calc-field-row ap-engr-stone-row ap-engr-stone-row--first ap-gear-card ap-gear-card--engr-stone">
+      <p class="ap-acc-panel-title ap-engr-contrib-title">Ability Stone</p>
+      <span class="ap-engr-stone-groups">
+        <span class="ap-engr-stone-label-group">
+          <label class="ap-calc-field-label" title="Pick which engraving your Ability Stone's first slot boosts, then that slot's level.">1</label>
+          <span class="ap-engr-stone-pair">
+            <select class="ap-engr-stone1-target">
+              <option value="None" selected>None</option>
+              <option value="grudge">Grudge</option>
+              <option value="ambush">Ambush Master</option>
+              <option value="adrenaline">Adrenaline</option>
+              <option value="kbw">Keen Blunt Weapon</option>
+              <option value="rc">Raid Captain</option>
+              <option value="cd">Cursed Doll</option>
+              <option value="mi">Mass Increase</option>
+            </select>
+            <select class="ap-engr-stone1-level">
+              <option value="0 Lv." selected>Lv. 0</option>
+              <option value="1 Lv.">Lv. 1</option>
+              <option value="2 Lv.">Lv. 2</option>
+              <option value="3 Lv.">Lv. 3</option>
+              <option value="4 Lv.">Lv. 4</option>
+            </select>
+          </span>
         </span>
-      </span>
-    </div>
-    <div class="ap-calc-field-row ap-engr-stone-row">
-      <span class="ap-engr-stone-label-group">
-        <label class="ap-calc-field-label" title="Pick which engraving your Ability Stone's second slot boosts, then that slot's level.">Stone 2</label>
-        <span class="ap-engr-stone-pair">
-          <select class="ap-engr-stone2-target">
-            <option value="None" selected>None</option>
-            <option value="grudge">Grudge</option>
-            <option value="ambush">Ambush Master</option>
-            <option value="adrenaline">Adrenaline</option>
-            <option value="kbw">Keen Blunt Weapon</option>
-            <option value="rc">Raid Captain</option>
-            <option value="cd">Cursed Doll</option>
-            <option value="mi">Mass Increase</option>
-          </select>
-          <select class="ap-engr-stone2-level">
-            <option value="0 Lv." selected>0 Lv.</option>
-            <option value="1 Lv.">1 Lv.</option>
-            <option value="2 Lv.">2 Lv.</option>
-            <option value="3 Lv.">3 Lv.</option>
-            <option value="4 Lv.">4 Lv.</option>
-          </select>
+        <span class="ap-engr-stone-label-group">
+          <label class="ap-calc-field-label" title="Pick which engraving your Ability Stone's second slot boosts, then that slot's level.">2</label>
+          <span class="ap-engr-stone-pair">
+            <select class="ap-engr-stone2-target">
+              <option value="None" selected>None</option>
+              <option value="grudge">Grudge</option>
+              <option value="ambush">Ambush Master</option>
+              <option value="adrenaline">Adrenaline</option>
+              <option value="kbw">Keen Blunt Weapon</option>
+              <option value="rc">Raid Captain</option>
+              <option value="cd">Cursed Doll</option>
+              <option value="mi">Mass Increase</option>
+            </select>
+            <select class="ap-engr-stone2-level">
+              <option value="0 Lv." selected>Lv. 0</option>
+              <option value="1 Lv.">Lv. 1</option>
+              <option value="2 Lv.">Lv. 2</option>
+              <option value="3 Lv.">Lv. 3</option>
+              <option value="4 Lv.">Lv. 4</option>
+            </select>
+          </span>
         </span>
       </span>
     </div>
@@ -1412,14 +1437,14 @@
          Engraving Comparison (collapsed by default, at the bottom) for
          the same reason Bracelet vs. Bracelet is nested where it is: it's
          a continuation of this section's own inputs (Grudge/Ambush/
-         Adrenaline and the whole In-Raid Variables block are shared, not
+         Adrenaline and the whole Raid Captain Variables block are shared, not
          re-asked), not a standalone question. See
          computeEngravingSetupComparison's own JS comment for the full
          methodology. -->
     <details class="ap-esvs">
       <summary>Setup A vs. Setup B</summary>
       <div class="ap-brace-compare-body">
-        <p class="ap-brace-compare-intro">Two loadouts, compared against each other. Core Engravings and In-Raid Variables above apply.<span class="ap-brace-info-icon ap-esvs-food-icon" role="img" aria-label="Uses whichever food is currently selected. If either setup includes Raid Captain, switching food can change the winner here too - see the Overall Best Setup below." title="Uses whichever food is currently selected. If either setup includes Raid Captain, switching food can change the winner here too - see the Overall Best Setup below.">i</span></p>
+        <p class="ap-brace-compare-intro">Two loadouts, compared against each other. Core Engravings and Raid Captain Variables above apply.<span class="ap-brace-info-icon ap-esvs-food-icon" role="img" aria-label="Uses whichever food is currently selected. If either setup includes Raid Captain, switching food can change the winner here too - see the Overall Best Setup below." title="Uses whichever food is currently selected. If either setup includes Raid Captain, switching food can change the winner here too - see the Overall Best Setup below.">i</span></p>
         <div class="ap-esvs-cards">
           <div class="ap-esvs-card ap-esvs-card-a">
             <p class="ap-gear-card-title ap-esvs-card-title">Setup A</p>
@@ -1470,11 +1495,11 @@
                 <option value="mi">Mass Increase</option>
               </select>
               <select class="ap-esvs-a-stone1-level">
-                <option value="0 Lv." selected>0 Lv.</option>
-                <option value="1 Lv.">1 Lv.</option>
-                <option value="2 Lv.">2 Lv.</option>
-                <option value="3 Lv.">3 Lv.</option>
-                <option value="4 Lv.">4 Lv.</option>
+                <option value="0 Lv." selected>Lv. 0</option>
+                <option value="1 Lv.">Lv. 1</option>
+                <option value="2 Lv.">Lv. 2</option>
+                <option value="3 Lv.">Lv. 3</option>
+                <option value="4 Lv.">Lv. 4</option>
               </select>
             </div>
             <div class="ap-calc-field-row">
@@ -1490,11 +1515,11 @@
                 <option value="mi">Mass Increase</option>
               </select>
               <select class="ap-esvs-a-stone2-level">
-                <option value="0 Lv." selected>0 Lv.</option>
-                <option value="1 Lv.">1 Lv.</option>
-                <option value="2 Lv.">2 Lv.</option>
-                <option value="3 Lv.">3 Lv.</option>
-                <option value="4 Lv.">4 Lv.</option>
+                <option value="0 Lv." selected>Lv. 0</option>
+                <option value="1 Lv.">Lv. 1</option>
+                <option value="2 Lv.">Lv. 2</option>
+                <option value="3 Lv.">Lv. 3</option>
+                <option value="4 Lv.">Lv. 4</option>
               </select>
             </div>
             <div class="ap-esvs-results">
@@ -1555,11 +1580,11 @@
                 <option value="mi">Mass Increase</option>
               </select>
               <select class="ap-esvs-b-stone1-level">
-                <option value="0 Lv." selected>0 Lv.</option>
-                <option value="1 Lv.">1 Lv.</option>
-                <option value="2 Lv.">2 Lv.</option>
-                <option value="3 Lv.">3 Lv.</option>
-                <option value="4 Lv.">4 Lv.</option>
+                <option value="0 Lv." selected>Lv. 0</option>
+                <option value="1 Lv.">Lv. 1</option>
+                <option value="2 Lv.">Lv. 2</option>
+                <option value="3 Lv.">Lv. 3</option>
+                <option value="4 Lv.">Lv. 4</option>
               </select>
             </div>
             <div class="ap-calc-field-row">
@@ -1575,11 +1600,11 @@
                 <option value="mi">Mass Increase</option>
               </select>
               <select class="ap-esvs-b-stone2-level">
-                <option value="0 Lv." selected>0 Lv.</option>
-                <option value="1 Lv.">1 Lv.</option>
-                <option value="2 Lv.">2 Lv.</option>
-                <option value="3 Lv.">3 Lv.</option>
-                <option value="4 Lv.">4 Lv.</option>
+                <option value="0 Lv." selected>Lv. 0</option>
+                <option value="1 Lv.">Lv. 1</option>
+                <option value="2 Lv.">Lv. 2</option>
+                <option value="3 Lv.">Lv. 3</option>
+                <option value="4 Lv.">Lv. 4</option>
               </select>
             </div>
             <div class="ap-esvs-results">
