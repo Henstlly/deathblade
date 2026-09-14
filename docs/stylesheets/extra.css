@@ -4887,7 +4887,7 @@ h3 { color: var(--dbc-teal); }
      (and looked wrong) while the bar sits in normal flow rather than
      actually floating over content underneath it. */
   .md-typeset .ap-build-dock.ap-build-dock--stuck::before {
-    box-shadow: 0 0 0.2rem #0000001a, 0 0.2rem 0.4rem #0003;
+    box-shadow: 0 0 0.15rem #0000001a, 0 0.15rem 0.3rem #0003;
   }
   .md-typeset .ap-build-dock-trigger {
     display: none;
