@@ -6066,17 +6066,25 @@ h3 { color: var(--dbc-teal); }
    shape - these plain reference tables don't get a best-row highlight at
    all now, same as Accessory-lines/Engraving DPS Contribution never did.
    ap-brace-row-best is no longer added anywhere (see renderComparisonRows/
-   renderArkGridComparison in ark-passive-calculator.js). */
-.md-typeset .ap-brace-compare-flip-note {
+   renderArkGridComparison in ark-passive-calculator.js).
+   Freeform explanatory note - e.g. why Weapon Power / Attack Power /
+   Specialization lines aren't in this table - kept visually secondary
+   (small, muted, separated by extra top margin) so it reads as an aside
+   under the table rather than another row of it. */
+/* Small italic aside line, shared by Bracelet vs. Bracelet's and
+   Engraving Setup vs. Setup's "different best keystones" notes (see
+   ap-bvb-keystone-note/ap-esvs-keystone-note in resources.md and their
+   toggling in ark-passive-calculator.js) - kept as its own lightweight
+   rule (no border-top, tighter margin) since it's a single aside line,
+   not a block-separated footer like .ap-brace-compare-footer-note below.
+   Used to also style the Bracelet Comparison table's own flip-footnote,
+   removed since that feature was dropped entirely. */
+.md-typeset .ap-brace-compare-aside-note {
   font-size: 0.78em;
   color: var(--dbc-slate);
   font-style: italic;
   margin: 0.6em 0 0;
 }
-/* Freeform explanatory note - e.g. why Weapon Power / Attack Power /
-   Specialization lines aren't in this table - kept visually secondary
-   (small, muted, separated by extra top margin) so it reads as an aside
-   under the table rather than another row of it. */
 .md-typeset .ap-brace-compare-footer-note {
   font-size: 0.8em;
   color: var(--dbc-slate);

@@ -872,7 +872,6 @@
       </thead>
       <tbody class="ap-brace-compare-rows"></tbody>
     </table>
-    <p class="ap-brace-compare-flip-note">&dagger; Equipping this line's Mid tier may change which split/keystone combo is your actual best - worth a re-check.</p>
 
     <!-- Bracelet vs. Bracelet: compares two WHOLE candidate bracelets (5
          real lines each - Spec Stat plus Basic Effect 2 (Crit Stat, Main
@@ -1131,7 +1130,7 @@
         <div class="ap-bvb-summary">
           <p class="ap-bvb-neither">Running neither: <span class="ap-bvb-no-bracelet-keystone">—</span></p>
           <p class="ap-bvb-diff-wrap"><span class="ap-bvb-diff">—</span></p>
-          <p class="ap-brace-compare-flip-note ap-bvb-keystone-note" hidden>Bracelet A and B land on different best keystones - the comparison above already accounts for that.</p>
+          <p class="ap-brace-compare-aside-note ap-bvb-keystone-note" hidden>Bracelet A and B land on different best keystones - the comparison above already accounts for that.</p>
         </div>
       </div>
     </details>
@@ -1595,7 +1594,7 @@
         <div class="ap-esvs-summary">
           <p class="ap-esvs-neither">Running neither: <span class="ap-esvs-no-setup-keystone">—</span></p>
           <p class="ap-esvs-diff-wrap"><span class="ap-esvs-diff">—</span></p>
-          <p class="ap-brace-compare-flip-note ap-esvs-keystone-note" hidden>Setup A and B land on different best keystones - the comparison above already accounts for that.</p>
+          <p class="ap-brace-compare-aside-note ap-esvs-keystone-note" hidden>Setup A and B land on different best keystones - the comparison above already accounts for that.</p>
           <!-- See computeOverallBestEngravingSetupAB's own JS comment -
                aVsB above locks both sides to whichever food is currently
                selected; this instead lets each named setup pick its own

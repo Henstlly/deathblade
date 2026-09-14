@@ -1872,37 +1872,6 @@
     // Brace!C19:E19 (2.06/2.40/2.75%) vs the old 2.19/2.55/2.92%.
     const addDmgBaseline = pair.indexOf("master") !== -1 ? sharedNB.addDmgMaster : sharedNB.addDmgBase;
 
-    // Best-combo "flip" check: a candidate can only ever change which of the
-    // 9 split+keystone cells wins if it feeds into effCrit/onCrit/evo/add -
-    // i.e. Crit Rate, Crit Dmg, Crit Stat, and Additional Damage. The flat
-    // standalone lines (Damage+CD, Outgoing, Stagger, Back Dmg) are applied
-    // as a uniform multiplier outside the 9-cell grid entirely, so they
-    // structurally can't change the argmax - no flip check needed for those.
-    const currentBestKey = pair + "|" + best.split.key;
-    function bestPairFor(candidateInputs) {
-      const candShared = computeShared(candidateInputs);
-      let bestKey = null;
-      let bestM = -Infinity;
-      EVOLUTION_SPLITS.forEach((split) => {
-        COMBINED_KEYSTONES.forEach((kp) => {
-          const m = combinedMultiplier(candidateInputs, candShared, split.keenSense, split.limitBreak, kp);
-          if (m > bestM) {
-            bestM = m;
-            bestKey = kp + "|" + split.key;
-          }
-        });
-      });
-      return bestKey;
-    }
-    // Checked at Mid tier only - this is meant as a light heads-up, not a
-    // precise per-tier verdict, and moot anyway once you're running more
-    // than one line at a time.
-    function checkFlip(mutateFn) {
-      const cloned = Object.assign({}, inputsNB);
-      mutateFn(cloned);
-      return bestPairFor(cloned) !== currentBestKey;
-    }
-
     // Crit Rate/Crit Dmg candidates reuse the exact same computeShared +
     // critRateTotal + combinedMultiplier machinery as the grid above -
     // just with one bracelet field swapped from "None" to the candidate
@@ -1954,22 +1923,18 @@
       {
         label: ["Crit Rate +", ...trip("3.4", "4.2", "5"), "% & Crit Hit Damage +", { tier: "fixed", text: "1.5" }, "%"],
         ...tiers((t) => critLikeGain("braceletRate", t, "critRateDual")),
-        flipsBest: checkFlip((c) => { c.braceletRate = "Mid"; c.critRateDual = true; }),
       },
       {
         label: ["Crit Damage +", ...trip("6.8", "8.4", "10"), "% & Crit Hit Damage +", { tier: "fixed", text: "1.5" }, "%"],
         ...tiers((t) => critLikeGain("braceletDmg", t, "critDmgDual")),
-        flipsBest: checkFlip((c) => { c.braceletDmg = "Mid"; c.critDmgDual = true; }),
       },
       {
         label: ["Crit Rate +", ...trip("3.4", "4.2", "5"), "%"],
         ...tiers((t) => critLikeGain("braceletRate", t, null)),
-        flipsBest: checkFlip((c) => { c.braceletRate = "Mid"; }),
       },
       {
         label: ["Crit Damage +", ...trip("6.8", "8.4", "10"), "%"],
         ...tiers((t) => critLikeGain("braceletDmg", t, null)),
-        flipsBest: checkFlip((c) => { c.braceletDmg = "Mid"; }),
       },
       {
         label: ["Crit Stat +", ...trip("80", "100", "120")],
@@ -1977,7 +1942,6 @@
         low: critStatGain(CRIT_STAT_TABLE.Low),
         mid: critStatGain(CRIT_STAT_TABLE.Mid),
         high: critStatGain(CRIT_STAT_TABLE.High),
-        flipsBest: checkFlip((c) => { c.critStat = inputsNB.critStat + CRIT_STAT_TABLE.Mid; }),
       },
       {
         label: ["Outgoing Damage +", ...trip("4.5", "5", "5.5"), "% & Skill Cooldown +", { downside: true, text: "2" }, "%"],
@@ -2021,7 +1985,6 @@
         // pick than the plain Additional Damage line by default, without
         // the old hard-coded "always sort directly below addA" special case.
         sortKey: BRACELET_ADD_B_TABLE.Mid / (1 + addDmgBaseline),
-        flipsBest: checkFlip((c) => { c.braceletAddB = "Mid"; }),
       },
       {
         id: "addA",
@@ -2029,7 +1992,6 @@
         low: BRACELET_ADD_A_TABLE.Low / (1 + addDmgBaseline),
         mid: BRACELET_ADD_A_TABLE.Mid / (1 + addDmgBaseline),
         high: BRACELET_ADD_A_TABLE.High / (1 + addDmgBaseline),
-        flipsBest: checkFlip((c) => { c.braceletAddA = "Mid"; }),
       },
       {
         label: ["Back Attack Damage +", ...trip("2.5", "3", "3.5"), "%"],
@@ -2527,16 +2489,21 @@
     // standalone multiplier with nothing to double-count, same treatment
     // as the Bracelet panel's own standalone Outgoing Damage line.
     const necklaceOut = { low: ACC_NECKLACE_OUT_TABLE.Low, mid: ACC_NECKLACE_OUT_TABLE.Mid, high: ACC_NECKLACE_OUT_TABLE.High };
-    const necklaceCombos = comboSix(necklaceAdd, necklaceOut);
+    // Outgoing Damage is the generally-preferred line, so it's the top
+    // row here (and gets comboSix's "first" argument - the full 6-column
+    // LL/ML/MM/HL/HM/HH set) while Additional Damage sits second (the
+    // partial ML/HL/HM set) - see comboSix's own comment for what
+    // "first" vs "second" actually means column-wise.
+    const necklaceCombos = comboSix(necklaceOut, necklaceAdd);
     const necklace = [
-      {
-        label: ["Additional Damage +", ...trip("0.7", "1.6", "2.6"), "%"],
-        ...necklaceAdd,
-        combos: necklaceCombos.first,
-      },
       {
         label: ["Outgoing Damage +", ...trip("0.55", "1.2", "2"), "%"],
         ...necklaceOut,
+        combos: necklaceCombos.first,
+      },
+      {
+        label: ["Additional Damage +", ...trip("0.7", "1.6", "2.6"), "%"],
+        ...necklaceAdd,
         combos: necklaceCombos.second,
       },
     ];
@@ -2583,16 +2550,20 @@
       mid: ringDmgGain(ACC_RING_DMG_TABLE.Mid),
       high: ringDmgGain(ACC_RING_DMG_TABLE.High),
     };
-    const ringCombos = comboSix(ringRate, ringDmg);
+    // Crit Damage is the generally-preferred line, so it's the top row
+    // here (comboSix's "first" argument, full 6-column set) while Crit
+    // Rate sits second (the partial ML/HL/HM set) - same swap as
+    // Necklace above.
+    const ringCombos = comboSix(ringDmg, ringRate);
     const rings = [
-      {
-        label: ["Crit Rate +", ...trip("0.4", "0.95", "1.55"), "%"],
-        ...ringRate,
-        combos: ringCombos.first,
-      },
       {
         label: ["Crit Damage +", ...trip("1.1", "2.4", "4"), "%"],
         ...ringDmg,
+        combos: ringCombos.first,
+      },
+      {
+        label: ["Crit Rate +", ...trip("0.4", "0.95", "1.55"), "%"],
+        ...ringRate,
         combos: ringCombos.second,
       },
     ];
@@ -2744,16 +2715,16 @@
 
           universal = [
             {
-              label: ["Attack Power +", ...trip("80", "195", "390")],
-              low: universalApDeltaGain(ACC_FLAT_AP_TABLE.Low),
-              mid: universalApDeltaGain(ACC_FLAT_AP_TABLE.Mid),
-              high: universalApDeltaGain(ACC_FLAT_AP_TABLE.High),
-            },
-            {
               label: ["Weapon Power +", ...trip("195", "480", "960")],
               low: universalWpDeltaGain(ACC_FLAT_WP_TABLE.Low),
               mid: universalWpDeltaGain(ACC_FLAT_WP_TABLE.Mid),
               high: universalWpDeltaGain(ACC_FLAT_WP_TABLE.High),
+            },
+            {
+              label: ["Attack Power +", ...trip("80", "195", "390")],
+              low: universalApDeltaGain(ACC_FLAT_AP_TABLE.Low),
+              mid: universalApDeltaGain(ACC_FLAT_AP_TABLE.Mid),
+              high: universalApDeltaGain(ACC_FLAT_AP_TABLE.High),
             },
             {
               label: ["Quality STR/DEX/INT (Max − Min): ", ...trip("1935", "2083", "2679")],
@@ -5085,21 +5056,19 @@
   // High) - one <tr> per line, full-width. Originally Bracelet-only; kept
   // generic (takes elements directly rather than querying `.ap-brace-*`
   // itself) so the Accessory panels below can reuse it for their own,
-  // smaller <tbody>s without a flip-footnote of their own.
-  function renderComparisonRows(container, footnote, rows) {
+  // smaller <tbody>s.
+  function renderComparisonRows(container, rows) {
     if (!container) return;
 
     container.innerHTML = "";
-    let anyFlip = false;
 
     rows.forEach((row, index) => {
       const tr = document.createElement("tr");
       // rows[] arrives already sorted descending (see the .sort() call in
       // each compute* function that feeds this renderer), so index 0 is
       // always the top line - no best-row highlight anymore though (see
-      // extra.css's .ap-brace-compare-flip-note comment for why it was
+      // extra.css's .ap-brace-compare-footer-note comment for why it was
       // stripped rather than reshaped a third time).
-      if (row.flipsBest) anyFlip = true;
 
       const labelTd = window.SiteUtils.el("td", "ap-brace-row-label");
       // row.label is an array of plain strings and colored-token objects
@@ -5115,9 +5084,6 @@
         const span = window.SiteUtils.el("span", part.downside ? "ap-brace-label-downside" : "ap-brace-label-" + part.tier, part.text);
         labelTd.appendChild(span);
       });
-      if (row.flipsBest) {
-        labelTd.appendChild(document.createTextNode(" \u2020"));
-      }
       if (row.specDmgOnly) {
         // Small always-visible tag (not a permanent note block) so the
         // row stays one line tall - the explanation lives in this badge's
@@ -5172,14 +5138,10 @@
 
       container.appendChild(tr);
     });
-
-    if (footnote) {
-      footnote.style.display = anyFlip ? "" : "none";
-    }
   }
 
   function renderBraceletComparison(root, rows) {
-    renderComparisonRows(root.querySelector(".ap-brace-compare-rows"), root.querySelector(".ap-brace-compare-flip-note"), rows);
+    renderComparisonRows(root.querySelector(".ap-brace-compare-rows"), rows);
   }
 
   function formatBvbPct(x) {
@@ -5276,7 +5238,7 @@
       const rows = groups[key] || [];
       const panel = root.querySelector(panelSelector);
       if (panel) panel.style.display = rows.length ? "" : "none";
-      renderComparisonRows(root.querySelector(rowsSelector), null, rows);
+      renderComparisonRows(root.querySelector(rowsSelector), rows);
     });
   }
 
@@ -5336,10 +5298,7 @@
   // Custom renderer, not renderComparisonRows above - each row shows 5
   // numeric cells (one merged 14 Points cell, then Relic/Ancient x 17/20
   // Points) instead of a single Low/Mid/High trio, so the shared per-
-  // row-single-trio renderer doesn't fit here. No flip-footnote, same
-  // reasoning as renderAccessoryComparison: none of these rows can
-  // change the grid's best split/keystone, and a small-swing flip check
-  // wasn't worth 40 extra bestPairFor() recomputes (5 cells x 8 rows).
+  // row-single-trio renderer doesn't fit here.
   function renderArkGridComparison(root, rows) {
     const container = root.querySelector(".ap-arkgrid-compare-rows");
     if (!container) return;
@@ -5349,7 +5308,7 @@
       // rows[] is sorted descending by ancient17 (see computeArkGridComparison's
       // own rows.sort call), same ranking renderComparisonRows above relies
       // on - no best-row highlight applied though, same as that renderer
-      // (see extra.css's .ap-brace-compare-flip-note comment for why).
+      // (see extra.css's .ap-brace-compare-footer-note comment for why).
       const labelTd = window.SiteUtils.el("td", "ap-brace-row-label", row.label);
       tr.appendChild(labelTd);
       ["p14", "relic17", "ancient17", "relic20", "ancient20"].forEach((key) => {
@@ -5471,7 +5430,7 @@
         // whatever's currently configured above, food is the only axis
         // actually being varied between the two sides of this comparison.
         foodNoteEl.textContent =
-          "RC Setup: " + winner + " beats " + loser + " by " + Math.abs(pct).toFixed(2) + "%.";
+          "RC: " + winner + " beats " + loser + " by " + Math.abs(pct).toFixed(2) + "%.";
       }
     }
 
