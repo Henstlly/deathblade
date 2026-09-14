@@ -184,7 +184,7 @@ Pair with <span class="skill-mention" data-skill-id="curseddoll">Cursed Doll</sp
 
 </div>
 
-<span class="engraving-loadout-note">To compare advanced engraving/food values or get customized recommendations, check out the [Ark Passive Calculator!](../resources.md#ark-passive-calculator)</span>
+<span class="engraving-calc-note">To compare advanced engraving/food values or get customized recommendations, check out the [Ark Passive Calculator!](../resources.md#ark-passive-calculator)</span>
 
 </div>
 

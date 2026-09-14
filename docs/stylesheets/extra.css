@@ -2529,6 +2529,30 @@ h3 { color: var(--dbc-teal); }
   font-style: normal;
 }
 
+/* Standalone "go check the calculator" plug at the bottom of an Essentials
+   page's Engravings section - NOT paired with a chip, just a lone
+   sentence-with-link sitting on its own line. Used to reuse
+   .engraving-loadout-note for this (same muted-italic look), but that
+   class's white-space: nowrap (deliberate for the SHORT chip-paired note
+   it's actually meant for - see the usage comment above) forced this much
+   longer sentence into one unbroken ~730px-wide line with no wrap, well
+   past a phone's viewport width - real page-level horizontal overflow,
+   invisible at normal desktop widths but the root cause of the "essentials
+   pages render extremely zoomed out on iPhone" pinch-zoom bug report (a
+   page that's actually wider than the viewport is exactly what makes a
+   mobile browser's zoom bounds/snap-back behave like this - nothing to do
+   with the pinch gesture itself, the page was already too wide before you
+   ever touched it). Same visual language (muted, italic, slightly smaller)
+   minus inline-flex/nowrap, so it wraps normally like any other paragraph
+   text once the calculator link mention runs out of room. */
+.md-typeset .engraving-calc-note {
+  display: block;
+  margin-top: 0.6em;
+  font-size: 0.78em;
+  color: var(--dbc-lavender);
+  font-style: italic;
+}
+
 .md-typeset .engraving-cards {
   display: grid;
   /* Capped at 2 columns, never 3+ - a plain `repeat(auto-fit, minmax(320px,
@@ -7016,8 +7040,21 @@ h3 { color: var(--dbc-teal); }
   margin: 0;
 }
 
+/* 92vw was sized back when this sat directly in the content column -
+   .dps-showcase-frame's own 1.6em horizontal padding (see that rule)
+   came later and was never subtracted back out, so on narrow phones the
+   chart was demanding ~92% of the FULL viewport plus the frame's padding
+   on top of that, forcing the frame wider than its .dps-showcase parent
+   and overflowing the page by that padding amount either side (real,
+   measurable document-level horizontal overflow - root cause of the
+   "header ends a few pixels short of the right edge after pinch-zoom"
+   bug report on build pages; a page genuinely wider than the viewport is
+   what makes a mobile browser's zoom snap-back misbehave, independent of
+   the gesture itself). Subtracting 2x that padding (3.2em) here keeps
+   the same "almost-full-width on phones, capped at 620px on desktop"
+   intent while actually fitting inside the frame that wraps it. */
 .md-typeset .dps-chart {
-  width: min(620px, 92vw);
+  width: min(620px, calc(92vw - 3.2em));
 }
 .md-typeset .dps-chart-list {
   display: flex;
