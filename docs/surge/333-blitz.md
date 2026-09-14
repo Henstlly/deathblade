@@ -178,9 +178,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "Ark Passive"
 <summary><span class="setup-note-tag">Tip</span>Runes<span class="setup-note-arrow"></span></summary>
 
 - Use <span class="skill-mention" data-rune-name="Purify">Purify</span> on Spincutter if needed.
-- Use <span class="skill-mention" data-rune-name="Bleed" data-rune-tier="legendary">Legendary Bleed</span> or <span class="skill-mention" data-rune-name="Poison" data-rune-tier="legendary">Poison</span> instead of <span class="skill-mention" data-rune-name="Rage" data-rune-tier="legendary">Rage</span> if you don't need <span class="skill-mention" data-skill-id="raidcaptain">RC</span> or <span class="skill-mention" data-skill-id="massincrease">MI</span> engraving efficiency.
-    - Each one is around +0.75% DPS in exchange for lower or no <span class="skill-mention" data-rune-name="Rage">Rage</span> uptime.
-    - Give the <span class="skill-mention" data-rune-name="Bleed" data-rune-tier="legendary">Bleed</span>/<span class="skill-mention" data-rune-name="Poison" data-rune-tier="legendary">Poison</span> to Maelstrom and Turning Slash if you use mana food.
+- Use <span class="skill-mention" data-rune-name="Bleed" data-rune-tier="legendary">Legendary Bleed</span> and/or <span class="skill-mention" data-rune-name="Poison" data-rune-tier="legendary">Poison</span> instead of <span class="skill-mention" data-rune-name="Rage" data-rune-tier="legendary">Rage</span> if you use mana food instead of wine.
 
 </details>
 
@@ -255,7 +253,8 @@ Apply damage <span class="skill-mention" data-glossary-id="synergy">synergy</spa
 </script>
 </div>
 
-1. Consider delaying Maelstrom by 1 to 3 skills when uptime drops to ensure it covers Surge.
+1. The final Surprise Attack can often be skipped with surplus stacks and expected raid downtime.
+2. Consider delaying Maelstrom by 1 to 3 skills when uptime drops to ensure it covers Surge (<span class="skill-mention" data-skill-id="raidcaptain">Raid Captain</span>).
 
 <div class="setup-panel" data-accent="lavender" markdown>
 <div class="setup-notes" markdown>

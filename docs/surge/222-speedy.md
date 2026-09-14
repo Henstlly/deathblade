@@ -169,11 +169,9 @@ Make sure you've read [Essentials](essentials.md), then apply both "Ark Passive"
 <summary><span class="setup-note-tag">Tip</span>Runes<span class="setup-note-arrow"></span></summary>
 
 - Use <span class="skill-mention" data-rune-name="Purify">Purify</span> on Head Hunt if needed.
-- Use <span class="skill-mention" data-rune-name="Bleed" data-rune-tier="legendary">Legendary Bleed</span> on Maelstrom if you don't experience mana issues.
-    - Bleed is around +0.75% DPS in exchange for playing skillfully or using mana food.
-- Use <span class="skill-mention" data-rune-name="Vision" data-rune-tier="legendary">Legendary Vision</span> on Surprise Attack if you find it more useful.
+- Use <span class="skill-mention" data-rune-name="Bleed" data-rune-tier="legendary">Legendary Bleed</span> on Maelstrom if you don't experience mana issues or use mana food.
+- Use <span class="skill-mention" data-rune-name="Vision" data-rune-tier="legendary">Legendary Vision</span> on Surprise Attack if you find it more useful than <span class="skill-mention" data-rune-name="Rage" data-rune-tier="legendary">Rage</span>.
     - Increases chance of getting an extra stack on Surprise Attack precast.
-    - Decreased <span class="skill-mention" data-skill-id="raidcaptain">Raid Captain</span>/<span class="skill-mention" data-skill-id="massincrease">Mass Increase</span> efficiency due to the loss of <span class="skill-mention" data-rune-name="Rage" data-rune-tier="legendary">Rage</span>.
     - Give Head Hunt the next best <span class="skill-mention" data-rune-name="Galewind">Galewind</span> or <span class="skill-mention" data-rune-name="Vision">Vision</span> rune that's available.
 
 </details>
