@@ -101,7 +101,7 @@ Atk/Move Speed Feast
 <span class="engraving-card-name" data-skill-id="raidcaptain">Raid Captain</span>
 <span class="engraving-card-badges" markdown>
 <span class="engraving-card-badge engraving-card-badge-top">★ Recommended</span>
-<span class="engraving-card-badge engraving-card-badge-food">Food Advised</span>
+<span class="engraving-card-badge engraving-card-badge-food">Food Recommended</span>
 </span>
 <span class="engraving-card-arrow"></span>
 </summary>
@@ -142,7 +142,7 @@ Pair with <span class="skill-mention" data-skill-id="curseddoll">Cursed Doll</sp
 <summary>
 <span class="engraving-card-name" data-skill-id="massincrease">Mass Increase</span>
 <span class="engraving-card-badges" markdown>
-<span class="engraving-card-badge engraving-card-badge-food">Food Advised</span>
+<span class="engraving-card-badge engraving-card-badge-food">Food Recommended</span>
 </span>
 <span class="engraving-card-arrow"></span>
 </summary>
@@ -163,7 +163,7 @@ Pair with <span class="skill-mention" data-skill-id="curseddoll">Cursed Doll</sp
 <span class="engraving-card-name"><span class="skill-mention" data-skill-id="raidcaptain">RC</span> + <span class="skill-mention" data-skill-id="massincrease">MI</span> 🦁 🐆 🐯</span>
 <span class="engraving-card-badges" markdown>
 <span class="engraving-card-badge engraving-card-badge-ceiling">★ Ceiling</span>
-<span class="engraving-card-badge engraving-card-badge-food">Food Advised</span>
+<span class="engraving-card-badge engraving-card-badge-food">Food Recommended</span>
 </span>
 <span class="engraving-card-arrow"></span>
 </summary>
