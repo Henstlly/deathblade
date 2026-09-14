@@ -130,7 +130,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "Ark Passive"
 
 - Use the [Ark Passive Calculator](../resources.md#ark-passive-calculator) to optimize Evolution nodes.
 - In some cases (low Specialization, +CD% bracelet) <span class="skill-mention" data-ap-id="releasepotential" data-level="4">Release Potential 4</span> + <span class="skill-mention" data-ap-id="instantspell" data-level="2">Instant Spell 2</span> may be preferred.
-    - This setting increases mana costs, may require the use of mana food instead of wine.
+    - This setting increases mana consumption, may require the use of mana food instead of wine.
 
 </details>
 
