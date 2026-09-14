@@ -169,10 +169,10 @@ Pair with <span class="skill-mention" data-skill-id="curseddoll">Cursed Doll</sp
 </summary>
 <div class="engraving-card-body" markdown>
 
-<span class="food-req-item">![](../assets/shared/icon-vernesewine.png){: .skill-icon } Vernese Wine</span> with Bard or Paladin
+<span class="food-req-item">![](../assets/shared/icon-feast.png){: .skill-icon } </span> + <span class="food-req-item">![](../assets/shared/icon-vernesewine.png){: .skill-icon } Vernese Wine</span> with Bard or Paladin
 { .food-req }
 
-<span class="food-req-item">![](../assets/shared/icon-ealynsblessing.png){: .skill-icon } Ealyn's Blessing</span> with Artist or Valkyrie
+<span class="food-req-item">![](../assets/shared/icon-feast.png){: .skill-icon } </span> + <span class="food-req-item">![](../assets/shared/icon-ealynsblessing.png){: .skill-icon } Ealyn's Blessing</span> with Artist or Valkyrie
 { .food-req }
 
 **Pros:**{: .best-for } This is ceiling. Fewer drawbacks for 222.
