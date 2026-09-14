@@ -67,7 +67,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "Ark Passive"
 === "333 Blitz"
 
     ```
-    11B831CEAE79C01924EB6CC424D1B22A2079A4E7E9C890255317EA3E47347FCB0692F007FB2EAE9C66A610B68FA04D141E320165FEF5D3674C32FBDB94249C4A
+    72790B60FE3AFEBD2482B51F6345AAC43375793123768ED909F6C64D55EDB63C1C1DFCA9B14A53915A50BF156BCAEA1208F503DE67AEC73024A73540045593E2
     ```
 
 ## Ark Setup
@@ -156,7 +156,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "Ark Passive"
 <div class="skill-setup" data-family="surge" markdown>
 <script type="application/json">
 [
-  {"id": "surpriseattack", "level": 10, "tripods": [1, 1, 1], "rune": {"tier": "epic", "name": "Rage"}},
+  {"id": "surpriseattack", "level": 10, "tripods": [1, 1, 1], "rune": {"tier": "legendary", "name": "Poison"}},
   {"id": "windcut", "level": 10, "tripods": [3, 3, 1], "rune": {"tier": "legendary", "name": "Galewind"}},
   {"id": "spincutter", "level": 10, "tripods": [3, 3, 1], "rune": {"tier": "epic", "name": "Galewind"}},
   {"id": "bladedance", "level": 14, "tripods": [1, 2, 2], "rune": {"tier": "epic", "name": "Galewind"}},
@@ -178,7 +178,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "Ark Passive"
 <summary><span class="setup-note-tag">Tip</span>Runes<span class="setup-note-arrow"></span></summary>
 
 - Use <span class="skill-mention" data-rune-name="Purify">Purify</span> on Spincutter if needed.
-- Use <span class="skill-mention" data-rune-name="Bleed" data-rune-tier="legendary">Legendary Bleed</span> and/or <span class="skill-mention" data-rune-name="Poison" data-rune-tier="legendary">Poison</span> instead of <span class="skill-mention" data-rune-name="Rage" data-rune-tier="legendary">Rage</span> if you use mana food instead of wine.
+- Use <span class="skill-mention" data-rune-name="Bleed" data-rune-tier="legendary">Legendary Bleed</span> on Maelstrom if you use mana food instead of wine.
 
 </details>
 
