@@ -2,9 +2,10 @@
 // Deathblade-specific, it just wires up whichever title="" triggers exist.
 //
 // Upgrades EVERY plain native title="" tooltip inside the Ark Passive
-// Calculator (.ap-calc) to the same real hover/focus/tap tooltip panel
-// every other mention on the site uses - reuses skill-tooltip.js's engine
-// via window.SkillTooltip.wireCustom, same as glossary-tooltip.js/
+// Calculator (.ap-calc), CPM Calculator (.cpm-calc), and Bid Calculator
+// (.bid-calc) to the same real hover/focus/tap tooltip panel every other
+// mention on the site uses - reuses skill-tooltip.js's engine via
+// window.SkillTooltip.wireCustom, same as glossary-tooltip.js/
 // ark-passive-tooltip.js/rune-tooltip.js all do for their own trigger
 // types, rather than a 4th independent hover/focus/tap-toggle/viewport-
 // clamping implementation.
@@ -20,10 +21,18 @@
 // icons that already got the real thing. No icon needed for these - the
 // existing label/input/checkbox text itself is already a natural hover
 // target, so the fix is just swapping the tooltip engine under it, not
-// adding new visible markup. Scoped to .ap-calc specifically - Bid
-// Calculator's intent-radio titles and CPM Calculator's time-format title
-// are separate widgets, deliberately left as native tooltips, not part of
-// this sweep.
+// adding new visible markup.
+//
+// Widened a second time to also cover .cpm-calc and .bid-calc, once the
+// site settled on this as THE tooltip system rather than one local to
+// the Ark Passive Calculator - previously Bid Calculator's Intent chips
+// (now .bid-calc-intent's .ap-build-chip buttons - see bid-calculator.js)
+// and the Surges/Min scratch-pad's .spm-calc-info-icon (now itself an
+// .ap-brace-info-icon - see resources.md/extra.css) were deliberately
+// left on native title, back when this file was .ap-calc-only. Nothing
+// about attach() below is actually Ark-Passive-specific - it was already
+// a generic "wire whatever title exists" engine, so widening the
+// selector is the whole change; nothing else here needed touching.
 //
 // No data file/lookup table needed here, unlike those three sibling
 // files: the tooltip text isn't looked up by id, it's already sitting in
@@ -150,21 +159,29 @@
     trigger.removeAttribute("title");
   }
 
-  window.SiteUtils.registerRenderer(".ap-calc [title]", attach);
+  window.SiteUtils.registerRenderer(".ap-calc [title], .cpm-calc [title], .bid-calc [title]", attach);
 
   // Belt-and-suspenders half of the sync above: watches for exactly the
   // "title reapplied to an already-wired element" case a recompute can
-  // cause, scoped to .ap-calc only (same scope as the selector above).
+  // cause. Scoped to the same three calculator roots as the selector
+  // above - .cpm-calc/.bid-calc don't currently have any persistent
+  // element whose title gets rewritten post-render (unlike .ap-calc's
+  // three - see the header comment above), but watching all three costs
+  // nothing and means a future one doesn't silently need this touched
+  // again.
   function watchTitleUpdates() {
-    var calc = document.querySelector(".ap-calc");
-    if (!calc || !window.MutationObserver) return;
-    new MutationObserver(function (mutations) {
-      mutations.forEach(function (m) {
-        if (m.attributeName === "title" && m.target.getAttribute("title")) {
-          attach(m.target);
-        }
-      });
-    }).observe(calc, { attributes: true, attributeFilter: ["title"], subtree: true });
+    if (!window.MutationObserver) return;
+    ["ap-calc", "cpm-calc", "bid-calc"].forEach(function (cls) {
+      var root = document.querySelector("." + cls);
+      if (!root) return;
+      new MutationObserver(function (mutations) {
+        mutations.forEach(function (m) {
+          if (m.attributeName === "title" && m.target.getAttribute("title")) {
+            attach(m.target);
+          }
+        });
+      }).observe(root, { attributes: true, attributeFilter: ["title"], subtree: true });
+    });
   }
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", watchTitleUpdates);

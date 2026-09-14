@@ -3015,29 +3015,16 @@ h3 { color: var(--dbc-teal); }
   border-radius: 8px;
   white-space: nowrap;
 }
-/* Small circled "i", same hover/focus treatment as .ap-brace-info-icon
-   elsewhere on the page - reused rather than duplicated wholesale, but
-   kept as its own class since it sits first in a flex row (no preceding
-   label text to hang a left margin off of) instead of trailing a label. */
+/* Circled "i" - now literally .ap-brace-info-icon (same shape, color,
+   hover treatment as every other info icon on the page, including the
+   real tooltip panel ap-brace-tooltip.js wires onto its title). This
+   class only overrides the two things that actually differ here: no
+   left margin (it sits first in a flex row, no preceding label text to
+   hang .ap-brace-info-icon's default margin-left off of) and
+   flex-shrink: 0 so the tight row doesn't squeeze it. */
 .md-typeset .spm-calc-info-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  margin-left: 0;
   flex-shrink: 0;
-  width: 1.2em;
-  height: 1.2em;
-  border-radius: 50%;
-  border: 1px solid rgba(var(--dbc-lavender-rgb), 0.6);
-  color: var(--dbc-lavender);
-  font-size: 0.8em;
-  font-style: italic;
-  font-weight: 700;
-  line-height: 1;
-  cursor: help;
-}
-.md-typeset .spm-calc-info-icon:hover {
-  border-color: var(--dbc-lavender);
-  color: var(--dbc-lilac);
 }
 .md-typeset .spm-calc-inputs {
   display: flex;
@@ -3433,6 +3420,18 @@ h3 { color: var(--dbc-teal); }
   flex-direction: column;
   gap: 0.25em;
 }
+/* Same `[hidden]` specificity fix as .ap-brace-info-icon elsewhere in this
+   file: the class rule's own `display: flex` above beats the UA
+   stylesheet's bare `[hidden] { display: none }`, so without this
+   .bid-calc-custom-raid-size-row's `hidden` attribute (toggled by
+   bid-calculator.js's updateCustomRaidSizeVisibility) was silently
+   ignored and the Custom Raid Size field showed unconditionally
+   regardless of which Raid Size chip was active. Pre-existing bug, not
+   introduced by the Raid Size radio -> pill-chip conversion - surfaced
+   while screenshot-testing that conversion. */
+.md-typeset .bid-calc-field-row[hidden] {
+  display: none;
+}
 .md-typeset .bid-calc-field-label {
   font-size: 0.6rem;
   text-transform: uppercase;
@@ -3468,15 +3467,18 @@ h3 { color: var(--dbc-teal); }
 .md-typeset .bid-calc-field-row input.bid-market-price.bid-calc-input-invalid {
   border-color: var(--dbc-red);
 }
-/* Raid Size / Intent pickers - real radio inputs (mutual exclusivity
-   native to the browser rather than JS-enforced), lavender accent-color
-   to match the rest of the card. */
+/* Raid Size / Intent pickers - real .ap-build-chip pill <button>s, the
+   same "one vivid, rest muted" component the Ark Passive Calculator's
+   Build toggle uses (see that toggle's own comment in extra.css),
+   reused as-is instead of the old radio dots - see bid-calculator.js's
+   initToggleGroup for the click wiring that stands in for native radio
+   mutual-exclusivity now. */
 .md-typeset .bid-calc-toggle,
 .md-typeset .bid-calc-intent {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.7em;
+  gap: 0.5em;
   margin: 0;
 }
 .md-typeset .bid-calc-intent {
@@ -3484,29 +3486,24 @@ h3 { color: var(--dbc-teal); }
   margin-bottom: 0.9em;
   border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
 }
-.md-typeset .bid-calc-radio-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4em;
-  font-size: 0.82em;
-  color: var(--dbc-lilac);
-  cursor: pointer;
+/* .ap-build-chip's own active state defaults to the RE/Surge pink/teal
+   split - the right color on the Build toggle, meaningless here (this
+   card has nothing to do with builds), so the active state is
+   overridden back to the card's own lavender accent. Everything else
+   (resting/hover look, sizing, transition) comes straight from
+   .ap-build-chip - not duplicated here. */
+.md-typeset .bid-calc-toggle .bid-calc-chip.ap-build-chip-active,
+.md-typeset .bid-calc-intent .bid-calc-chip.ap-build-chip-active {
+  background-color: var(--dbc-lavender);
+  border-color: var(--dbc-lavender);
+  color: #1a1a1d;
 }
-.md-typeset .bid-calc-radio-label input[type="radio"] {
-  width: 1em;
-  height: 1em;
-  margin: 0;
-  accent-color: var(--dbc-lavender);
-  cursor: pointer;
-}
-/* Each Intent label now carries its own one-line native title (see
-   resources.md) instead of one shared info-icon with a paragraph tooltip
-   covering all three - a dotted underline is the standard "there's a
-   hover hint here" affordance instead of making the reader guess. */
-.md-typeset .bid-calc-intent .bid-calc-radio-label {
-  text-decoration: underline dotted rgba(var(--dbc-lavender-rgb), 0.5);
-  text-underline-offset: 3px;
-}
+/* Now that Intent's tooltip runs through the site's real tooltip panel
+   (ap-brace-tooltip.js wires .bid-calc [title] the same as .ap-calc's
+   own triggers) rather than a bare native title, the old dotted-
+   underline "there's a hover hint here" hack isn't needed - the pill
+   itself already reads as interactive the same way every other
+   .ap-build-chip on the site does. */
 /* The headline number - same treatment as .cpm-calc-result-value (bold,
    tabular-nums, muted "—" placeholder before valid input) but sized up
    since this is the single payoff of the whole card, not one of two

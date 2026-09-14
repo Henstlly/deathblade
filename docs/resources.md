@@ -2023,8 +2023,8 @@
 
 <div class="spm-calc">
 <div class="spm-calc-inputs">
-<span class="spm-calc-info-icon" role="img" title="Time elapsed: &quot;2m 3s&quot;, &quot;123s&quot; (bare number = seconds), or mm:ss / hh:mm:ss. Max 120m 60s.">i</span>
-<input type="text" class="spm-calc-time" placeholder="2m 3s" inputmode="text" autocomplete="off" maxlength="10" aria-label="Time elapsed, e.g. 2m 3s or 123 seconds, max 120m 60s">
+<span class="ap-brace-info-icon spm-calc-info-icon" role="img" title="Time elapsed: &quot;2m 3s&quot;, &quot;123s&quot; (bare number = seconds), or mm:ss / hh:mm:ss. Max 120m">i</span>
+<input type="text" class="spm-calc-time" placeholder="2m 4s" inputmode="text" autocomplete="off" maxlength="10" aria-label="Time elapsed, e.g. 2m 3s or 123 seconds, max 120m 60s">
 <span class="spm-calc-x">&times;</span>
 <input type="number" class="spm-calc-count" placeholder="31" min="0" max="999" step="1" aria-label="Number of surges, max 999">
 </div>
@@ -2171,10 +2171,10 @@
 </div>
 <div class="bid-calc-toggle" role="group" aria-label="Raid size">
 <span class="bid-calc-field-label">Raid Size</span>
-<label class="bid-calc-radio-label"><input type="radio" name="bid-raid-size" class="bid-raid-size" value="4"> 4</label>
-<label class="bid-calc-radio-label"><input type="radio" name="bid-raid-size" class="bid-raid-size" value="8" checked> 8</label>
-<label class="bid-calc-radio-label"><input type="radio" name="bid-raid-size" class="bid-raid-size" value="16"> 16</label>
-<label class="bid-calc-radio-label"><input type="radio" name="bid-raid-size" class="bid-raid-size" value="custom"> Custom</label>
+<button type="button" class="ap-build-chip bid-calc-chip" data-value="4" aria-pressed="false">4</button>
+<button type="button" class="ap-build-chip bid-calc-chip ap-build-chip-active" data-value="8" aria-pressed="true">8</button>
+<button type="button" class="ap-build-chip bid-calc-chip" data-value="16" aria-pressed="false">16</button>
+<button type="button" class="ap-build-chip bid-calc-chip" data-value="custom" aria-pressed="false">Custom</button>
 </div>
 <div class="bid-calc-field-row bid-calc-custom-raid-size-row" hidden>
 <label class="bid-calc-field-label" for="bid-custom-raid-size">Custom Raid Size</label>
@@ -2184,9 +2184,9 @@
 
 <div class="bid-calc-intent" role="group" aria-label="Bidding intent">
 <span class="bid-calc-field-label">Intent</span>
-<label class="bid-calc-radio-label" title="Splits the gold evenly - you and everyone else net the same amount."><input type="radio" name="bid-intent" class="bid-intent" value="equal" checked> Equal Profit</label>
-<label class="bid-calc-radio-label" title="Solid profit if you win - and outbidding you costs the rival more."><input type="radio" name="bid-intent" class="bid-intent" value="punish"> Profit &amp; Punish Next Bidder</label>
-<label class="bid-calc-radio-label" title="Highest possible profit - if you get outbid, it just falls back to an even split."><input type="radio" name="bid-intent" class="bid-intent" value="max"> Max Profit</label>
+<button type="button" class="ap-build-chip bid-calc-chip ap-build-chip-active" data-value="equal" aria-pressed="true" title="Splits the gold evenly - you and everyone else net the same amount.">Equal Profit</button>
+<button type="button" class="ap-build-chip bid-calc-chip" data-value="punish" aria-pressed="false" title="Solid profit if you win - and outbidding you costs the rival more.">Profit &amp; Punish Next Bidder</button>
+<button type="button" class="ap-build-chip bid-calc-chip" data-value="max" aria-pressed="false" title="Highest possible profit - if you get outbid, it just falls back to an even split.">Max Profit</button>
 </div>
 
 <div class="bid-calc-result">

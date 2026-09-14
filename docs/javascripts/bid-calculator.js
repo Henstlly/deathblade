@@ -169,15 +169,26 @@
     return round(marketPrice * equalRatio(raidSize));
   }
 
-  // ----- Raid size: presets + Custom -----
+  // ----- Raid size / Intent: real pill-chip <button>s -----
+  // Same .ap-build-chip component the Ark Passive Calculator's Build
+  // toggle uses (one vivid, rest muted) instead of the old radio dots -
+  // reused as-is rather than duplicated, with a .bid-calc-chip modifier
+  // in extra.css only for the active-state color (lavender here, not
+  // ap-build-chip's own RE/Surge pink/teal, which would carry the wrong
+  // meaning on a card that has nothing to do with builds). Selection
+  // state lives on the DOM itself (.ap-build-chip-active), same as the
+  // Build toggle - no separate JS-held value, initToggleGroup below just
+  // keeps exactly one button per group marked active and mirrors that
+  // onto aria-pressed for the same reason the Build toggle does.
+
   // Returns null (rather than throwing or silently clamping) when the
-  // Custom field is selected but doesn't hold a usable number yet -
+  // Custom chip is active but the field doesn't hold a usable number yet -
   // update() treats that the same as an invalid price: blank out the
   // results instead of computing off garbage.
   function readRaidSize(root) {
-    var checked = root.querySelector('input[name="bid-raid-size"]:checked');
-    if (!checked) return 8;
-    if (checked.value !== "custom") return parseInt(checked.value, 10);
+    var active = root.querySelector(".bid-calc-toggle .ap-build-chip.ap-build-chip-active");
+    if (!active) return 8;
+    if (active.dataset.value !== "custom") return parseInt(active.dataset.value, 10);
 
     var customInput = root.querySelector(".bid-custom-raid-size");
     var n = customInput ? parseInt(customInput.value, 10) : NaN;
@@ -185,14 +196,37 @@
   }
 
   function updateCustomRaidSizeVisibility(root) {
-    var checked = root.querySelector('input[name="bid-raid-size"]:checked');
+    var active = root.querySelector(".bid-calc-toggle .ap-build-chip.ap-build-chip-active");
     var row = root.querySelector(".bid-calc-custom-raid-size-row");
-    if (row) row.hidden = !checked || checked.value !== "custom";
+    if (row) row.hidden = !active || active.dataset.value !== "custom";
+  }
+
+  // Wires one pill-chip group (Raid Size or Intent): clicking a chip
+  // marks it (and only it) active, then hands the freshly-active button
+  // to onChange so the caller can re-derive whatever depends on it
+  // (custom-row visibility, the actual recompute) without this function
+  // needing to know what those are. A no-op re-click (already active) is
+  // filtered out before onChange runs, same as the Build toggle's own
+  // chip listeners skip a same-value click.
+  function initToggleGroup(root, groupSelector, onChange) {
+    var buttons = root.querySelectorAll(groupSelector + " .ap-build-chip");
+    buttons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        if (btn.classList.contains("ap-build-chip-active")) return;
+        buttons.forEach(function (b) {
+          b.classList.remove("ap-build-chip-active");
+          b.setAttribute("aria-pressed", "false");
+        });
+        btn.classList.add("ap-build-chip-active");
+        btn.setAttribute("aria-pressed", "true");
+        onChange(btn);
+      });
+    });
   }
 
   function update(root) {
     var priceInput = root.querySelector(".bid-market-price");
-    var intentInput = root.querySelector('input[name="bid-intent"]:checked');
+    var intentInput = root.querySelector(".bid-calc-intent .ap-build-chip.ap-build-chip-active");
     var customRaidInput = root.querySelector(".bid-custom-raid-size");
 
     var resultValue = root.querySelector(".bid-calc-result-value");
@@ -207,7 +241,7 @@
 
     var price = parseNumber(priceInput.value);
     var raidSize = readRaidSize(root);
-    var intent = intentInput ? intentInput.value : "equal";
+    var intent = intentInput ? intentInput.dataset.value : "equal";
 
     var priceValid = isFinite(price) && price > MARKET_PRICE_MIN && price <= MARKET_PRICE_MAX;
     // priceInput lost its native min/max (type="number" only) when it
@@ -340,9 +374,19 @@
     root.querySelectorAll("input").forEach(function (input) {
       input.addEventListener("input", function () {
         if (input === priceInput) formatPriceInput(input);
-        if (input.name === "bid-raid-size") updateCustomRaidSizeVisibility(root);
         update(root);
       });
+    });
+
+    // Raid Size and Intent are pill-chip <button>s now, not radios - they
+    // don't fire "input" events, so they're wired separately here rather
+    // than through the generic input-listener loop above.
+    initToggleGroup(root, ".bid-calc-toggle", function () {
+      updateCustomRaidSizeVisibility(root);
+      update(root);
+    });
+    initToggleGroup(root, ".bid-calc-intent", function () {
+      update(root);
     });
 
     updateCustomRaidSizeVisibility(root);
