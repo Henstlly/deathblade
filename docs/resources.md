@@ -465,10 +465,10 @@
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--critrate" title="The capped, uptime-weighted Crit Rate the DPS math actually uses (accounts for buffs overlapping and hitting the 100% cap).">Eff. Crit Rate</span><span class="ap-summary-base-critrate ap-summary-value">—</span></div>
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--critrate" title="Uncapped sum of every Crit Rate source, before the 100% cap - can read over 100% even when Eff. Crit Rate above is capped.">Raw Crit Rate</span><span class="ap-summary-base-critrate-raw ap-summary-value">—</span></div>
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--critdmg">Crit Dmg</span><span class="ap-summary-base-critdmg ap-summary-value">—</span></div>
+        <div class="ap-stat-card-row ap-stat-card-row--breakingmoon-base ap-stat-card-row--hidden"><span class="ap-summary-label ap-summary-label--critdmg" title="Breaking Moon's average per-cast Crit Dmg bonus (applies to 111 Surge only).">T→Z CDmg</span><span class="ap-summary-base-breakingmoon ap-summary-value">—</span></div>
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--oncrit">Crit Hit Dmg</span><span class="ap-summary-base-oncrit ap-summary-value">—</span></div>
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--evodmg">Evo Dmg</span><span class="ap-summary-base-evodmg ap-summary-value">—</span></div>
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--adddmg">Add Dmg</span><span class="ap-summary-base-adddmg ap-summary-value">—</span></div>
-        <div class="ap-stat-card-row ap-stat-card-row--breakingmoon-base ap-stat-card-row--hidden"><span class="ap-summary-label ap-summary-label--critdmg" title="Actual DPS gain from Breaking Moon's average per-cast Crit Dmg add (Surge 111 only) - not the raw Crit Dmg % it grants.">T→Z Dmg</span><span class="ap-summary-base-breakingmoon ap-summary-value">—</span></div>
       </div>
 
       <div class="ap-stat-card ap-stat-card-best">
@@ -476,10 +476,10 @@
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--critrate" title="The capped, uptime-weighted Crit Rate the DPS math actually uses (accounts for buffs overlapping and hitting the 100% cap).">Eff. Crit Rate</span><span class="ap-summary-best-crit ap-summary-value">—</span></div>
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--critrate" title="Uncapped sum of every Crit Rate source, before the 100% cap - can read over 100% even when Eff. Crit Rate above is capped.">Raw Crit Rate</span><span class="ap-summary-best-crit-raw ap-summary-value">—</span></div>
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--critdmg">Crit Dmg</span><span class="ap-summary-best-critdmg ap-summary-value">—</span></div>
+        <div class="ap-stat-card-row ap-stat-card-row--breakingmoon-best ap-stat-card-row--hidden"><span class="ap-summary-label ap-summary-label--critdmg" title="Breaking Moon's average per-cast Crit Dmg bonus (applies to 111 Surge only).">T→Z CDmg</span><span class="ap-summary-best-breakingmoon ap-summary-value">—</span></div>
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--oncrit">Crit Hit Dmg</span><span class="ap-summary-best-oncrit ap-summary-value">—</span></div>
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--evodmg">Evo Dmg</span><span class="ap-summary-best-evodmg ap-summary-value">—</span></div>
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--adddmg">Add Dmg</span><span class="ap-summary-best-adddmg ap-summary-value">—</span></div>
-        <div class="ap-stat-card-row ap-stat-card-row--breakingmoon-best ap-stat-card-row--hidden"><span class="ap-summary-label ap-summary-label--critdmg" title="Actual DPS gain from Breaking Moon's average per-cast Crit Dmg add (Surge 111 only) - not the raw Crit Dmg % it grants.">T→Z Dmg</span><span class="ap-summary-best-breakingmoon ap-summary-value">—</span></div>
       </div>
 
     </div>
@@ -663,13 +663,16 @@
           <label class="ap-calc-field-label" for="ap-gear-main-stat-pct" title="Stronghold Pet (+1%) + Equipped Skins: Legendary +2% each and Epic +1% each. Affects only the flat Main Stat granted by lines below, not your Main Stat.">Main Stat %</label>
           <input type="number" id="ap-gear-main-stat-pct" class="ap-gear-main-stat-pct ap-gear-input-narrow" min="0" max="15" step="0.1" value="9">
         </div>
+        <div class="ap-calc-field-row">
+          <label class="ap-calc-field-label" for="ap-gear-gem-base-ap" title="The SUM of every socketed gem's Base AP% bonus (Lv.7 +0.6% / Lv.8 +0.8% / Lv.9 +1% / Lv.10 +1.2% each). As displayed on your character profile's Gem section.">Gem Base AP %</label>
+          <input type="number" id="ap-gear-gem-base-ap" class="ap-gear-gem-base-ap ap-gear-input-narrow" min="0" max="13.2" step="0.1" value="13.2">
+        </div>
         <div class="ap-calc-field-row ap-calc-field-row-pair">
-          <label class="ap-calc-field-label ap-gear-gem-base-ap-label" title="The SUM of every socketed gem's Base AP% bonus (Lv.7 +0.6% / Lv.8 +0.8% / Lv.9 +1% / Lv.10 +1.2% each).">Gem Base AP %</label>
-          <div class="ap-calc-pair ap-gear-gem-base-ap-pair">
-            <span class="ap-value-display" data-for="ap-gear-gem-base-ap"></span>
-            <input type="number" id="ap-gear-gem-base-ap" class="ap-gear-gem-base-ap ap-gear-input-narrow" min="0" max="13.2" step="0.1" value="13.2" title="Gem Base AP % - as shown on your character profile's gem section.">
-            <label class="ap-calc-pair-check" title="Check to add your stone's Base AP % bonus at 5+ engraving levels if available (+1.5%).">
-              <span class="ap-calc-pair-check-label">Ability Stone</span>
+          <label class="ap-calc-field-label" title="Your Ability Stone's own Base AP % bonus - a flat +1.5% if you have a 9/7, 10/6, or better roll (at 5+ engraving levels).">Base Ability Stone %</label>
+          <div class="ap-calc-pair ap-gear-ability-stone-base-ap-pair">
+            <span class="ap-value-display" data-for="ap-gear-ability-stone-base-ap"></span>
+            <label class="ap-calc-pair-check">
+              <span class="ap-calc-pair-check-label">9/7 or 10/6</span>
               <input type="checkbox" id="ap-gear-ability-stone-base-ap" class="ap-gear-ability-stone-base-ap" checked>
             </label>
           </div>
@@ -1250,7 +1253,7 @@
           </select>
         </div>
         <div class="ap-calc-field-row ap-engr-mi-row">
-          <label class="ap-calc-field-label"><span class="skill-mention" data-skill-id="massincrease">Mass Increase</span></label>
+          <label class="ap-calc-field-label"><span class="skill-mention" data-skill-id="massincrease">Mass Increase</span> <input type="checkbox" class="ap-engr-mi-optin" checked title="Its -10% Attack Speed drawback isn't modeled here - uncheck this if you'd rather leave it out of the best-combo search."></label>
           <select class="ap-engr-mi-level">
             <option value="0 Nodes">0 Nodes</option>
             <option value="1 Nodes">1 Nodes</option>
@@ -1258,9 +1261,6 @@
             <option value="3 Nodes">3 Nodes</option>
             <option value="4 Nodes" selected>4 Nodes</option>
           </select>
-        </div>
-        <div class="ap-calc-field-row ap-engr-mi-optin-row">
-          <label class="ap-engr-checkbox-label" title="Its -10% Attack Speed drawback isn't modeled here - uncheck this if you'd rather leave it out of the best-combo search."><input type="checkbox" class="ap-engr-mi-optin" checked> Include Mass Increase in best-combo search</label>
         </div>
       </div>
 

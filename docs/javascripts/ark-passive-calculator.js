@@ -1666,16 +1666,16 @@
       };
     }
 
-    // Same marginal-gain calc as baseStats.breakingMoonGain, just using
-    // this cell's own effCrit/on-crit multiplier instead of the
-    // pre-keystone one. (KBW's isolated Dmg contribution used to get its
-    // own row here too, via kbwRealizedGainPct - see that function's own
-    // comment for why it needs a real re-optimized with/without search
-    // rather than a closed form - moved to the Engraving Comparison
-    // section's reference table below instead, so it isn't duplicated on
-    // this card anymore.)
+    // Breaking Moon's flat average per-cast Crit Dmg add, straight from
+    // shared - same value every cell shows (it doesn't depend on which
+    // keystone pairing this cell is). (KBW's isolated Dmg contribution
+    // used to get its own row here too, via kbwRealizedGainPct - see that
+    // function's own comment for why it needs a real re-optimized
+    // with/without search rather than a closed form - moved to the
+    // Engraving Comparison section's reference table below instead, so
+    // it isn't duplicated on this card anymore.)
     stats.breakingMoonActive = shared.breakingMoonActive;
-    stats.breakingMoonGain = marginalCritDmgGainPct(cell.effCrit, stats.onCritDmg / 100, shared.critDmgTotal, shared.breakingMoonAdd);
+    stats.breakingMoonAdd = shared.breakingMoonAdd;
     return stats;
   }
 
@@ -1740,15 +1740,12 @@
       onCritDmg: shared.onCritDmgBase * 100,
       evoDmg: (shared.yearningEvo + shared.evoKarmaEvo + STANDING_STRIKER_EVO_DMG) * 100,
       addDmg: shared.addDmgBase * 100,
-      // Marginal DPS gain from Breaking Moon's average per-cast Crit Dmg
-      // add (see breakingMoonContribution), same closed-form ratio
-      // marginalCritDmgGainPct provides generically - no EV malus to fold
-      // in here, so the generic helper applies directly. Varies with
-      // effCrit, so Base and Best Setup can legitimately show different
-      // values here (unlike the old flat-add display, which was identical
-      // between the two cards).
+      // Breaking Moon's average per-cast Crit Dmg add itself (see
+      // breakingMoonContribution) - a flat value from shared, so Base and
+      // Best Setup show the same number (it doesn't depend on which
+      // keystone pairing is selected).
       breakingMoonActive: shared.breakingMoonActive,
-      breakingMoonGain: marginalCritDmgGainPct(baseEffCrit, shared.onCritDmgBase, shared.critDmgTotal, shared.breakingMoonAdd),
+      breakingMoonAdd: shared.breakingMoonAdd,
     };
 
     const bestStats = best ? best.stats : null;
@@ -4807,13 +4804,17 @@
       spanAstro.textContent = formatPct(astrogemDmg);
     }
 
-    // Gem Base AP % - shows the combined total (gem sum + the Ability
-    // Stone's +1.5% when that checkbox is on) rather than just echoing
-    // the typed-in gem value back, so checking/unchecking the stone box
-    // is reflected here immediately (e.g. 13.2 + 1.5 -> "14.70%") - see
-    // gearBaseApPercentTotal's own comment for why the stone is a
-    // separate additive term instead of folded into the typed field.
-    setDisplay("#ap-gear-gem-base-ap", gearBaseApPercentTotal(inputs) / 100);
+    // Base Ability Stone % - the stone's own flat +1.5% (ABILITY_STONE_
+    // BASE_AP_BONUS), shown next to its "9/7 or 10/6" checkbox when
+    // checked and blank when not (setDisplay already treats a 0 value as
+    // blank rather than "(0%)" - see its own comment above). Gem Base
+    // AP % no longer has a live display of its own now that this row is
+    // split out separately - the input box alone is enough information
+    // there.
+    setDisplay(
+      "#ap-gear-ability-stone-base-ap",
+      inputs.gearAbilityStoneBaseAp ? ABILITY_STONE_BASE_AP_BONUS / 100 : 0
+    );
 
     // Astrogem (Gearing's own Atk. Power Level - independent field, see
     // gearAstrogemApPercent's comment)
@@ -5012,7 +5013,14 @@
         rateRawEl.textContent = raw.toFixed(2) + "%";
         rateRawEl.classList.toggle("ap-summary-value-warn", raw > 100);
       }
-      if (dmgEl) dmgEl.textContent = (base.critDmg * 100).toFixed(2) + "%";
+      // Displayed Crit Dmg excludes Breaking Moon's own add when active -
+      // base.critDmg itself stays the real shared.critDmgTotal (the DPS
+      // math's actual number, unchanged), this just subtracts it back out
+      // for THIS row's text so it isn't shown twice now that the T→Z CDmg
+      // row below surfaces it on its own. critDmg is only ever read here
+      // for display (not reused in any further calc), so this is safe.
+      const baseCritDmgDisplay = base.critDmg - (base.breakingMoonActive ? base.breakingMoonAdd : 0);
+      if (dmgEl) dmgEl.textContent = (baseCritDmgDisplay * 100).toFixed(2) + "%";
       if (onCritEl) onCritEl.textContent = base.onCritDmg.toFixed(2) + "%";
       if (evoEl) evoEl.textContent = base.evoDmg.toFixed(2) + "%";
       if (addEl) addEl.textContent = base.addDmg.toFixed(2) + "%";
@@ -5024,11 +5032,13 @@
       // Breaking Moon (Surge 111 only) - a flat Crit Dmg add already
       // folded into critDmgTotal (see breakingMoonContribution), surfaced
       // here as its own line since it can shift which keystone the grid
-      // above recommends. Hidden for every other build.
+      // above recommends AND because the Crit Dmg row above now excludes
+      // it (see baseCritDmgDisplay above) to avoid showing it twice.
+      // Hidden for every other build.
       const bmRow = root.querySelector(".ap-stat-card-row--breakingmoon-base");
       const bmEl = root.querySelector(".ap-summary-base-breakingmoon");
       if (bmRow) bmRow.classList.toggle("ap-stat-card-row--hidden", !base.breakingMoonActive);
-      if (bmEl) bmEl.textContent = "+" + base.breakingMoonGain.toFixed(2) + "%";
+      if (bmEl) bmEl.textContent = (base.breakingMoonAdd * 100).toFixed(2) + "%";
     }
 
     // Best Setup line - shows whichever cell cardCell above resolved to
@@ -5053,7 +5063,9 @@
         critRawEl.textContent = raw.toFixed(2) + "%";
         critRawEl.classList.toggle("ap-summary-value-warn", raw > 100);
       }
-      if (dmgEl) dmgEl.textContent = (best.critDmg * 100).toFixed(2) + "%";
+      // Same Breaking Moon exclusion as the Base card above.
+      const bestCritDmgDisplay = best.critDmg - (best.breakingMoonActive ? best.breakingMoonAdd : 0);
+      if (dmgEl) dmgEl.textContent = (bestCritDmgDisplay * 100).toFixed(2) + "%";
       if (onCritEl) onCritEl.textContent = best.onCritDmg.toFixed(2) + "%";
       if (evoEl) evoEl.textContent = best.evoDmg.toFixed(2) + "%";
       if (addEl) addEl.textContent = best.addDmg.toFixed(2) + "%";
@@ -5064,7 +5076,7 @@
       const bmRow = root.querySelector(".ap-stat-card-row--breakingmoon-best");
       const bmEl = root.querySelector(".ap-summary-best-breakingmoon");
       if (bmRow) bmRow.classList.toggle("ap-stat-card-row--hidden", !best.breakingMoonActive);
-      if (bmEl) bmEl.textContent = "+" + best.breakingMoonGain.toFixed(2) + "%";
+      if (bmEl) bmEl.textContent = (best.breakingMoonAdd * 100).toFixed(2) + "%";
     }
   }
 
@@ -5379,8 +5391,6 @@
     }
     const miRow = root.querySelector(".ap-engr-mi-row");
     if (miRow) miRow.style.display = isSurge ? "" : "none";
-    const miOptinRow = root.querySelector(".ap-engr-mi-optin-row");
-    if (miOptinRow) miOptinRow.style.display = isSurge ? "" : "none";
 
     // "Ranked for the selected food only..." only means anything where a
     // food choice (Wine vs. Mana Food) actually exists to rank around -
