@@ -3,7 +3,7 @@
 <p class="page-banner page-banner-warning">Not available in NA/EU servers yet, rotations subject to change</p>
 
 <div class="build-card-row" markdown>
-<div class="build-card" data-updated="2026-08-07" markdown>
+<div class="build-card" data-updated="2026-09-16" markdown>
 
 <!-- Difficulty/Trixion/Playstyle stats above, AND the pentagon badge below,
      both read from javascripts/build-data.js (window.DB_BUILD_DATA) - there is

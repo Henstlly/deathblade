@@ -870,7 +870,6 @@
       <tbody class="ap-brace-compare-rows"></tbody>
     </table>
     <p class="ap-brace-compare-flip-note">&dagger; Equipping this line's Mid tier may change which split/keystone combo is your actual best - worth a re-check.</p>
-    <p class="ap-brace-compare-footer-note">Flat Bonus lines use values from the Gearing section and are hidden until Weapon Power and Main Stat are both filled in.</p>
 
     <!-- Bracelet vs. Bracelet: compares two WHOLE candidate bracelets (5
          real lines each - Spec Stat plus Basic Effect 2 (Crit Stat, Main
@@ -1724,8 +1723,6 @@
       </table>
     </div>
 
-    <p class="ap-brace-compare-footer-note">Earrings and Flat Bonuses use values from the Gearing section and are hidden until Weapon Power and Main Stat are both filled in.</p>
-
     <!-- Accessory vs. Accessory: same relationship to the 4 panels above
          as Bracelet vs. Bracelet has to Bracelet Comparison - a full-piece
          swap (real typed Main Stat + all 3 real lines at once) instead of
@@ -1981,7 +1978,6 @@
         <tbody class="ap-arkgrid-compare-rows"></tbody>
       </table>
     </div>
-    <p class="ap-brace-compare-footer-note">Attack/Weapon cores use values from the Gearing section and are hidden until Weapon Power and Main Stat are both filled in.</p>
   </div>
 </details>
 
