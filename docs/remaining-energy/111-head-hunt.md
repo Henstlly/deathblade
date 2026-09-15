@@ -270,10 +270,10 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 
 === "Recovery"
 
-    <div class="setup-panel" data-accent="lavender" markdown>
-    <div class="setup-notes" markdown>
+    <div class="setup-panel" data-accent="lavender">
+    <div class="setup-notes">
 
-    <details class="setup-note" data-kind="tip" open markdown>
+    <details class="setup-note" data-kind="tip" open>
     <summary><span class="setup-note-tag">Tip</span>Recovery Video<span class="setup-note-arrow"></span></summary>
 
     Watch this 54-minute [111 recovery video](https://www.youtube.com/watch?v=z8KE3HG_ggg) or consider an easier build.
