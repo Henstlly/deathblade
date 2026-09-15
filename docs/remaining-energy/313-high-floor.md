@@ -149,7 +149,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 </div>
 
 - Same as 313 but **without** the Fatal Wave reset.
-- Requires Lv 9+ Fatal Wave CD gem or <span class="skill-mention" data-ap-id="optimizedtraining" data-level="1">Optimized Training Lv 1</span>.
+- Requires Lv 9+ Fatal Wave CD gem or <span class="skill-mention" data-ap-id="optimizedtraining" data-level="1">Optimized Training 1</span>.
     - Avoid +CD% bracelet line for this core-limited variant.
     - See the Gem section for required adjustments relative to the 313 setup.
 

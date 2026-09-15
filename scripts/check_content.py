@@ -52,12 +52,6 @@ ALLOWED_SHORT_FORMS = {
     ("massincrease", "MI"),
     ("orbcirculation", "OC 5"),
     ("releasepotential", "RP 4"),
-    # Every other AP mention on the site renders as "<Name> <N>"; this one
-    # alone says "Lv 1". Allow-listed rather than edited so the audit that
-    # found it didn't change any visible page text. If you'd rather it match
-    # the rest, drop this line and change 313-high-floor.md:152 to
-    # "Optimized Training 1".
-    ("optimizedtraining", "Optimized Training Lv 1"),
 }
 
 
