@@ -1,0 +1,19 @@
+# Build dependencies for the GitHub Actions deploy (see .github/workflows/deploy.yml).
+#
+# Only needed for CI. Locally, `pip install mkdocs-material` and `mkdocs serve`
+# still work exactly as before - nothing here has to be installed on your machine.
+#
+# Why a range instead of nothing:
+#   Material 9.x is actively maintained, not end-of-life, and MkDocs itself
+#   prints a warning during every build about breaking changes coming in
+#   MkDocs 2.0. That is precisely the risk worth fencing off: with no bound at
+#   all, the day those majors land, a push that changed nothing but a typo
+#   would deploy a broken site, or fail to build, with no local change to
+#   point at.
+#
+# Why a range instead of an exact pin:
+#   An exact pin would also block the security and bugfix releases that are
+#   the main thing still shipping for this stack, and would need manual
+#   bumping forever. The range takes patches automatically and blocks only
+#   the known-breaking major.
+mkdocs-material>=9.7,<10

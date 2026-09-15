@@ -1,6 +1,6 @@
 # Deathblade Class Guide
 
-MkDocs Material site, deploys to GitHub Pages on push to `main`. Just markdown + images, no separate application build system; GitHub Actions runs `mkdocs gh-deploy` for you. Not real code, just what works for me and it's prettier than google docs.
+MkDocs Material site, deploys to GitHub Pages on push to `main`. Just markdown + images, no separate application build system; GitHub Actions builds, checks and publishes it for you (see "What CI does on push" below). Not real code, just what works for me and it's prettier than google docs.
 
 ## Forking this for your own spin
 
@@ -39,3 +39,30 @@ pip install mkdocs-material
 mkdocs serve
 ```
 `localhost:8000`. Probably don't need this if you're already using the VS Code Mkdocs preview extension.
+
+Nothing in the GitHub Actions deploy has to be installed locally. There are **no
+extra mkdocs plugins** (`plugins:` is still just `search` and `privacy`), so
+`mkdocs serve` needs exactly what it always needed. The deploy's extra steps are
+plain standard-library Python scripts that run in CI against the *built* output,
+never against `docs/`.
+
+## What CI does on push
+
+`.github/workflows/deploy.yml` runs, in order:
+
+1. `scripts/check_ids.py` - every id referenced in markdown resolves against the DATA files.
+2. `scripts/check_content.py` - dates aren't in the future, `id`/`class` still match on calculator fields, display text hasn't drifted from the DATA files, `?v=` present on every asset.
+3. `scripts/check_cachebust.py` - if a `.js`/`.css` changed in this push, its `?v=` was bumped in the right place (`mkdocs.yml`, or `LAZY_BUNDLE` for the five lazy files).
+4. `mkdocs build`
+5. `scripts/minify_assets.py site --verify` - strips comments from the built css/js. `docs/` keeps every comment; only what ships gets stripped. Takes a guide page from ~237 KB to ~57 KB gzipped.
+6. `ghp-import` to `gh-pages` (identical to what `mkdocs gh-deploy --force --no-history` does internally).
+
+Any of the three checks can be run locally too, they need nothing installed:
+
+```
+python3 scripts/check_ids.py
+python3 scripts/check_content.py
+```
+
+If a check fails the deploy stops before publishing, so a broken id or a missed
+cache-bust can't reach the live site.

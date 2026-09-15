@@ -126,10 +126,27 @@
       nameCell.appendChild(nameLink);
       row.appendChild(nameCell);
 
+      // Small local builder so each bar cell (diff/trix below) is DOM
+      // nodes, same no-innerHTML convention as every other widget - see
+      // ark-core-badge.js's comment on why. trackClass/fillClass default
+      // to the plain (non-teal) variant, which is all difficulty's own
+      // cell ever needs.
+      function buildBarCell(labelText, pct, trackClass, fillClass) {
+        var cell = document.createElement("div");
+        cell.className = "table-bar-cell";
+        cell.appendChild(document.createTextNode(labelText));
+        var track = document.createElement("div");
+        track.className = trackClass || "stat-bar-track";
+        var fill = document.createElement("div");
+        fill.className = fillClass || "stat-bar-fill";
+        fill.style.width = pct + "%";
+        track.appendChild(fill);
+        cell.appendChild(track);
+        return cell;
+      }
+
       var diffCell = document.createElement("td");
-      diffCell.innerHTML =
-        '<div class="table-bar-cell">' + fmt1(build.difficulty) + " / 10" +
-        '<div class="stat-bar-track"><div class="stat-bar-fill" style="width:' + (build.difficulty / 10) * 100 + '%"></div></div></div>';
+      diffCell.appendChild(buildBarCell(fmt1(build.difficulty) + " / 10", (build.difficulty / 10) * 100));
       row.appendChild(diffCell);
 
       var trixCell = document.createElement("td");
@@ -141,9 +158,10 @@
         // scaled to the data's own min/max.
         var trixPct = Math.max(0, Math.min(1, (build.trixion - 1.0) / 0.3)) * 100;
         var fillClass = "stat-bar-fill stat-bar-fill-teal" + (build.trixionConfirmed === false ? " stat-bar-fill-unconfirmed" : "");
-        trixCell.innerHTML =
-          '<div class="table-bar-cell">' + build.trixion.toFixed(2) + "x" +
-          '<div class="stat-bar-track stat-bar-track-teal"><div class="' + fillClass + '" style="width:' + trixPct + '%"></div></div></div>';
+        trixCell.appendChild(buildBarCell(
+          build.trixion.toFixed(2) + "x", trixPct,
+          "stat-bar-track stat-bar-track-teal", fillClass
+        ));
       }
       row.appendChild(trixCell);
 

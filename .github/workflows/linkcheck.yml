@@ -1,0 +1,57 @@
+name: Check external links
+
+# Deliberately NOT part of the deploy workflow. External links rot on their own
+# schedule, with no push to trigger a check, and a YouTube video going private
+# should never be able to block a deploy of unrelated content.
+#
+# 13 of this site's ~25 external links are YouTube videos (guides, recovery
+# clips, gameplay). Those get privated and deleted regularly, and a dead
+# "2-minute 333 recovery video" link is invisible to you until a reader
+# complains.
+#
+# On failure this opens (or updates) a single tracking issue. It does not fail
+# loudly in your inbox every week for a link that was already flagged.
+
+on:
+  schedule:
+    # Mondays, 06:00 UTC
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  linkcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run lychee
+        id: lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          # Markdown sources rather than the built site: a hit here points at
+          # the exact file and line you need to edit.
+          args: >-
+            --no-progress
+            --max-concurrency 4
+            --timeout 25
+            --retry-wait-time 10
+            --max-retries 2
+            --accept 200,206,999
+            --exclude-path docs/javascripts
+            --exclude-path docs/stylesheets
+            'docs/**/*.md'
+            'README.md'
+          output: lychee-report.md
+          fail: false
+
+      - name: Open or update tracking issue
+        if: steps.lychee.outputs.exit_code != 0
+        uses: peter-evans/create-issue-from-file@v5
+        with:
+          title: Dead external links found
+          content-filepath: lychee-report.md
+          labels: links

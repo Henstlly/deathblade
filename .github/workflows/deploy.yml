@@ -4,22 +4,71 @@ on:
   push:
     branches:
       - main
+  # Lets you re-run a deploy from the Actions tab without pushing anything.
+  workflow_dispatch:
 
 permissions:
   contents: write
+
+# Two quick pushes used to race two `gh-deploy --force` runs against the same
+# gh-pages branch, and whichever finished last won regardless of which was
+# newer. Queue them instead. Not cancel-in-progress: a half-finished deploy
+# cancelled mid-push would leave gh-pages in a torn state.
+concurrency:
+  group: deploy-gh-pages
+  cancel-in-progress: false
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Full history so check_cachebust.py can diff this push against the
+          # commit before it. Without this the runner gets a shallow clone and
+          # that check quietly skips itself.
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
           python-version: "3.x"
+          cache: pip
+          cache-dependency-path: requirements.txt
 
       - name: Install dependencies
-        run: pip install mkdocs-material
+        run: pip install -r requirements.txt
 
-      - name: Deploy to GitHub Pages
-        run: mkdocs gh-deploy --force --no-history
+      # ---- Gates: all three are pure-stdlib scripts, no extra installs ----
+
+      - name: Check id references resolve
+        run: python3 scripts/check_ids.py
+
+      - name: Check content (dates, id/class pairing, name drift)
+        run: python3 scripts/check_content.py
+
+      - name: Check cache-bust versions were bumped
+        run: python3 scripts/check_cachebust.py "${{ github.event.before }}" "${{ github.sha }}"
+
+      # ---- Build ----
+
+      - name: Build site
+        run: mkdocs build --site-dir site
+
+      # Strips comments from this site's own css/js in the BUILT output only.
+      # docs/ is untouched, so local `mkdocs serve` still shows every comment.
+      # --verify runs `node --check` on each stripped file (node is preinstalled
+      # on ubuntu-latest) and aborts rather than shipping anything that stopped
+      # parsing.
+      - name: Minify built assets
+        run: python3 scripts/minify_assets.py site --verify
+
+      # ---- Deploy ----
+      # This is exactly what `mkdocs gh-deploy --force --no-history` does
+      # internally (see mkdocs/commands/gh_deploy.py), just split apart so the
+      # minify step above can run between building and publishing.
+      #   -n no-jekyll   -p push   -f force   -o no-history
+      - name: Publish to gh-pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          ghp-import -n -p -f -o -m "Deployed ${GITHUB_SHA::8} with mkdocs" site

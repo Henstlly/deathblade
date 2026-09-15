@@ -3,7 +3,7 @@
 <p class="page-banner page-banner-warning">Not available on NA/EU servers yet. Rotations are subject to change.</p>
 
 <div class="build-card-row" markdown>
-<div class="build-card" data-updated="2026-09-16" markdown>
+<div class="build-card" data-updated="2026-09-15" markdown>
 
 <!-- Difficulty/Trixion/Playstyle stats above, AND the pentagon badge below,
      both read from javascripts/build-data.js (window.DB_BUILD_DATA) - there is
@@ -194,7 +194,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 </details>
 
 <details class="setup-note" data-kind="example" markdown>
-<summary><span class="setup-note-tag">ALT</span>🐆 vs 🐯<span class="setup-note-arrow"></span></summary>
+<summary><span class="setup-note-tag">Alt</span>🐆 vs 🐯<span class="setup-note-arrow"></span></summary>
 
 ![222 vs 333](../assets/leopardvstiger.png){ .setup-note-image .zoomable-image loading=lazy }
 

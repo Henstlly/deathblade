@@ -9606,3 +9606,112 @@ body.page-333-blitz input[type="text"] {
   border-color: rgba(var(--dbc-purple-rgb), 0.75);
   background-color: var(--dbc-chip-surface-hover);
 }
+
+/* ============================================================
+   PRINT
+   ============================================================
+   Screen-invisible by construction: everything below sits inside
+   @media print, so it cannot affect the rendered site at any width.
+
+   Why this exists: the site is dark-themed (--md-default-fg-color is
+   #e8e6ee on a #161718 background). Browsers don't print background
+   colors unless the reader ticks "Background graphics", so printing or
+   saving-to-PDF without this block produced near-white text on white
+   paper - effectively a blank page. Rotation cycles, gem priority and
+   skill setups are exactly the content people put on a second screen or
+   print, so that was worth fixing.
+
+   The approach is to re-point the theme's own custom properties at a
+   light palette rather than chase individual components. Nearly every
+   rule in this file already reads its colors from these vars, so the
+   inversion cascades on its own and stays correct as components are
+   added. The handful of components with hardcoded pastel accents get
+   forced to near-black text after, since a pastel on white is ink the
+   reader can't read anyway. */
+@media print {
+  :root {
+    --md-default-bg-color: #ffffff;
+    --md-default-fg-color: #111111;
+    --md-default-fg-color--light: #333333;
+    --md-default-fg-color--lighter: #555555;
+    --md-typeset-color: #111111;
+    --md-typeset-a-color: #10408a;
+  }
+
+  html, body, .md-main, .md-content, .md-container {
+    background: #ffffff !important;
+    color: #111111 !important;
+  }
+
+  /* Site furniture that means nothing on paper. */
+  .md-header, .md-tabs, .md-sidebar, .md-footer, .md-search,
+  .md-top, .md-nav, .md-dialog, .md-skip,
+  .rotation-practice-toggle, .image-lightbox-overlay,
+  .ap-build-dock, .quick-jump, .section-tracker {
+    display: none !important;
+  }
+
+  .md-content__inner, .md-main__inner, .md-grid {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+  }
+
+  /* Text-bearing elements to near-black. Backgrounds are dropped rather
+     than kept, so the page prints as ink-on-white instead of relying on
+     the reader having background graphics switched on. */
+  .md-typeset, .md-typeset p, .md-typeset li, .md-typeset td,
+  .md-typeset th, .md-typeset h1, .md-typeset h2, .md-typeset h3,
+  .md-typeset h4, .md-typeset summary, .md-typeset span,
+  .md-typeset div, .md-typeset strong, .md-typeset em {
+    color: #111111 !important;
+    text-shadow: none !important;
+  }
+
+  /* Keep component outlines as hairlines so cards stay legible as groups,
+     but drop tinted fills. */
+  .setup-panel, .setup-note, .build-card, .skill-card, .cycle-card,
+  .ap-gear-card, .pentagon-badge, .build-compare, .dps-showcase-frame {
+    background: transparent !important;
+    border: 1px solid #bbbbbb !important;
+    box-shadow: none !important;
+  }
+
+  /* NOTE: a collapsed <details> prints collapsed, same as it looks on
+     screen. That's deliberate. CSS alone cannot force a <details> open -
+     an earlier version of this block tried `display: revert` on the
+     children and was verified to do nothing (measured: closed notes stay
+     42px tall under print media either way), so those rules were removed
+     rather than left in as decoration. Open the notes you want before
+     printing. Forcing every note, Alt and Balance Patch block open would
+     also roughly double the page count of a build guide. */
+
+  /* Don't split a card, a rotation line or a heading across a page break. */
+  .build-card, .skill-card, .cycle-card, .rotation-line, .setup-note,
+  .ap-gear-card, .dps-chart-row, .gem-priority-item, table, figure, img {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .md-typeset h1, .md-typeset h2, .md-typeset h3 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  /* Print the destination of external links, which are otherwise lost. */
+  .md-typeset a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.75em;
+    color: #444444;
+    word-break: break-all;
+  }
+
+  /* No animation on paper. */
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  @page {
+    margin: 14mm;
+  }
+}

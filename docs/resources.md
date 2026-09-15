@@ -174,7 +174,7 @@
       <select id="ap-adrenaline" class="ap-adrenaline">
         <option value="Not Used">Not Used</option>
         <option value="0 Nodes">0 Nodes</option>
-        <option value="1 Nodes">1 Nodes</option>
+        <option value="1 Nodes">1 Node</option>
         <option value="2 Nodes">2 Nodes</option>
         <option value="3 Nodes">3 Nodes</option>
         <option value="4 Nodes" selected>4 Nodes</option>
@@ -245,7 +245,7 @@
       <select id="ap-kbw" class="ap-kbw">
         <option value="Not Used">Not Used</option>
         <option value="0 Nodes">0 Nodes</option>
-        <option value="1 Nodes">1 Nodes</option>
+        <option value="1 Nodes">1 Node</option>
         <option value="2 Nodes">2 Nodes</option>
         <option value="3 Nodes">3 Nodes</option>
         <option value="4 Nodes" selected>4 Nodes</option>
@@ -1209,7 +1209,7 @@
           <label class="ap-calc-field-label" for="ap-engr-grudge-level"><span class="skill-mention" data-skill-id="grudge">Grudge</span></label>
           <select id="ap-engr-grudge-level" class="ap-engr-grudge-level">
             <option value="0 Nodes">0 Nodes</option>
-            <option value="1 Nodes">1 Nodes</option>
+            <option value="1 Nodes">1 Node</option>
             <option value="2 Nodes">2 Nodes</option>
             <option value="3 Nodes">3 Nodes</option>
             <option value="4 Nodes" selected>4 Nodes</option>
@@ -1219,7 +1219,7 @@
           <label class="ap-calc-field-label" for="ap-engr-ambush-level"><span class="skill-mention" data-skill-id="ambushmaster">Ambush Master</span></label>
           <select id="ap-engr-ambush-level" class="ap-engr-ambush-level">
             <option value="0 Nodes">0 Nodes</option>
-            <option value="1 Nodes">1 Nodes</option>
+            <option value="1 Nodes">1 Node</option>
             <option value="2 Nodes">2 Nodes</option>
             <option value="3 Nodes">3 Nodes</option>
             <option value="4 Nodes" selected>4 Nodes</option>
@@ -1229,7 +1229,7 @@
           <label class="ap-calc-field-label" for="ap-engr-adrenaline-level"><span class="skill-mention" data-skill-id="adrenaline">Adrenaline</span></label>
           <select id="ap-engr-adrenaline-level" class="ap-engr-adrenaline-level">
             <option value="0 Nodes">0 Nodes</option>
-            <option value="1 Nodes">1 Nodes</option>
+            <option value="1 Nodes">1 Node</option>
             <option value="2 Nodes">2 Nodes</option>
             <option value="3 Nodes">3 Nodes</option>
             <option value="4 Nodes" selected>4 Nodes</option>
@@ -1240,7 +1240,7 @@
           <label class="ap-calc-field-label" for="ap-engr-rc-level"><span class="skill-mention" data-skill-id="raidcaptain">Raid Captain</span></label>
           <select id="ap-engr-rc-level" class="ap-engr-rc-level">
             <option value="0 Nodes">0 Nodes</option>
-            <option value="1 Nodes">1 Nodes</option>
+            <option value="1 Nodes">1 Node</option>
             <option value="2 Nodes">2 Nodes</option>
             <option value="3 Nodes">3 Nodes</option>
             <option value="4 Nodes" selected>4 Nodes</option>
@@ -1250,7 +1250,7 @@
           <label class="ap-calc-field-label" for="ap-engr-kbw-level"><span class="skill-mention" data-skill-id="keenbluntweapon">Keen Blunt Weapon</span></label>
           <select id="ap-engr-kbw-level" class="ap-engr-kbw-level">
             <option value="0 Nodes">0 Nodes</option>
-            <option value="1 Nodes">1 Nodes</option>
+            <option value="1 Nodes">1 Node</option>
             <option value="2 Nodes">2 Nodes</option>
             <option value="3 Nodes">3 Nodes</option>
             <option value="4 Nodes" selected>4 Nodes</option>
@@ -1260,7 +1260,7 @@
           <label class="ap-calc-field-label" for="ap-engr-cd-level"><span class="skill-mention" data-skill-id="curseddoll">Cursed Doll</span></label>
           <select id="ap-engr-cd-level" class="ap-engr-cd-level">
             <option value="0 Nodes">0 Nodes</option>
-            <option value="1 Nodes">1 Nodes</option>
+            <option value="1 Nodes">1 Node</option>
             <option value="2 Nodes">2 Nodes</option>
             <option value="3 Nodes">3 Nodes</option>
             <option value="4 Nodes" selected>4 Nodes</option>
@@ -1270,7 +1270,7 @@
           <label class="ap-calc-field-label"><span class="skill-mention" data-skill-id="massincrease">Mass Increase</span> <input type="checkbox" class="ap-engr-mi-optin" checked title="Its -10% Attack Speed drawback isn't modeled here - uncheck this if you'd rather leave it out of the best-combo search."></label>
           <select id="ap-engr-mi-level" class="ap-engr-mi-level" aria-label="Mass Increase Node Level">
             <option value="0 Nodes">0 Nodes</option>
-            <option value="1 Nodes">1 Nodes</option>
+            <option value="1 Nodes">1 Node</option>
             <option value="2 Nodes">2 Nodes</option>
             <option value="3 Nodes">3 Nodes</option>
             <option value="4 Nodes" selected>4 Nodes</option>
@@ -1459,7 +1459,7 @@
               </select>
               <select class="ap-esvs-a-slot1-level" aria-label="Setup A Option 1 Node Level">
                 <option value="0 Nodes">0 Nodes</option>
-                <option value="1 Nodes">1 Nodes</option>
+                <option value="1 Nodes">1 Node</option>
                 <option value="2 Nodes">2 Nodes</option>
                 <option value="3 Nodes">3 Nodes</option>
                 <option value="4 Nodes" selected>4 Nodes</option>
@@ -1476,7 +1476,7 @@
               </select>
               <select class="ap-esvs-a-slot2-level" aria-label="Setup A Option 2 Node Level">
                 <option value="0 Nodes">0 Nodes</option>
-                <option value="1 Nodes">1 Nodes</option>
+                <option value="1 Nodes">1 Node</option>
                 <option value="2 Nodes">2 Nodes</option>
                 <option value="3 Nodes">3 Nodes</option>
                 <option value="4 Nodes" selected>4 Nodes</option>
@@ -1544,7 +1544,7 @@
               </select>
               <select class="ap-esvs-b-slot1-level" aria-label="Setup B Option 1 Node Level">
                 <option value="0 Nodes">0 Nodes</option>
-                <option value="1 Nodes">1 Nodes</option>
+                <option value="1 Nodes">1 Node</option>
                 <option value="2 Nodes">2 Nodes</option>
                 <option value="3 Nodes">3 Nodes</option>
                 <option value="4 Nodes" selected>4 Nodes</option>
@@ -1561,7 +1561,7 @@
               </select>
               <select class="ap-esvs-b-slot2-level" aria-label="Setup B Option 2 Node Level">
                 <option value="0 Nodes">0 Nodes</option>
-                <option value="1 Nodes">1 Nodes</option>
+                <option value="1 Nodes">1 Node</option>
                 <option value="2 Nodes">2 Nodes</option>
                 <option value="3 Nodes">3 Nodes</option>
                 <option value="4 Nodes" selected>4 Nodes</option>
