@@ -1,6 +1,6 @@
 # Pre-Ark Grid
 
-*Options for playing Remaining Energy before you have an Ark Grid set up.*
+*Options for playing Remaining Energy before you have an <span class="skill-mention" data-glossary-id="arkgrid">Ark Grid</span> set up.*
 
 *New to Deathblade entirely? [Surge](../surge/essentials.md) is generally more beginner-friendly.*
 

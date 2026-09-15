@@ -46,7 +46,7 @@
 <details class="setup-note" data-kind="danger" open markdown>
 <summary><span class="setup-note-tag">Warn</span>Before Importing<span class="setup-note-arrow"></span></summary>
 
-Make sure you've read [Essentials](essentials.md), then apply both "Ark Passive" and "Skill" to be safe. For [Gems](#gems), follow the guide.
+Make sure you've read [Essentials](essentials.md), then apply both "<span class="skill-mention" data-glossary-id="arkpassive">Ark Passive</span>" and "Skill" to be safe. For [Gems](#gems), follow the guide.
 
 </details>
 
@@ -125,7 +125,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "Ark Passive"
 </details>
 
 <details class="setup-note" data-kind="note" markdown>
-<summary><span class="setup-note-tag">Note</span>Ark Grid<span class="setup-note-arrow"></span></summary>
+<summary><span class="setup-note-tag">Note</span><span class="skill-mention" data-glossary-id="arkgrid">Ark Grid</span><span class="setup-note-arrow"></span></summary>
 
 - Damage and QoL will be seriously lacking if you settle for the minimum core requirements.
 
@@ -230,7 +230,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "Ark Passive"
 
 - To reach its ceiling, this build requires higher level cooldown gems than the others.
     - <span class="skill-mention" data-skill-id="massincrease">Mass Increase</span> and/or <span class="skill-mention" data-ap-id="optimizedtraining" data-level="1">Optimized Training 1</span> help smooth things out at low investment levels.
-    - +CD% bracelet increases gem level requirements by 1, low Specialization is not recommended.
+    - +CD% <span class="skill-mention" data-glossary-id="bracelet">bracelet</span> increases gem level requirements by 1, low <span class="skill-mention" data-glossary-id="specializationstat">Specialization</span> is not recommended.
     - Once Blade Dance and Maelstrom CD are at Lv 9, Wind Cut CD priority increases significantly.
 
 </details>

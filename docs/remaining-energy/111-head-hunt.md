@@ -16,7 +16,7 @@
 **Tradeoff:**{: .tradeoff } Unforgiving rotation with very little room for error.
 
 - This is the final form of the old-school Remaining Energy gameplay.
-- Head Hunt is used in the rotation, so it may not be available for recovery or counter.
+- Head Hunt is used in the rotation, so it may not be available for recovery or <span class="skill-mention" data-glossary-id="counter">counter</span>.
 - Lower orb generation and fewer recovery options than Fatal Wave builds.
 
 </div>
@@ -42,7 +42,7 @@
 <details class="setup-note" data-kind="danger" open markdown>
 <summary><span class="setup-note-tag">Warn</span>Before Importing<span class="setup-note-arrow"></span></summary>
 
-Make sure you've read [Essentials](essentials.md), then apply both "Ark Passive" and "Skill" to be safe. For [Gems](#gems), follow the guide.
+Make sure you've read [Essentials](essentials.md), then apply both "<span class="skill-mention" data-glossary-id="arkpassive">Ark Passive</span>" and "Skill" to be safe. For [Gems](#gems), follow the guide.
 
 </details>
 
@@ -120,7 +120,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "Ark Passive"
 </details>
 
 <details class="setup-note" data-kind="note" markdown>
-<summary><span class="setup-note-tag">Note</span>Ark Grid<span class="setup-note-arrow"></span></summary>
+<summary><span class="setup-note-tag">Note</span><span class="skill-mention" data-glossary-id="arkgrid">Ark Grid</span><span class="setup-note-arrow"></span></summary>
 
 - Playable with zero Ark Grid investment, but not recommended.
 

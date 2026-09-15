@@ -260,6 +260,7 @@
   // open) so e.g. a mouseleave right after a tap-open doesn't close a
   // tooltip the tap explicitly asked to keep open.
   var openTips = []; // [{ trigger, tip, state }]
+  var tipIdCounter = 0; // see wire()'s aria-describedby comment below
 
   // Ark Passive Calculator-only bug this exists to fix (see ap-brace-
   // tooltip.js's blanket `.ap-calc [title]` selector): most of that
@@ -396,6 +397,24 @@
     opts = opts || {};
     trigger.classList.add("skill-tip-anchor", "skill-tip-wired");
     trigger.setAttribute("tabindex", "0");
+
+    // role="tooltip" on the tip (set by each caller's own buildTip,
+    // before this runs) says nothing on its own - without an explicit
+    // aria-describedby link from the trigger to this specific tip's id,
+    // a screen reader has no way to know this tooltip describes THIS
+    // trigger, so the content stays visually available and
+    // programmatically invisible. Every skill/rune/ark-passive/
+    // glossary/gem-dps/ap-brace tooltip on the site funnels through this
+    // one wire() call (via wireCustom or attach above), so fixing it
+    // here fixes all of them at once rather than needing a matching
+    // change in each of those six files.
+    if (!tip.id) tip.id = "skill-tip-" + ++tipIdCounter;
+    var describedBy = (trigger.getAttribute("aria-describedby") || "").split(/\s+/).filter(Boolean);
+    if (describedBy.indexOf(tip.id) === -1) {
+      describedBy.push(tip.id);
+      trigger.setAttribute("aria-describedby", describedBy.join(" "));
+    }
+
     document.body.appendChild(tip);
 
     var entry = { trigger: trigger, tip: tip, state: { hover: false, focus: false, open: false } };

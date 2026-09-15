@@ -121,13 +121,13 @@
     <div class="ap-calc-field-row ap-calc-field-row-pair">
       <label class="ap-calc-field-label">Rings</label>
       <div class="ap-calc-pair">
-        <select id="ap-ring1-rate" class="ap-ring1-rate">
+        <select id="ap-ring1-rate" class="ap-ring1-rate" aria-label="Ring 1 Crit Rate">
           <option value="None">None</option>
           <option value="Low">0.40%</option>
           <option value="Mid" selected>0.95%</option>
           <option value="High">1.55%</option>
         </select>
-        <select id="ap-ring2-rate" class="ap-ring2-rate">
+        <select id="ap-ring2-rate" class="ap-ring2-rate" aria-label="Ring 2 Crit Rate">
           <option value="None">None</option>
           <option value="Low">0.40%</option>
           <option value="Mid" selected>0.95%</option>
@@ -138,13 +138,13 @@
     <div class="ap-calc-field-row ap-calc-field-row-pair">
       <label class="ap-calc-field-label">Bracelet</label>
       <div class="ap-calc-pair">
-        <select id="ap-bracelet-rate" class="ap-bracelet-rate">
+        <select id="ap-bracelet-rate" class="ap-bracelet-rate" aria-label="Bracelet Crit Rate Line 1">
           <option value="None">None</option>
           <option value="Low">3.40%</option>
           <option value="Mid" selected>4.20%</option>
           <option value="High">5.00%</option>
         </select>
-        <select id="ap-bracelet-rate-2" class="ap-bracelet-rate-2">
+        <select id="ap-bracelet-rate-2" class="ap-bracelet-rate-2" aria-label="Bracelet Crit Rate Line 2">
           <option value="None" selected>None</option>
           <option value="Low">3.40%</option>
           <option value="Mid">4.20%</option>
@@ -192,13 +192,13 @@
     <div class="ap-calc-field-row ap-calc-field-row-pair">
       <label class="ap-calc-field-label">Rings</label>
       <div class="ap-calc-pair">
-        <select id="ap-ring1-dmg" class="ap-ring1-dmg">
+        <select id="ap-ring1-dmg" class="ap-ring1-dmg" aria-label="Ring 1 Crit Damage">
           <option value="None">None</option>
           <option value="Low">1.10%</option>
           <option value="Mid">2.40%</option>
           <option value="High" selected>4.00%</option>
         </select>
-        <select id="ap-ring2-dmg" class="ap-ring2-dmg">
+        <select id="ap-ring2-dmg" class="ap-ring2-dmg" aria-label="Ring 2 Crit Damage">
           <option value="None">None</option>
           <option value="Low">1.10%</option>
           <option value="Mid">2.40%</option>
@@ -209,13 +209,13 @@
     <div class="ap-calc-field-row ap-calc-field-row-pair">
       <label class="ap-calc-field-label">Bracelet</label>
       <div class="ap-calc-pair">
-        <select id="ap-bracelet-dmg" class="ap-bracelet-dmg">
+        <select id="ap-bracelet-dmg" class="ap-bracelet-dmg" aria-label="Bracelet Crit Damage Line 1">
           <option value="None">None</option>
           <option value="Low" selected>6.80%</option>
           <option value="Mid">8.40%</option>
           <option value="High">10.00%</option>
         </select>
-        <select id="ap-bracelet-dmg-2" class="ap-bracelet-dmg-2">
+        <select id="ap-bracelet-dmg-2" class="ap-bracelet-dmg-2" aria-label="Bracelet Crit Damage Line 2">
           <option value="None" selected>None</option>
           <option value="Low">6.80%</option>
           <option value="Mid">8.40%</option>
@@ -314,13 +314,13 @@
     <div class="ap-calc-field-row ap-calc-field-row-pair">
       <label class="ap-calc-field-label">Bracelet</label>
       <div class="ap-calc-pair">
-        <select id="ap-bracelet-addA" class="ap-bracelet-addA">
+        <select id="ap-bracelet-addA" class="ap-bracelet-addA" aria-label="Bracelet Additional Damage Line 1">
           <option value="None" selected>None</option>
           <option value="Low">3.00%</option>
           <option value="Mid">3.50%</option>
           <option value="High">4.00%</option>
         </select>
-        <select id="ap-bracelet-addB" class="ap-bracelet-addB" title="vs Demons">
+        <select id="ap-bracelet-addB" class="ap-bracelet-addB" title="vs Demons" aria-label="Bracelet Additional Damage Line 2 (vs Demons/Archdemon)">
           <option value="None" selected>None</option>
           <option value="Low">2.50%</option>
           <option value="Mid">3.00%</option>
@@ -521,8 +521,8 @@
     <ul class="bible-import-warnings" hidden></ul>
   </span>
   <span class="ap-calc-popover" data-popover="export" hidden>
-    <span class="ap-calc-popover-title">Export Preset <span class="ap-calc-popover-preset-num"></span></span>
-    <textarea class="ap-calc-popover-textarea" readonly rows="4" spellcheck="false"></textarea>
+    <span class="ap-calc-popover-title" id="ap-calc-popover-title-export">Export Preset <span class="ap-calc-popover-preset-num"></span></span>
+    <textarea class="ap-calc-popover-textarea" aria-labelledby="ap-calc-popover-title-export" readonly rows="4" spellcheck="false"></textarea>
     <span class="ap-calc-popover-actions">
       <button type="button" class="ap-calc-popover-copy">Copy to Clipboard</button>
       <button type="button" class="ap-calc-popover-download">Download .json</button>
@@ -531,9 +531,9 @@
     <span class="ap-calc-popover-msg" aria-live="polite"></span>
   </span>
   <span class="ap-calc-popover" data-popover="import" hidden>
-    <span class="ap-calc-popover-title">Import into Preset <span class="ap-calc-popover-preset-num"></span></span>
-    <textarea class="ap-calc-popover-textarea" rows="4" spellcheck="false" placeholder="Paste exported JSON here, or choose a file below."></textarea>
-    <input type="file" class="ap-calc-popover-file" accept="application/json,.json">
+    <span class="ap-calc-popover-title" id="ap-calc-popover-title-import">Import into Preset <span class="ap-calc-popover-preset-num"></span></span>
+    <textarea class="ap-calc-popover-textarea" aria-labelledby="ap-calc-popover-title-import" rows="4" spellcheck="false" placeholder="Paste exported JSON here, or choose a file below."></textarea>
+    <input type="file" class="ap-calc-popover-file" aria-label="Choose a JSON file to import" accept="application/json,.json">
     <span class="ap-calc-popover-actions">
       <button type="button" class="ap-calc-popover-load">Load</button>
       <button type="button" class="ap-calc-popover-close">Cancel</button>
@@ -615,13 +615,13 @@
         <div class="ap-calc-field-row ap-calc-field-row-pair">
           <label class="ap-calc-field-label" title="Affects only the flat Weapon Power granted by lines below, not your Weapon Power.">Earrings</label>
           <div class="ap-calc-pair">
-            <select id="ap-gear-wp-earring1" class="ap-gear-wp-earring1">
+            <select id="ap-gear-wp-earring1" class="ap-gear-wp-earring1" aria-label="Earring 1 Weapon Power %">
               <option value="None">None</option>
               <option value="Low">0.8%</option>
               <option value="Mid" selected>1.8%</option>
               <option value="High">3%</option>
             </select>
-            <select id="ap-gear-wp-earring2" class="ap-gear-wp-earring2">
+            <select id="ap-gear-wp-earring2" class="ap-gear-wp-earring2" aria-label="Earring 2 Weapon Power %">
               <option value="None">None</option>
               <option value="Low">0.8%</option>
               <option value="Mid" selected>1.8%</option>
@@ -707,13 +707,13 @@
         <div class="ap-calc-field-row ap-calc-field-row-pair">
           <label class="ap-calc-field-label" >Earrings</label>
           <div class="ap-calc-pair">
-            <select id="ap-gear-ap-earring1" class="ap-gear-ap-earring1">
+            <select id="ap-gear-ap-earring1" class="ap-gear-ap-earring1" aria-label="Earring 1 Attack Power %">
               <option value="None">None</option>
               <option value="Low">0.4%</option>
               <option value="Mid">0.95%</option>
               <option value="High" selected>1.55%</option>
             </select>
-            <select id="ap-gear-ap-earring2" class="ap-gear-ap-earring2">
+            <select id="ap-gear-ap-earring2" class="ap-gear-ap-earring2" aria-label="Earring 2 Attack Power %">
               <option value="None">None</option>
               <option value="Low">0.4%</option>
               <option value="Mid">0.95%</option>
@@ -917,23 +917,23 @@
           <div class="ap-bvb-card ap-bvb-card-a">
             <p class="ap-gear-card-title ap-bvb-card-title">Bracelet A</p>
             <div class="ap-calc-field-row">
-              <label class="ap-calc-field-label">Spec Stat</label>
+              <label class="ap-calc-field-label" for="ap-bvb-a-spec">Spec Stat</label>
               <span class="ap-brace-warn-icon ap-bvb-spec-warn" title="Recommended to keep Specialization at 83 or higher on RE for CDR." hidden>WARN</span>
               <span class="ap-brace-info-icon ap-bvb-spec-note" title="This only reflects Spec's damage share on RE - it doesn't capture CDR or orb gen." hidden>i</span>
-              <input type="number" class="ap-bvb-a-spec" min="60" max="120" step="1" value="100">
+              <input type="number" id="ap-bvb-a-spec" class="ap-bvb-a-spec" min="60" max="120" step="1" value="100">
             </div>
             <div class="ap-calc-field-row">
               <label class="ap-calc-field-label">Basic Effect</label>
-              <select class="ap-bvb-a-effect2-type">
+              <select class="ap-bvb-a-effect2-type" aria-label="Bracelet A Basic Effect Type">
                 <option value="crit" selected>Crit Stat</option>
                 <option value="main">Main Stat</option>
                 <option value="none">None</option>
               </select>
-              <input type="number" class="ap-bvb-a-crit" min="60" max="120" step="1" value="80">
-              <input type="number" class="ap-bvb-a-effect2-mainstat" min="10000" max="16000" step="100" value="14000" title="Flat STR/DEX/INT granted by this bracelet's Basic Effect (10000-16000)." hidden>
+              <input type="number" class="ap-bvb-a-crit" min="60" max="120" step="1" value="80" aria-label="Bracelet A Basic Effect Crit Stat">
+              <input type="number" class="ap-bvb-a-effect2-mainstat" min="10000" max="16000" step="100" value="14000" title="Flat STR/DEX/INT granted by this bracelet's Basic Effect (10000-16000)." hidden aria-label="Bracelet A Basic Effect Main Stat">
             </div>
             <div class="ap-bvb-line-row">
-              <select class="ap-bvb-a-line1-type ap-bvb-line-type">
+              <select class="ap-bvb-a-line1-type ap-bvb-line-type" aria-label="Bracelet A Line 3 Type">
                 <option value="none">— Line 3: None —</option>
                 <option value="crit_rate_dual" selected>Crit Rate % &amp; Crit Hit Dmg %</option>
                 <option value="crit_rate">Crit Rate %</option>
@@ -951,15 +951,15 @@
                 <option value="wp_periodic">Weapon Power + Periodic On-Hit</option>
                 <option value="wp_hpgated">Weapon Power + &gt;50% HP On-Hit</option>
               </select>
-              <select class="ap-bvb-a-line1-tier ap-bvb-line-tier">
+              <select class="ap-bvb-a-line1-tier ap-bvb-line-tier" aria-label="Bracelet A Line 3 Tier">
                 <option value="Low">Low</option>
                 <option value="Mid" selected>Mid</option>
                 <option value="High">High</option>
               </select>
-              <input type="number" class="ap-bvb-a-line1-mainstat ap-bvb-line-mainstat" min="10000" max="16000" step="100" value="14000" title="Flat STR/DEX/INT granted by this line (10000-16000)." hidden>
+              <input type="number" class="ap-bvb-a-line1-mainstat ap-bvb-line-mainstat" min="10000" max="16000" step="100" value="14000" title="Flat STR/DEX/INT granted by this line (10000-16000)." hidden aria-label="Bracelet A Line 3 Main Stat">
             </div>
             <div class="ap-bvb-line-row">
-              <select class="ap-bvb-a-line2-type ap-bvb-line-type">
+              <select class="ap-bvb-a-line2-type ap-bvb-line-type" aria-label="Bracelet A Line 4 Type">
                 <option value="none">— Line 4: None —</option>
                 <option value="crit_rate_dual">Crit Rate % &amp; Crit Hit Dmg %</option>
                 <option value="crit_rate">Crit Rate %</option>
@@ -977,15 +977,15 @@
                 <option value="wp_periodic">Weapon Power + Periodic On-Hit</option>
                 <option value="wp_hpgated">Weapon Power + &gt;50% HP On-Hit</option>
               </select>
-              <select class="ap-bvb-a-line2-tier ap-bvb-line-tier">
+              <select class="ap-bvb-a-line2-tier ap-bvb-line-tier" aria-label="Bracelet A Line 4 Tier">
                 <option value="Low">Low</option>
                 <option value="Mid" selected>Mid</option>
                 <option value="High">High</option>
               </select>
-              <input type="number" class="ap-bvb-a-line2-mainstat ap-bvb-line-mainstat" min="10000" max="16000" step="100" value="14000" title="Flat STR/DEX/INT granted by this line (10000-16000)." hidden>
+              <input type="number" class="ap-bvb-a-line2-mainstat ap-bvb-line-mainstat" min="10000" max="16000" step="100" value="14000" title="Flat STR/DEX/INT granted by this line (10000-16000)." hidden aria-label="Bracelet A Line 4 Main Stat">
             </div>
             <div class="ap-bvb-line-row">
-              <select class="ap-bvb-a-line3-type ap-bvb-line-type">
+              <select class="ap-bvb-a-line3-type ap-bvb-line-type" aria-label="Bracelet A Line 5 Type">
                 <option value="none">— Line 5: None —</option>
                 <option value="crit_rate_dual">Crit Rate % &amp; Crit Hit Dmg %</option>
                 <option value="crit_rate">Crit Rate %</option>
@@ -1003,12 +1003,12 @@
                 <option value="wp_periodic">Weapon Power + Periodic On-Hit</option>
                 <option value="wp_hpgated">Weapon Power + &gt;50% HP On-Hit</option>
               </select>
-              <select class="ap-bvb-a-line3-tier ap-bvb-line-tier">
+              <select class="ap-bvb-a-line3-tier ap-bvb-line-tier" aria-label="Bracelet A Line 5 Tier">
                 <option value="Low">Low</option>
                 <option value="Mid" selected>Mid</option>
                 <option value="High">High</option>
               </select>
-              <input type="number" class="ap-bvb-a-line3-mainstat ap-bvb-line-mainstat" min="10000" max="16000" step="100" value="14000" title="Flat STR/DEX/INT granted by this line (10000-16000)." hidden>
+              <input type="number" class="ap-bvb-a-line3-mainstat ap-bvb-line-mainstat" min="10000" max="16000" step="100" value="14000" title="Flat STR/DEX/INT granted by this line (10000-16000)." hidden aria-label="Bracelet A Line 5 Main Stat">
             </div>
             <div class="ap-bvb-results">
               <div class="ap-stat-card-row"><span class="ap-summary-label">Best Keystone</span><span class="ap-bvb-keystone ap-summary-value">—</span></div>
@@ -1023,23 +1023,23 @@
           <div class="ap-bvb-card ap-bvb-card-b">
             <p class="ap-gear-card-title ap-bvb-card-title">Bracelet B</p>
             <div class="ap-calc-field-row">
-              <label class="ap-calc-field-label">Spec Stat</label>
+              <label class="ap-calc-field-label" for="ap-bvb-b-spec">Spec Stat</label>
               <span class="ap-brace-warn-icon ap-bvb-spec-warn" title="Recommended to keep Specialization at 83 or higher on RE for CDR." hidden>WARN</span>
               <span class="ap-brace-info-icon ap-bvb-spec-note" title="This only reflects Spec's damage share on RE - it doesn't capture CDR or orb gen." hidden>i</span>
-              <input type="number" class="ap-bvb-b-spec" min="60" max="120" step="1" value="80">
+              <input type="number" id="ap-bvb-b-spec" class="ap-bvb-b-spec" min="60" max="120" step="1" value="80">
             </div>
             <div class="ap-calc-field-row">
               <label class="ap-calc-field-label">Basic Effect</label>
-              <select class="ap-bvb-b-effect2-type">
+              <select class="ap-bvb-b-effect2-type" aria-label="Bracelet B Basic Effect Type">
                 <option value="crit" selected>Crit Stat</option>
                 <option value="main">Main Stat</option>
                 <option value="none">None</option>
               </select>
-              <input type="number" class="ap-bvb-b-crit" min="60" max="120" step="1" value="100">
-              <input type="number" class="ap-bvb-b-effect2-mainstat" min="10000" max="16000" step="100" value="14000" title="Flat STR/DEX/INT granted by this bracelet's Basic Effect (10000-16000)." hidden>
+              <input type="number" class="ap-bvb-b-crit" min="60" max="120" step="1" value="100" aria-label="Bracelet B Basic Effect Crit Stat">
+              <input type="number" class="ap-bvb-b-effect2-mainstat" min="10000" max="16000" step="100" value="14000" title="Flat STR/DEX/INT granted by this bracelet's Basic Effect (10000-16000)." hidden aria-label="Bracelet B Basic Effect Main Stat">
             </div>
             <div class="ap-bvb-line-row">
-              <select class="ap-bvb-b-line1-type ap-bvb-line-type">
+              <select class="ap-bvb-b-line1-type ap-bvb-line-type" aria-label="Bracelet B Line 3 Type">
                 <option value="none">— Line 3: None —</option>
                 <option value="crit_rate_dual">Crit Rate % &amp; Crit Hit Dmg %</option>
                 <option value="crit_rate" selected>Crit Rate %</option>
@@ -1057,15 +1057,15 @@
                 <option value="wp_periodic">Weapon Power + Periodic On-Hit</option>
                 <option value="wp_hpgated">Weapon Power + &gt;50% HP On-Hit</option>
               </select>
-              <select class="ap-bvb-b-line1-tier ap-bvb-line-tier">
+              <select class="ap-bvb-b-line1-tier ap-bvb-line-tier" aria-label="Bracelet B Line 3 Tier">
                 <option value="Low">Low</option>
                 <option value="Mid" selected>Mid</option>
                 <option value="High">High</option>
               </select>
-              <input type="number" class="ap-bvb-b-line1-mainstat ap-bvb-line-mainstat" min="10000" max="16000" step="100" value="14000" title="Flat STR/DEX/INT granted by this line (10000-16000)." hidden>
+              <input type="number" class="ap-bvb-b-line1-mainstat ap-bvb-line-mainstat" min="10000" max="16000" step="100" value="14000" title="Flat STR/DEX/INT granted by this line (10000-16000)." hidden aria-label="Bracelet B Line 3 Main Stat">
             </div>
             <div class="ap-bvb-line-row">
-              <select class="ap-bvb-b-line2-type ap-bvb-line-type">
+              <select class="ap-bvb-b-line2-type ap-bvb-line-type" aria-label="Bracelet B Line 4 Type">
                 <option value="none">— Line 4: None —</option>
                 <option value="crit_rate_dual">Crit Rate % &amp; Crit Hit Dmg %</option>
                 <option value="crit_rate">Crit Rate %</option>
@@ -1083,15 +1083,15 @@
                 <option value="wp_periodic">Weapon Power + Periodic On-Hit</option>
                 <option value="wp_hpgated">Weapon Power + &gt;50% HP On-Hit</option>
               </select>
-              <select class="ap-bvb-b-line2-tier ap-bvb-line-tier">
+              <select class="ap-bvb-b-line2-tier ap-bvb-line-tier" aria-label="Bracelet B Line 4 Tier">
                 <option value="Low">Low</option>
                 <option value="Mid" selected>Mid</option>
                 <option value="High">High</option>
               </select>
-              <input type="number" class="ap-bvb-b-line2-mainstat ap-bvb-line-mainstat" min="10000" max="16000" step="100" value="14000" title="Flat STR/DEX/INT granted by this line (10000-16000)." hidden>
+              <input type="number" class="ap-bvb-b-line2-mainstat ap-bvb-line-mainstat" min="10000" max="16000" step="100" value="14000" title="Flat STR/DEX/INT granted by this line (10000-16000)." hidden aria-label="Bracelet B Line 4 Main Stat">
             </div>
             <div class="ap-bvb-line-row">
-              <select class="ap-bvb-b-line3-type ap-bvb-line-type">
+              <select class="ap-bvb-b-line3-type ap-bvb-line-type" aria-label="Bracelet B Line 5 Type">
                 <option value="none">— Line 5: None —</option>
                 <option value="crit_rate_dual">Crit Rate % &amp; Crit Hit Dmg %</option>
                 <option value="crit_rate">Crit Rate %</option>
@@ -1109,12 +1109,12 @@
                 <option value="wp_periodic">Weapon Power + Periodic On-Hit</option>
                 <option value="wp_hpgated">Weapon Power + &gt;50% HP On-Hit</option>
               </select>
-              <select class="ap-bvb-b-line3-tier ap-bvb-line-tier">
+              <select class="ap-bvb-b-line3-tier ap-bvb-line-tier" aria-label="Bracelet B Line 5 Tier">
                 <option value="Low">Low</option>
                 <option value="Mid" selected>Mid</option>
                 <option value="High">High</option>
               </select>
-              <input type="number" class="ap-bvb-b-line3-mainstat ap-bvb-line-mainstat" min="10000" max="16000" step="100" value="14000" title="Flat STR/DEX/INT granted by this line (10000-16000)." hidden>
+              <input type="number" class="ap-bvb-b-line3-mainstat ap-bvb-line-mainstat" min="10000" max="16000" step="100" value="14000" title="Flat STR/DEX/INT granted by this line (10000-16000)." hidden aria-label="Bracelet B Line 5 Main Stat">
             </div>
             <div class="ap-bvb-results">
               <div class="ap-stat-card-row"><span class="ap-summary-label">Best Keystone</span><span class="ap-bvb-keystone ap-summary-value">—</span></div>
@@ -1206,8 +1206,8 @@
       <div class="ap-gear-card ap-gear-card--engr-core">
         <p class="ap-gear-card-title">Engravings</p>
         <div class="ap-calc-field-row">
-          <label class="ap-calc-field-label"><span class="skill-mention" data-skill-id="grudge">Grudge</span></label>
-          <select class="ap-engr-grudge-level">
+          <label class="ap-calc-field-label" for="ap-engr-grudge-level"><span class="skill-mention" data-skill-id="grudge">Grudge</span></label>
+          <select id="ap-engr-grudge-level" class="ap-engr-grudge-level">
             <option value="0 Nodes">0 Nodes</option>
             <option value="1 Nodes">1 Nodes</option>
             <option value="2 Nodes">2 Nodes</option>
@@ -1216,8 +1216,8 @@
           </select>
         </div>
         <div class="ap-calc-field-row">
-          <label class="ap-calc-field-label"><span class="skill-mention" data-skill-id="ambushmaster">Ambush Master</span></label>
-          <select class="ap-engr-ambush-level">
+          <label class="ap-calc-field-label" for="ap-engr-ambush-level"><span class="skill-mention" data-skill-id="ambushmaster">Ambush Master</span></label>
+          <select id="ap-engr-ambush-level" class="ap-engr-ambush-level">
             <option value="0 Nodes">0 Nodes</option>
             <option value="1 Nodes">1 Nodes</option>
             <option value="2 Nodes">2 Nodes</option>
@@ -1226,8 +1226,8 @@
           </select>
         </div>
         <div class="ap-calc-field-row">
-          <label class="ap-calc-field-label"><span class="skill-mention" data-skill-id="adrenaline">Adrenaline</span></label>
-          <select class="ap-engr-adrenaline-level">
+          <label class="ap-calc-field-label" for="ap-engr-adrenaline-level"><span class="skill-mention" data-skill-id="adrenaline">Adrenaline</span></label>
+          <select id="ap-engr-adrenaline-level" class="ap-engr-adrenaline-level">
             <option value="0 Nodes">0 Nodes</option>
             <option value="1 Nodes">1 Nodes</option>
             <option value="2 Nodes">2 Nodes</option>
@@ -1237,8 +1237,8 @@
         </div>
 
         <div class="ap-calc-field-row">
-          <label class="ap-calc-field-label"><span class="skill-mention" data-skill-id="raidcaptain">Raid Captain</span></label>
-          <select class="ap-engr-rc-level">
+          <label class="ap-calc-field-label" for="ap-engr-rc-level"><span class="skill-mention" data-skill-id="raidcaptain">Raid Captain</span></label>
+          <select id="ap-engr-rc-level" class="ap-engr-rc-level">
             <option value="0 Nodes">0 Nodes</option>
             <option value="1 Nodes">1 Nodes</option>
             <option value="2 Nodes">2 Nodes</option>
@@ -1247,8 +1247,8 @@
           </select>
         </div>
         <div class="ap-calc-field-row">
-          <label class="ap-calc-field-label"><span class="skill-mention" data-skill-id="keenbluntweapon">Keen Blunt Weapon</span></label>
-          <select class="ap-engr-kbw-level">
+          <label class="ap-calc-field-label" for="ap-engr-kbw-level"><span class="skill-mention" data-skill-id="keenbluntweapon">Keen Blunt Weapon</span></label>
+          <select id="ap-engr-kbw-level" class="ap-engr-kbw-level">
             <option value="0 Nodes">0 Nodes</option>
             <option value="1 Nodes">1 Nodes</option>
             <option value="2 Nodes">2 Nodes</option>
@@ -1257,8 +1257,8 @@
           </select>
         </div>
         <div class="ap-calc-field-row">
-          <label class="ap-calc-field-label"><span class="skill-mention" data-skill-id="curseddoll">Cursed Doll</span></label>
-          <select class="ap-engr-cd-level">
+          <label class="ap-calc-field-label" for="ap-engr-cd-level"><span class="skill-mention" data-skill-id="curseddoll">Cursed Doll</span></label>
+          <select id="ap-engr-cd-level" class="ap-engr-cd-level">
             <option value="0 Nodes">0 Nodes</option>
             <option value="1 Nodes">1 Nodes</option>
             <option value="2 Nodes">2 Nodes</option>
@@ -1268,7 +1268,7 @@
         </div>
         <div class="ap-calc-field-row ap-engr-mi-row">
           <label class="ap-calc-field-label"><span class="skill-mention" data-skill-id="massincrease">Mass Increase</span> <input type="checkbox" class="ap-engr-mi-optin" checked title="Its -10% Attack Speed drawback isn't modeled here - uncheck this if you'd rather leave it out of the best-combo search."></label>
-          <select class="ap-engr-mi-level">
+          <select id="ap-engr-mi-level" class="ap-engr-mi-level" aria-label="Mass Increase Node Level">
             <option value="0 Nodes">0 Nodes</option>
             <option value="1 Nodes">1 Nodes</option>
             <option value="2 Nodes">2 Nodes</option>
@@ -1281,12 +1281,12 @@
       <div class="ap-gear-card ap-gear-card--engr-variables">
         <p class="ap-gear-card-title">Raid Captain Variables</p>
         <div class="ap-calc-field-row">
-          <label class="ap-calc-field-label" title="% of the fight Maelstrom's buffs are active as you attack the boss - a flat +12.8 Move Speed/Atk. Speed bonus.">Maelstrom Uptime %</label>
+          <label class="ap-calc-field-label" for="ap-engr-maelstrom-uptime" title="% of the fight Maelstrom's buffs are active as you attack the boss - a flat +12.8 Move Speed/Atk. Speed bonus.">Maelstrom Uptime %</label>
           <input type="number" id="ap-engr-maelstrom-uptime" class="ap-engr-maelstrom-uptime" min="0" max="100" step="1" value="85">
         </div>
         <div class="ap-calc-field-row ap-engr-manafood-row">
           <label class="ap-engr-checkbox-label" title="Only accurate if the Main Stat input in Character Data doesn't already include Mana Food's Main Stat bonus."><input type="checkbox" id="ap-engr-manafood" class="ap-engr-manafood" checked> <span class="ap-engr-manafood-label">Mana Food (+Maelstrom Bleed)</span></label>
-          <select id="ap-engr-manafood-amount" class="ap-engr-manafood-amount">
+          <select id="ap-engr-manafood-amount" class="ap-engr-manafood-amount" aria-label="Mana Food Amount">
             <option value="6000" selected>6000 DEX</option>
             <option value="12000">12000 DEX</option>
           </select>
@@ -1335,7 +1335,7 @@
         <span class="ap-engr-stone-label-group">
           <label class="ap-calc-field-label" title="Pick which engraving your Ability Stone's first slot boosts, then that slot's level.">1</label>
           <span class="ap-engr-stone-pair">
-            <select class="ap-engr-stone1-target">
+            <select class="ap-engr-stone1-target" aria-label="Ability Stone Slot 1 Engraving">
               <option value="None" selected>None</option>
               <option value="grudge">Grudge</option>
               <option value="ambush">Ambush Master</option>
@@ -1345,7 +1345,7 @@
               <option value="cd">Cursed Doll</option>
               <option value="mi">Mass Increase</option>
             </select>
-            <select class="ap-engr-stone1-level">
+            <select class="ap-engr-stone1-level" aria-label="Ability Stone Slot 1 Level">
               <option value="0 Lv." selected>Lv. 0</option>
               <option value="1 Lv.">Lv. 1</option>
               <option value="2 Lv.">Lv. 2</option>
@@ -1357,7 +1357,7 @@
         <span class="ap-engr-stone-label-group">
           <label class="ap-calc-field-label" title="Pick which engraving your Ability Stone's second slot boosts, then that slot's level.">2</label>
           <span class="ap-engr-stone-pair">
-            <select class="ap-engr-stone2-target">
+            <select class="ap-engr-stone2-target" aria-label="Ability Stone Slot 2 Engraving">
               <option value="None" selected>None</option>
               <option value="grudge">Grudge</option>
               <option value="ambush">Ambush Master</option>
@@ -1367,7 +1367,7 @@
               <option value="cd">Cursed Doll</option>
               <option value="mi">Mass Increase</option>
             </select>
-            <select class="ap-engr-stone2-level">
+            <select class="ap-engr-stone2-level" aria-label="Ability Stone Slot 2 Level">
               <option value="0 Lv." selected>Lv. 0</option>
               <option value="1 Lv.">Lv. 1</option>
               <option value="2 Lv.">Lv. 2</option>
@@ -1450,14 +1450,14 @@
             <p class="ap-gear-card-title ap-esvs-card-title">Setup A</p>
             <div class="ap-calc-field-row">
               <label class="ap-calc-field-label">Option 1</label>
-              <select class="ap-esvs-a-slot1-type">
+              <select class="ap-esvs-a-slot1-type" aria-label="Setup A Option 1 Engraving">
                 <option value="none" selected>None</option>
                 <option value="rc">Raid Captain</option>
                 <option value="kbw">Keen Blunt Weapon</option>
                 <option value="cd">Cursed Doll</option>
                 <option value="mi">Mass Increase</option>
               </select>
-              <select class="ap-esvs-a-slot1-level">
+              <select class="ap-esvs-a-slot1-level" aria-label="Setup A Option 1 Node Level">
                 <option value="0 Nodes">0 Nodes</option>
                 <option value="1 Nodes">1 Nodes</option>
                 <option value="2 Nodes">2 Nodes</option>
@@ -1467,14 +1467,14 @@
             </div>
             <div class="ap-calc-field-row">
               <label class="ap-calc-field-label">Option 2</label>
-              <select class="ap-esvs-a-slot2-type">
+              <select class="ap-esvs-a-slot2-type" aria-label="Setup A Option 2 Engraving">
                 <option value="none" selected>None</option>
                 <option value="rc">Raid Captain</option>
                 <option value="kbw">Keen Blunt Weapon</option>
                 <option value="cd">Cursed Doll</option>
                 <option value="mi">Mass Increase</option>
               </select>
-              <select class="ap-esvs-a-slot2-level">
+              <select class="ap-esvs-a-slot2-level" aria-label="Setup A Option 2 Node Level">
                 <option value="0 Nodes">0 Nodes</option>
                 <option value="1 Nodes">1 Nodes</option>
                 <option value="2 Nodes">2 Nodes</option>
@@ -1484,7 +1484,7 @@
             </div>
             <div class="ap-calc-field-row">
               <label class="ap-calc-field-label">Stone 1</label>
-              <select class="ap-esvs-a-stone1-target">
+              <select class="ap-esvs-a-stone1-target" aria-label="Setup A Ability Stone Slot 1 Engraving">
                 <option value="None" selected>None</option>
                 <option value="grudge">Grudge</option>
                 <option value="ambush">Ambush Master</option>
@@ -1494,7 +1494,7 @@
                 <option value="cd">Cursed Doll</option>
                 <option value="mi">Mass Increase</option>
               </select>
-              <select class="ap-esvs-a-stone1-level">
+              <select class="ap-esvs-a-stone1-level" aria-label="Setup A Ability Stone Slot 1 Level">
                 <option value="0 Lv." selected>Lv. 0</option>
                 <option value="1 Lv.">Lv. 1</option>
                 <option value="2 Lv.">Lv. 2</option>
@@ -1504,7 +1504,7 @@
             </div>
             <div class="ap-calc-field-row">
               <label class="ap-calc-field-label">Stone 2</label>
-              <select class="ap-esvs-a-stone2-target">
+              <select class="ap-esvs-a-stone2-target" aria-label="Setup A Ability Stone Slot 2 Engraving">
                 <option value="None" selected>None</option>
                 <option value="grudge">Grudge</option>
                 <option value="ambush">Ambush Master</option>
@@ -1514,7 +1514,7 @@
                 <option value="cd">Cursed Doll</option>
                 <option value="mi">Mass Increase</option>
               </select>
-              <select class="ap-esvs-a-stone2-level">
+              <select class="ap-esvs-a-stone2-level" aria-label="Setup A Ability Stone Slot 2 Level">
                 <option value="0 Lv." selected>Lv. 0</option>
                 <option value="1 Lv.">Lv. 1</option>
                 <option value="2 Lv.">Lv. 2</option>
@@ -1535,14 +1535,14 @@
             <p class="ap-gear-card-title ap-esvs-card-title">Setup B</p>
             <div class="ap-calc-field-row">
               <label class="ap-calc-field-label">Option 1</label>
-              <select class="ap-esvs-b-slot1-type">
+              <select class="ap-esvs-b-slot1-type" aria-label="Setup B Option 1 Engraving">
                 <option value="none" selected>None</option>
                 <option value="rc">Raid Captain</option>
                 <option value="kbw">Keen Blunt Weapon</option>
                 <option value="cd">Cursed Doll</option>
                 <option value="mi">Mass Increase</option>
               </select>
-              <select class="ap-esvs-b-slot1-level">
+              <select class="ap-esvs-b-slot1-level" aria-label="Setup B Option 1 Node Level">
                 <option value="0 Nodes">0 Nodes</option>
                 <option value="1 Nodes">1 Nodes</option>
                 <option value="2 Nodes">2 Nodes</option>
@@ -1552,14 +1552,14 @@
             </div>
             <div class="ap-calc-field-row">
               <label class="ap-calc-field-label">Option 2</label>
-              <select class="ap-esvs-b-slot2-type">
+              <select class="ap-esvs-b-slot2-type" aria-label="Setup B Option 2 Engraving">
                 <option value="none" selected>None</option>
                 <option value="rc">Raid Captain</option>
                 <option value="kbw">Keen Blunt Weapon</option>
                 <option value="cd">Cursed Doll</option>
                 <option value="mi">Mass Increase</option>
               </select>
-              <select class="ap-esvs-b-slot2-level">
+              <select class="ap-esvs-b-slot2-level" aria-label="Setup B Option 2 Node Level">
                 <option value="0 Nodes">0 Nodes</option>
                 <option value="1 Nodes">1 Nodes</option>
                 <option value="2 Nodes">2 Nodes</option>
@@ -1569,7 +1569,7 @@
             </div>
             <div class="ap-calc-field-row">
               <label class="ap-calc-field-label">Stone 1</label>
-              <select class="ap-esvs-b-stone1-target">
+              <select class="ap-esvs-b-stone1-target" aria-label="Setup B Ability Stone Slot 1 Engraving">
                 <option value="None" selected>None</option>
                 <option value="grudge">Grudge</option>
                 <option value="ambush">Ambush Master</option>
@@ -1579,7 +1579,7 @@
                 <option value="cd">Cursed Doll</option>
                 <option value="mi">Mass Increase</option>
               </select>
-              <select class="ap-esvs-b-stone1-level">
+              <select class="ap-esvs-b-stone1-level" aria-label="Setup B Ability Stone Slot 1 Level">
                 <option value="0 Lv." selected>Lv. 0</option>
                 <option value="1 Lv.">Lv. 1</option>
                 <option value="2 Lv.">Lv. 2</option>
@@ -1589,7 +1589,7 @@
             </div>
             <div class="ap-calc-field-row">
               <label class="ap-calc-field-label">Stone 2</label>
-              <select class="ap-esvs-b-stone2-target">
+              <select class="ap-esvs-b-stone2-target" aria-label="Setup B Ability Stone Slot 2 Engraving">
                 <option value="None" selected>None</option>
                 <option value="grudge">Grudge</option>
                 <option value="ambush">Ambush Master</option>
@@ -1599,7 +1599,7 @@
                 <option value="cd">Cursed Doll</option>
                 <option value="mi">Mass Increase</option>
               </select>
-              <select class="ap-esvs-b-stone2-level">
+              <select class="ap-esvs-b-stone2-level" aria-label="Setup B Ability Stone Slot 2 Level">
                 <option value="0 Lv." selected>Lv. 0</option>
                 <option value="1 Lv.">Lv. 1</option>
                 <option value="2 Lv.">Lv. 2</option>
@@ -1796,8 +1796,8 @@
 
         <div class="ap-gear-card ap-gear-card--avb-options">
           <div class="ap-calc-field-row">
-            <label class="ap-calc-field-label">Comparing</label>
-            <select class="ap-avb-slot">
+            <label class="ap-calc-field-label" for="ap-avb-slot">Comparing</label>
+            <select id="ap-avb-slot" class="ap-avb-slot">
               <option value="necklace" selected>Necklace</option>
               <option value="earring">Earring</option>
               <option value="ring">Ring</option>
@@ -1809,8 +1809,8 @@
           </div>
           <div class="ap-avb-other-fields">
             <div class="ap-calc-field-row">
-              <label class="ap-calc-field-label ap-avb-other-line1-label">Crit Rate</label>
-              <select class="ap-avb-other-line1-tier">
+              <label class="ap-calc-field-label ap-avb-other-line1-label" for="ap-avb-other-line1-tier">Crit Rate</label>
+              <select id="ap-avb-other-line1-tier" class="ap-avb-other-line1-tier">
                 <option value="None">None</option>
                 <option value="Low">0.40%</option>
                 <option value="Mid" selected>0.95%</option>
@@ -1818,8 +1818,8 @@
               </select>
             </div>
             <div class="ap-calc-field-row">
-              <label class="ap-calc-field-label ap-avb-other-line2-label">Crit Damage</label>
-              <select class="ap-avb-other-line2-tier">
+              <label class="ap-calc-field-label ap-avb-other-line2-label" for="ap-avb-other-line2-tier">Crit Damage</label>
+              <select id="ap-avb-other-line2-tier" class="ap-avb-other-line2-tier">
                 <option value="None">None</option>
                 <option value="Low">1.10%</option>
                 <option value="Mid">2.40%</option>
@@ -1833,12 +1833,12 @@
           <div class="ap-esvs-card ap-esvs-card-a ap-avb-card-a">
             <p class="ap-gear-card-title ap-esvs-card-title">Accessory A<span class="ap-avb-equipped-badge"> (Currently Equipped)</span></p>
             <div class="ap-calc-field-row">
-              <label class="ap-calc-field-label">Main Stat</label>
-              <input type="number" class="ap-avb-a-mainstat" min="15178" max="17857" step="1" value="15178">
+              <label class="ap-calc-field-label" for="ap-avb-a-mainstat">Main Stat</label>
+              <input type="number" id="ap-avb-a-mainstat" class="ap-avb-a-mainstat" min="15178" max="17857" step="1" value="15178">
             </div>
             <div class="ap-calc-field-row">
-              <label class="ap-calc-field-label ap-avb-a-line1-label">Additional Damage</label>
-              <select class="ap-avb-a-line1-tier">
+              <label class="ap-calc-field-label ap-avb-a-line1-label" for="ap-avb-a-line1-tier">Additional Damage</label>
+              <select id="ap-avb-a-line1-tier" class="ap-avb-a-line1-tier">
                 <option value="None">None</option>
                 <option value="Low">0.70%</option>
                 <option value="Mid" selected>1.60%</option>
@@ -1846,8 +1846,8 @@
               </select>
             </div>
             <div class="ap-calc-field-row">
-              <label class="ap-calc-field-label ap-avb-a-line2-label">Outgoing Damage</label>
-              <select class="ap-avb-a-line2-tier">
+              <label class="ap-calc-field-label ap-avb-a-line2-label" for="ap-avb-a-line2-tier">Outgoing Damage</label>
+              <select id="ap-avb-a-line2-tier" class="ap-avb-a-line2-tier">
                 <option value="None">None</option>
                 <option value="Low">0.55%</option>
                 <option value="Mid" selected>1.20%</option>
@@ -1855,12 +1855,12 @@
               </select>
             </div>
             <div class="ap-bvb-line-row">
-              <select class="ap-avb-a-line3-type ap-bvb-line-type">
+              <select class="ap-avb-a-line3-type ap-bvb-line-type" aria-label="Accessory A Line 3 Type">
                 <option value="none" selected>— Line 3: None —</option>
                 <option value="ap_flat">Attack Power</option>
                 <option value="wp_flat">Weapon Power</option>
               </select>
-              <select class="ap-avb-a-line3-tier ap-bvb-line-tier" hidden disabled>
+              <select class="ap-avb-a-line3-tier ap-bvb-line-tier" hidden disabled aria-label="Accessory A Line 3 Tier">
                 <option value="Low">80 AP</option>
                 <option value="Mid" selected>195 AP</option>
                 <option value="High">390 AP</option>
@@ -1877,12 +1877,12 @@
           <div class="ap-esvs-card ap-esvs-card-b ap-avb-card-b">
             <p class="ap-gear-card-title ap-esvs-card-title">Accessory B<span class="ap-avb-equipped-badge"> (Candidate)</span></p>
             <div class="ap-calc-field-row">
-              <label class="ap-calc-field-label">Main Stat</label>
-              <input type="number" class="ap-avb-b-mainstat" min="15178" max="17857" step="1" value="17857">
+              <label class="ap-calc-field-label" for="ap-avb-b-mainstat">Main Stat</label>
+              <input type="number" id="ap-avb-b-mainstat" class="ap-avb-b-mainstat" min="15178" max="17857" step="1" value="17857">
             </div>
             <div class="ap-calc-field-row">
-              <label class="ap-calc-field-label ap-avb-b-line1-label">Additional Damage</label>
-              <select class="ap-avb-b-line1-tier">
+              <label class="ap-calc-field-label ap-avb-b-line1-label" for="ap-avb-b-line1-tier">Additional Damage</label>
+              <select id="ap-avb-b-line1-tier" class="ap-avb-b-line1-tier">
                 <option value="None">None</option>
                 <option value="Low">0.70%</option>
                 <option value="Mid">1.60%</option>
@@ -1890,8 +1890,8 @@
               </select>
             </div>
             <div class="ap-calc-field-row">
-              <label class="ap-calc-field-label ap-avb-b-line2-label">Outgoing Damage</label>
-              <select class="ap-avb-b-line2-tier">
+              <label class="ap-calc-field-label ap-avb-b-line2-label" for="ap-avb-b-line2-tier">Outgoing Damage</label>
+              <select id="ap-avb-b-line2-tier" class="ap-avb-b-line2-tier">
                 <option value="None">None</option>
                 <option value="Low">0.55%</option>
                 <option value="Mid">1.20%</option>
@@ -1899,12 +1899,12 @@
               </select>
             </div>
             <div class="ap-bvb-line-row">
-              <select class="ap-avb-b-line3-type ap-bvb-line-type">
+              <select class="ap-avb-b-line3-type ap-bvb-line-type" aria-label="Accessory B Line 3 Type">
                 <option value="none" selected>— Line 3: None —</option>
                 <option value="ap_flat">Attack Power</option>
                 <option value="wp_flat">Weapon Power</option>
               </select>
-              <select class="ap-avb-b-line3-tier ap-bvb-line-tier" hidden disabled>
+              <select class="ap-avb-b-line3-tier ap-bvb-line-tier" hidden disabled aria-label="Accessory B Line 3 Tier">
                 <option value="Low">80 AP</option>
                 <option value="Mid" selected>195 AP</option>
                 <option value="High">390 AP</option>
@@ -2021,22 +2021,22 @@
 
 <p class="cpm-calc-hint">Enter your in-game Combat Analyzer's <strong>Back Attack Percentage</strong> below.</p>
 
-<div class="spm-calc">
-<div class="spm-calc-inputs">
-<span class="ap-brace-info-icon spm-calc-info-icon" role="img" title="Time elapsed: &quot;2m 3s&quot;, &quot;123s&quot; (bare number = seconds), or mm:ss / hh:mm:ss. Max 120m">i</span>
-<input type="text" class="spm-calc-time" placeholder="2m 4s" inputmode="text" autocomplete="off" maxlength="10" aria-label="Time elapsed, e.g. 2m 3s or 123 seconds, max 120m 60s">
-<span class="spm-calc-x">&times;</span>
-<input type="number" class="spm-calc-count" placeholder="31" min="0" max="999" step="1" aria-label="Number of surges, max 999">
+<div class="cpm-rate-calc">
+<div class="cpm-rate-calc-inputs">
+<span class="ap-brace-info-icon cpm-rate-calc-info-icon" role="img" aria-label="Time elapsed: &quot;2m 3s&quot;, &quot;123s&quot; (bare number = seconds), or mm:ss / hh:mm:ss. Max 120m" title="Time elapsed: &quot;2m 3s&quot;, &quot;123s&quot; (bare number = seconds), or mm:ss / hh:mm:ss. Max 120m">i</span>
+<input type="text" class="cpm-rate-calc-time" placeholder="2m 4s" inputmode="text" autocomplete="off" maxlength="10" aria-label="Time elapsed, e.g. 2m 3s or 123 seconds, max 120m 60s">
+<span class="cpm-rate-calc-x">&times;</span>
+<input type="number" class="cpm-rate-calc-count" placeholder="31" min="0" max="999" step="1" aria-label="Number of casts, max 999">
 </div>
-<span class="spm-calc-result"><span class="spm-calc-result-value spm-calc-output-empty">—</span><span class="spm-calc-result-unit">CPM</span></span>
-</div>
-
+<span class="cpm-rate-calc-result"><span class="cpm-rate-calc-result-value cpm-rate-calc-output-empty">—</span><span class="cpm-rate-calc-result-unit">CPM</span></span>
 </div>
 
-<div class="cpm-calc-row" data-build="333-re">
+</div>
+
+<div class="cpm-calc-row" data-build="333-ceiling">
 <div class="cpm-calc-row-header">
 <span class="cpm-calc-row-title">333 (Ceiling)</span>
-<span class="cpm-calc-row-meta">Trixion CPM 15 · Remaining Energy</span>
+<span class="cpm-calc-row-meta"></span>
 </div>
 <div class="cpm-calc-body">
 <div class="cpm-calc-inputs">
@@ -2074,10 +2074,10 @@
 </div>
 </div>
 
-<div class="cpm-calc-row" data-build="111-surge">
+<div class="cpm-calc-row" data-build="111-classic">
 <div class="cpm-calc-row-header">
 <span class="cpm-calc-row-title">111 (Classic)</span>
-<span class="cpm-calc-row-meta">Trixion CPM 10.952 · Surge</span>
+<span class="cpm-calc-row-meta"></span>
 </div>
 <div class="cpm-calc-body">
 <div class="cpm-calc-inputs">
@@ -2115,10 +2115,10 @@
 </div>
 </div>
 
-<div class="cpm-calc-row" data-build="222-surge">
+<div class="cpm-calc-row" data-build="222-speedy">
 <div class="cpm-calc-row-header">
 <span class="cpm-calc-row-title">222 (Speedy)</span>
-<span class="cpm-calc-row-meta">Trixion CPM 10.084 · Surge</span>
+<span class="cpm-calc-row-meta"></span>
 </div>
 <div class="cpm-calc-body">
 <div class="cpm-calc-inputs">
@@ -2234,7 +2234,7 @@
 | [KR Calculator (Translated)](https://docs.google.com/spreadsheets/d/1RKpzg6sPNe7fuPDudJHAs0qbFukOwSyhMynDOijfoKY/edit?usp=sharing) | *Simpler, only for Ark Passive settings* |
 | [Astrogem Optimizer](https://airplaner.github.io/lostark-arkgrid-gem-locator-v2/) | *Screencapture auto-minmax for Ark Grid* |
 | [Lost Ark Bible](https://lostark.bible/) | *Logs and raid statistics* |
-| [LOA Logs](https://github.com/snoww/loa-logs) | *DPS meter download* |
+| [LOA Logs](https://github.com/snoww/loa-logs) | *<span class="skill-mention" data-glossary-id="dpsmeter">DPS meter</span> download* |
 | [Lost Ark Nexus](https://lostark-nexus-archive.pages.dev/guides/deathblade/) | *For pre-Ark Grid Standard RE build* |
 | [Fatal Wave Dump](https://docs.google.com/document/d/1vs1YC_7adaYwtfN9cHO3x2KuMPq6GcKRlGo5vnsN4Lk/edit) | *For 333 Standard (spincutter) NA build* |
 | [Maxroll](https://maxroll.gg/lost-ark) | *Resources for beginners* |

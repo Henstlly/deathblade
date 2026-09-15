@@ -39,15 +39,15 @@ window.DB_GLOSSARY = {
   },
   bracelet: {
     term: "Bracelet",
-    def: "An accessory slot that rolls combat stats (Crit, Specialization, etc.) alongside special passive effects to boost your character's damage or utility.",
+    def: "An accessory slot that rolls combat stats alongside special passive effects to boost your character's damage or utility.",
   },
   relicbook: {
     term: "Relic Book",
-    def: "A collectible recipe that permanently boosts a specific combat engraving's power account-wide as you collect more copies.",
+    def: "A collectible recipe that permanently boosts a specific combat engraving's power account-wide as you collect more.",
   },
   specializationstat: {
     term: "Specialization",
-    def: "A primary combat stat that drives Deathblade's Death Orb generation rate, Surge damage, and the cooldown reduction gained from activating Death Trance.",
+    def: "A primary combat stat that drives Deathblade's Death Orb generation rate, Surge damage, and the cooldown reduction gained from Death Trance.",
   },
   // Unlike every other entry here, this one keeps its numbers: back
   // attack's damage/crit bonus is a flat engine constant (not a per-skill
@@ -58,7 +58,7 @@ window.DB_GLOSSARY = {
   // Grid numbers have.
   backattack: {
     term: "Back Attack",
-    def: "A positional damage (+5%) and crit (+10%) bonus gained by attacking from behind the boss.",
+    def: "A positional damage (+5%) and crit (+10%) bonus gained by attacking from behind.",
   },
   arkgrid: {
     term: "Ark Grid",
@@ -70,11 +70,11 @@ window.DB_GLOSSARY = {
   },
   dpsmeter: {
     term: "DPS Meter",
-    def: "A third-party tool that parses local combat log data to display real-time damage, DPS, and skill performance statistics for you and your raid.",
+    def: "A third-party tool that parses local combat log data to display real-time damage, DPS, and skill performance statistics.",
   },
   cpm: {
     term: "CPM",
-    def: "Casts Per Minute - how many times you activate your identity skill (Surge) in a minute, used to gauge rotation speed and uptime.",
+    def: "Casts Per Minute - how many times you activate your identity skill in a minute, used to gauge rotation speed and uptime.",
   },
   tripod: {
     term: "Tripod",
@@ -82,7 +82,7 @@ window.DB_GLOSSARY = {
   },
   rune: {
     term: "Rune",
-    def: "A skill modifier equipped directly to an individual skill slot to grant utility effects like cast speed, stagger, or bonus meter generation.",
+    def: "A skill modifier equipped directly to an individual skill slot to grant utility effects.",
   },
   synergy: {
     term: "Synergy",
@@ -90,11 +90,11 @@ window.DB_GLOSSARY = {
   },
   counter: {
     term: "Counter",
-    def: "A frontal skill hit landed while a boss glows blue, interrupting its attack pattern and stunning it.",
+    def: "A frontal skill hit landed while a boss glows blue, interrupting its attack pattern.",
   },
   pushimmunity: {
     term: "Push Immunity",
-    def: "Super armor that prevents knockbacks, knockups, and knockdowns - it doesn't protect against grabs, CC debuffs, or wipe mechanics.",
+    def: "Super armor that prevents knockbacks, knockups, and knockdowns - it doesn't protect against grabs or CC debuffs.",
   },
   // BTB/FTF: each is a specific 3-skill combo (not a generic "recast
   // twice" pattern - see the build pages' own prose for how it's used in

@@ -43,7 +43,7 @@
 <details class="setup-note" data-kind="danger" open markdown>
 <summary><span class="setup-note-tag">Warn</span>Before Importing<span class="setup-note-arrow"></span></summary>
 
-Make sure you've read [Essentials](essentials.md), then apply both "Ark Passive" and "Skill" to be safe. For [Gems](#gems), follow the guide.
+Make sure you've read [Essentials](essentials.md), then apply both "<span class="skill-mention" data-glossary-id="arkpassive">Ark Passive</span>" and "Skill" to be safe. For [Gems](#gems), follow the guide.
 
 </details>
 
@@ -125,12 +125,12 @@ Make sure you've read [Essentials](essentials.md), then apply both "Ark Passive"
 
 - Use the [Ark Passive Calculator](../resources.md#ark-passive-calculator) to optimize Evolution nodes.
 - <span class="skill-mention" data-ap-id="releasepotential" data-level="3">Release Potential 3</span> / <span class="skill-mention" data-ap-id="instantspell" data-level="3">Instant Spell 3</span> / <span class="skill-mention" data-ap-id="awakeningamplifier" data-level="1">Awakening Amplifier 1</span> can solve mana issues at a very minor DPS loss.
-    - Not as comfortable with +CD% bracelet line and/or low Specialization.
+    - Not as comfortable with +CD% <span class="skill-mention" data-glossary-id="bracelet">bracelet</span> line and/or low <span class="skill-mention" data-glossary-id="specializationstat">Specialization</span>.
 
 </details>
 
 <details class="setup-note" data-kind="note" markdown>
-<summary><span class="setup-note-tag">Note</span>Ark Grid<span class="setup-note-arrow"></span></summary>
+<summary><span class="setup-note-tag">Note</span><span class="skill-mention" data-glossary-id="arkgrid">Ark Grid</span><span class="setup-note-arrow"></span></summary>
 
 - Finish up Death Sword Energy to 17p when you can, Fatal Wave is your highest damage skill.
 

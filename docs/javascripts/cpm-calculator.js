@@ -32,11 +32,79 @@
 //      FinalMultiplier = (RaidCPM / TrixionCPM) * AdjustedMultiplier
 
 (function () {
-  const BUILDS = {
-    "333-re": { trixionCPM: 15, baseMultiplier: 1.2 },
-    "111-surge": { trixionCPM: 10.952, baseMultiplier: 1.23 },
-    "222-surge": { trixionCPM: 10.084, baseMultiplier: 1.25 },
+  // Base Multiplier here used to be a second, hand-typed copy of
+  // build-data.js's own `trixion` field (same number, different name,
+  // two files, nothing cross-checking them - confirmed by audit: 333
+  // Ceiling's trixion:1.2 / baseMultiplier:1.2, 111 Classic's 1.23/1.23,
+  // 222 Speedy's 1.25/1.25, all identical). A balance patch is exactly
+  // the kind of event that updates one and leaves the other stale, so
+  // this now reads baseMultiplier from DB_BUILD_DATA instead of keeping
+  // its own copy - see findBuildMeta below. TRIXION_CPM stays local:
+  // it's the measured CPM count of an actual Trixion recording, a real
+  // number with no equivalent anywhere in build-data.js, not a
+  // duplicate of anything.
+  //
+  // Keys are build-data.js's own build ids (333-ceiling, 111-classic,
+  // 222-speedy) - NOT a third naming scheme. This file used to key its
+  // rows 333-re/111-surge/222-surge (build-data's own ids with the
+  // words swapped), a scheme that existed nowhere else and matched
+  // nothing else on the site. Since a build-data id lookup is needed
+  // here anyway now, the row's data-build attribute in resources.md
+  // was changed to just BE that id - one fewer naming scheme on the site,
+  // not one more.
+  const TRIXION_CPM = {
+    "333-ceiling": 15,
+    "111-classic": 10.952,
+    "222-speedy": 10.084,
   };
+
+  const FAMILY_LABELS = { re: "Remaining Energy", surge: "Surge" };
+
+  // Flattens window.DB_BUILD_DATA's re/surge families into one id -> build
+  // lookup, same "search both families" shape BRACE_SPEC_BUILDS-adjacent
+  // code elsewhere uses. DB_BUILD_DATA is global (loads before this file
+  // even though this file is lazy-loaded - see lazy-calculators.js's own
+  // comment on load order), so it's always present by the time this runs.
+  function findBuildMeta(id) {
+    const db = window.DB_BUILD_DATA;
+    if (!db) return null;
+    for (const familyKey in db) {
+      const builds = db[familyKey].builds || [];
+      for (let i = 0; i < builds.length; i++) {
+        if (builds[i].id === id) {
+          return {
+            baseMultiplier: builds[i].trixion,
+            familyLabel: FAMILY_LABELS[familyKey] || familyKey,
+          };
+        }
+      }
+    }
+    return null;
+  }
+
+  // Combines the local trixionCPM with build-data's own trixion (as
+  // baseMultiplier) into the shape the rest of this file expects. Returns
+  // null - same "fail quietly, caller checks and bails" convention as
+  // every other lookup on this site - if either half is missing, e.g. a
+  // row's data-build doesn't match any TRIXION_CPM key or any
+  // DB_BUILD_DATA build id. A console.warn here (rather than silent
+  // return) is deliberate: a typo'd/renamed key used to leave a CPM row
+  // permanently inert with zero visible symptom and zero console output -
+  // this is the one place that class of bug can be caught immediately
+  // instead of discovered by a confused bug report later.
+  function getBuild(id) {
+    const trixionCPM = TRIXION_CPM[id];
+    if (trixionCPM == null) {
+      if (window.console) console.warn('[cpm-calculator] no TRIXION_CPM entry for data-build="' + id + '" - known keys: ' + Object.keys(TRIXION_CPM).join(", "));
+      return null;
+    }
+    const meta = findBuildMeta(id);
+    if (!meta || meta.baseMultiplier == null) {
+      if (window.console) console.warn('[cpm-calculator] data-build="' + id + '" has no matching (or no trixion) entry in DB_BUILD_DATA');
+      return null;
+    }
+    return { trixionCPM: trixionCPM, baseMultiplier: meta.baseMultiplier, familyLabel: meta.familyLabel };
+  }
 
   const E_BACK = 3.5405624914;
   const E_NONBACK = 2.603831;
@@ -196,7 +264,7 @@
 
   function updateRow(row) {
     const buildKey = row.dataset.build;
-    const build = BUILDS[buildKey];
+    const build = getBuild(buildKey);
     if (!build) return;
 
     const raidCPMInput = row.querySelector(".cpm-calc-raidcpm");
@@ -319,7 +387,7 @@
   //   3. A bare number, treated as whole seconds (Combat Analyzer clip
   //      lengths are usually read off in seconds, so no unit means
   //      seconds, not minutes).
-  const SPM_UNIT_RE = /(\d+(?:\.\d+)?)\s*(h|m|s)/gi;
+  const CPM_RATE_UNIT_RE = /(\d+(?:\.\d+)?)\s*(h|m|s)/gi;
 
   // Guardrails, same spirit as RAID_CPM_MAX etc. above: catch fat-finger/
   // pasted-garbage entries on blur rather than block typing mid-keystroke.
@@ -328,15 +396,15 @@
   // 120m 60s (7260s) - a two-hour-plus clip is well past any real pull
   // length, but the round "120m 60s" ceiling is easier for a reader to
   // reason about than an odd derived number.
-  const SPM_COUNT_MIN = 0;
-  const SPM_COUNT_MAX = 999;
-  const SPM_TIME_MAX_SECONDS = 120 * 60 + 60;
+  const CPM_RATE_COUNT_MIN = 0;
+  const CPM_RATE_COUNT_MAX = 999;
+  const CPM_RATE_TIME_MAX_SECONDS = 120 * 60 + 60;
 
   // Renders a clamped seconds value back into the same "Xm Ys" shape the
   // parser accepts, so a corrected field stays editable/consistent with
   // what a reader would type - not a raw second count they'd have to
   // re-parse in their head.
-  function spmFormatSeconds(totalSeconds) {
+  function cpmRateFormatSeconds(totalSeconds) {
     const s = Math.round(totalSeconds);
     const m = Math.floor(s / 60);
     const secs = s % 60;
@@ -345,7 +413,7 @@
     return `${secs}s`;
   }
 
-  function spmParseTimeToSeconds(raw) {
+  function cpmRateParseTimeToSeconds(raw) {
     if (raw == null) return NaN;
     const str = String(raw).trim().toLowerCase();
     if (!str) return NaN;
@@ -373,8 +441,8 @@
     let matched = false;
     let consumed = "";
     let m;
-    SPM_UNIT_RE.lastIndex = 0;
-    while ((m = SPM_UNIT_RE.exec(str)) !== null) {
+    CPM_RATE_UNIT_RE.lastIndex = 0;
+    while ((m = CPM_RATE_UNIT_RE.exec(str)) !== null) {
       matched = true;
       consumed += m[0];
       const value = parseFloat(m[1]);
@@ -396,35 +464,35 @@
     return seconds;
   }
 
-  function spmUpdate(widget) {
-    const timeInput = widget.querySelector(".spm-calc-time");
-    const countInput = widget.querySelector(".spm-calc-count");
-    const resultEl = widget.querySelector(".spm-calc-result-value");
+  function cpmRateUpdate(widget) {
+    const timeInput = widget.querySelector(".cpm-rate-calc-time");
+    const countInput = widget.querySelector(".cpm-rate-calc-count");
+    const resultEl = widget.querySelector(".cpm-rate-calc-result-value");
     if (!timeInput || !countInput || !resultEl) return;
 
-    const seconds = spmParseTimeToSeconds(timeInput.value);
+    const seconds = cpmRateParseTimeToSeconds(timeInput.value);
     const count = parseFloat(countInput.value);
 
-    const timeValid = isFinite(seconds) && seconds > 0 && seconds <= SPM_TIME_MAX_SECONDS;
+    const timeValid = isFinite(seconds) && seconds > 0 && seconds <= CPM_RATE_TIME_MAX_SECONDS;
     const countValid = isFinite(count) && count >= 0;
 
     timeInput.classList.toggle(
-      "spm-calc-input-invalid",
+      "cpm-rate-calc-input-invalid",
       timeInput.value.trim() !== "" && !timeValid
     );
 
     if (!timeValid || !countValid) {
       resultEl.textContent = "—";
-      resultEl.classList.add("spm-calc-output-empty");
+      resultEl.classList.add("cpm-rate-calc-output-empty");
       return;
     }
 
     const perMinute = count * (60 / seconds);
     resultEl.textContent = perMinute.toFixed(2);
-    resultEl.classList.remove("spm-calc-output-empty");
+    resultEl.classList.remove("cpm-rate-calc-output-empty");
   }
 
-  // Both initSpmWidget() and initCpmRow() attach listeners directly onto
+  // Both initCpmRateWidget() and initCpmRow() attach listeners directly onto
   // each widget's own static markup instead of rebuilding it from scratch
   // each call - so, unlike the JSON-data-driven widgets registerRenderer
   // was originally written for, calling either of these twice on the same
@@ -434,15 +502,15 @@
   // triggers can otherwise all fire for the same element on a single hard
   // load.
 
-  function initSpmWidget(widget) {
-    if (widget.dataset.spmCalcInit) return;
-    widget.dataset.spmCalcInit = "1";
+  function initCpmRateWidget(widget) {
+    if (widget.dataset.cpmRateCalcInit) return;
+    widget.dataset.cpmRateCalcInit = "1";
 
-    const timeInput = widget.querySelector(".spm-calc-time");
-    const countInput = widget.querySelector(".spm-calc-count");
+    const timeInput = widget.querySelector(".cpm-rate-calc-time");
+    const countInput = widget.querySelector(".cpm-rate-calc-count");
 
     widget.querySelectorAll("input").forEach((input) => {
-      input.addEventListener("input", () => spmUpdate(widget));
+      input.addEventListener("input", () => cpmRateUpdate(widget));
     });
 
     // Clamp on blur (not on input) for the same reason as clampOnBlur
@@ -450,11 +518,11 @@
     // past an intermediate value that's already over the ceiling.
     if (timeInput) {
       timeInput.addEventListener("blur", () => {
-        const seconds = spmParseTimeToSeconds(timeInput.value);
+        const seconds = cpmRateParseTimeToSeconds(timeInput.value);
         if (!isFinite(seconds)) return; // empty/unparseable - leave as-is
-        if (seconds > SPM_TIME_MAX_SECONDS) {
-          timeInput.value = spmFormatSeconds(SPM_TIME_MAX_SECONDS);
-          spmUpdate(widget);
+        if (seconds > CPM_RATE_TIME_MAX_SECONDS) {
+          timeInput.value = cpmRateFormatSeconds(CPM_RATE_TIME_MAX_SECONDS);
+          cpmRateUpdate(widget);
         }
       });
     }
@@ -462,15 +530,15 @@
       countInput.addEventListener("blur", () => {
         const raw = parseFloat(countInput.value);
         if (!isFinite(raw)) return;
-        const clamped = Math.min(SPM_COUNT_MAX, Math.max(SPM_COUNT_MIN, raw));
+        const clamped = Math.min(CPM_RATE_COUNT_MAX, Math.max(CPM_RATE_COUNT_MIN, raw));
         if (clamped !== raw) {
           countInput.value = clamped;
-          spmUpdate(widget);
+          cpmRateUpdate(widget);
         }
       });
     }
 
-    spmUpdate(widget);
+    cpmRateUpdate(widget);
   }
 
   function initCpmRow(row) {
@@ -478,10 +546,19 @@
     row.dataset.cpmCalcInit = "1";
 
     const buildKey = row.dataset.build;
-    const build = BUILDS[buildKey];
+    const build = getBuild(buildKey);
     const baseMultInput = row.querySelector(".cpm-calc-basemult-input");
     if (build && baseMultInput && !baseMultInput.value) {
       baseMultInput.value = build.baseMultiplier.toFixed(2);
+    }
+    // .cpm-calc-row-meta ("Trixion CPM 15 · Remaining Energy") used to be
+    // authored as literal text per row in resources.md - a third copy of
+    // numbers that already live in TRIXION_CPM/DB_BUILD_DATA above, and
+    // one more place a balance-patch update could be missed. Rendered
+    // from build here instead; the markup ships with an empty span.
+    const metaEl = row.querySelector(".cpm-calc-row-meta");
+    if (build && metaEl) {
+      metaEl.textContent = "Trixion CPM " + build.trixionCPM + " \u00b7 " + build.familyLabel;
     }
 
     row.querySelectorAll("input").forEach((input) => {
@@ -517,6 +594,6 @@
   // registerRenderer doc comment for why that's not safe to assume covers
   // every case on its own) - the dataset guards above are what make these
   // safe to hand to it directly.
-  window.SiteUtils.registerRenderer(".spm-calc", initSpmWidget);
+  window.SiteUtils.registerRenderer(".cpm-rate-calc", initCpmRateWidget);
   window.SiteUtils.registerRenderer(".cpm-calc-row", initCpmRow);
 })();

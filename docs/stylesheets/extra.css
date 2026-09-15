@@ -3013,7 +3013,7 @@ h3 { color: var(--dbc-teal); }
   .md-typeset .cpm-calc-header {
     flex-direction: column;
   }
-  .md-typeset .spm-calc {
+  .md-typeset .cpm-rate-calc {
     align-self: stretch;
     justify-content: center;
     flex-wrap: wrap;
@@ -3030,7 +3030,7 @@ h3 { color: var(--dbc-teal); }
    One horizontal row (info icon, inputs, result all inline) rather than
    a stacked column - a single compact line keeps the whole card's header
    short instead of ballooning it taller than the hint text beside it. */
-.md-typeset .spm-calc {
+.md-typeset .cpm-rate-calc {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -3049,17 +3049,17 @@ h3 { color: var(--dbc-teal); }
    left margin (it sits first in a flex row, no preceding label text to
    hang .ap-brace-info-icon's default margin-left off of) and
    flex-shrink: 0 so the tight row doesn't squeeze it. */
-.md-typeset .spm-calc-info-icon {
+.md-typeset .cpm-rate-calc-info-icon {
   margin-left: 0;
   flex-shrink: 0;
 }
-.md-typeset .spm-calc-inputs {
+.md-typeset .cpm-rate-calc-inputs {
   display: flex;
   align-items: center;
   gap: 0.4em;
 }
-.md-typeset .spm-calc-time,
-.md-typeset .spm-calc-count {
+.md-typeset .cpm-rate-calc-time,
+.md-typeset .cpm-rate-calc-count {
   background-color: #1c1d1f;
   border: 1px solid rgba(var(--dbc-purple-rgb), 0.35);
   border-radius: 6px;
@@ -3072,7 +3072,7 @@ h3 { color: var(--dbc-teal); }
 /* Wide enough for the longest accepted string ("120m 60s", the parser's
    own max-clamp ceiling) without the text getting cut off or scrolling
    inside the box. */
-.md-typeset .spm-calc-time {
+.md-typeset .cpm-rate-calc-time {
   width: 6.5em;
 }
 /* Wide enough for a 4th fat-fingered digit (the max="999" attribute
@@ -3080,11 +3080,11 @@ h3 { color: var(--dbc-teal); }
    by clampOnBlur in cpm-calculator.js) plus the number spinner UI some
    browsers draw inside the box, so a reader mid-typing past the ceiling
    sees their own digits, not a clipped value. */
-.md-typeset .spm-calc-count {
+.md-typeset .cpm-rate-calc-count {
   width: 4.6em;
 }
-.md-typeset .spm-calc-time:focus,
-.md-typeset .spm-calc-count:focus {
+.md-typeset .cpm-rate-calc-time:focus,
+.md-typeset .cpm-rate-calc-count:focus {
   outline: none;
   border-color: var(--dbc-purple);
 }
@@ -3092,7 +3092,7 @@ h3 { color: var(--dbc-teal); }
    there's no min/max/:out-of-range to lean on here since this is a
    free-text field (it has to accept "2m 3s", not just a number), so the
    JS toggles this class itself once the text fails to parse. */
-.md-typeset .spm-calc-time.spm-calc-input-invalid {
+.md-typeset .cpm-rate-calc-time.cpm-rate-calc-input-invalid {
   border-color: var(--dbc-red);
 }
 /* Count field IS a native number input with min/max, so unlike the time
@@ -3102,14 +3102,14 @@ h3 { color: var(--dbc-teal); }
    it). Declared after the :focus rule above so it wins while the field
    is still focused and being typed into, matching the cpm-calc-field
    pattern elsewhere on this page. */
-.md-typeset .spm-calc-count:out-of-range {
+.md-typeset .cpm-rate-calc-count:out-of-range {
   border-color: var(--dbc-red);
 }
-.md-typeset .spm-calc-x {
+.md-typeset .cpm-rate-calc-x {
   color: var(--dbc-slate);
   font-size: 0.8em;
 }
-.md-typeset .spm-calc-result {
+.md-typeset .cpm-rate-calc-result {
   font-size: 0.85em;
   color: var(--dbc-slate);
   white-space: nowrap;
@@ -3124,7 +3124,7 @@ h3 { color: var(--dbc-teal); }
    it up front, since that made ordinary results (e.g. "64.00") sit with
    a visibly empty gap before them. Right-aligned so results sit flush
    against the "CPM" unit instead of floating in the reserved space. */
-.md-typeset .spm-calc-result-value {
+.md-typeset .cpm-rate-calc-result-value {
   display: inline-block;
   min-width: 6ch;
   text-align: right;
@@ -3135,11 +3135,11 @@ h3 { color: var(--dbc-teal); }
 /* Same empty-state treatment as .cpm-calc-result-value.cpm-calc-output-
    empty - plain "—" placeholder shouldn't read as bold teal like a real
    result. */
-.md-typeset .spm-calc-result-value.spm-calc-output-empty {
+.md-typeset .cpm-rate-calc-result-value.cpm-rate-calc-output-empty {
   color: var(--dbc-slate);
   font-weight: 400;
 }
-.md-typeset .spm-calc-result-unit {
+.md-typeset .cpm-rate-calc-result-unit {
   margin-left: 0.2em;
 }
 /* Teal left-edge accent (matching the multiplier bar and the "best" row
@@ -5815,8 +5815,7 @@ h3 { color: var(--dbc-teal); }
    still wider than the row has room for combined with the level select
    next to it. Wrapping the pair onto 2 lines there keeps both selects
    at their real, readable width instead of one of them getting pushed
-   off the row's edge again, same reasoning as .ap-esvs-pair's own
-   identical wrap below. justify-content: flex-end keeps a wrapped
+   off the row's edge again. justify-content: flex-end keeps a wrapped
    second line right-aligned like the first, instead of the default
    flex-start snapping it to the opposite edge from the first line. */
 /* Every field row inside a Gearing card stacks as its own full-width
@@ -6575,17 +6574,10 @@ h3 { color: var(--dbc-teal); }
    shrink at all) had no floor once both selects' individual min-widths
    ate the whole row on a narrow phone - measured at literally 0px
    rendered width in one case, wrapping "Option 1"/"Stone 1" a single
-   letter per line. Grouping the two selects into their own flex unit,
-   same as .ap-engr-stone-pair, is step one - the label still needs the
-   @container fallback below to actually get its width back. */
-.md-typeset .ap-esvs-pair {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 0.4em;
-  flex-shrink: 0;
-}
+   letter per line. The @container fallback below is the actual fix: it
+   stacks the label above the row's two selects, which is enough on its
+   own since (unlike the Ability Stone Values section) nothing here
+   groups the two selects into their own flex unit. */
 /* Below ~380px (measured against .ap-brace-compare-body's own rendered
    width, same container-type/reasoning as .ap-engr-stone-row's fallback
    above) the label and its pair no longer fit one line without crushing
@@ -9385,20 +9377,23 @@ body.page-333-blitz input[type="text"] {
 /* ==========================================================================
    Food/consumable requirement callout — Essentials page
    ========================================================================== */
-/* Pulled out of the setup-note stack entirely: "mana food is required" is
-   the single most important line on this page (get it wrong and the whole
-   build's mana sustain falls apart), so it reads as its own featured
-   callout instead of just another collapsible row in the notes list -
-   same instinct as .build-card getting its own treatment instead of
-   being folded into prose. Danger/warn colored (same pink family as
-   .setup-note's "danger" kind and .build-card itself - see that rule's
-   own comment) since the requirement framing is deliberately urgent, not
-   a neutral tip.
+/* "Mana food is required" is the single most important line on this page
+   (get it wrong and the whole build's mana sustain falls apart), so it
+   reads as its own featured lead line inside the page's pink `setup-panel`
+   (data-accent="pink") instead of just another collapsible row in the
+   notes list - same instinct as .build-card getting its own treatment
+   instead of being folded into prose. Danger/warn colored (same pink
+   family as .setup-note's "danger" kind and .build-card itself - see
+   that rule's own comment) since the requirement framing is deliberately
+   urgent, not a neutral tip.
 
-   Structure:
-   <div class="food-required" markdown>
-   <p class="food-required-lead">Mana food or Azena's Blessing are
-   **required** to play Remaining Energy optimally.</p>
+   Structure (see docs/remaining-energy/essentials.md and
+   docs/surge/essentials.md for the real markup):
+   <div class="setup-panel" data-accent="pink" markdown>
+   <div class="setup-notes" markdown>
+
+   <p class="food-required-lead">Mana food and Atk/Move Speed feast are
+   **required** to play Ark Grid Remaining Energy as intended.</p>
 
    <div class="food-options" markdown>
    <div class="food-option" markdown>
@@ -9409,19 +9404,13 @@ body.page-333-blitz input[type="text"] {
    ... (repeat per item - pills wrap and hug their own content, so 2
    items and 4 items both look intentional rather than stretched) </div>
    </div>
+   </div>
 
    No `title` attribute needed on a .food-option div anymore -
    skill-tooltip.js's attachFoodOption wires each pill as a real
    .skill-tip trigger, reading the effect text from DB_SKILL_EXTRAS by
    the wrapped icon's filename instead (skill-data.js). The hover/focus
    glow below is unrelated to that tooltip and stays exactly as it was. */
-.md-typeset .food-required {
-  border: 1px solid rgba(var(--dbc-rose-rgb), 0.35);
-  background-color: rgba(var(--dbc-rose-rgb), 0.055);
-  border-radius: 10px;
-  padding: 1em 1.2em 1.1em;
-  margin: 1em 0 1.5em;
-}
 .md-typeset .food-required-lead {
   margin: 0 0 0.7em;
   font-size: 1em;

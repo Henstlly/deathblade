@@ -1,6 +1,6 @@
 # Pre-Ark Grid
 
-*Options for playing Surge before you have an Ark Grid set up.*
+*Options for playing Surge before you have an <span class="skill-mention" data-glossary-id="arkgrid">Ark Grid</span> set up.*
 
 <div class="grid cards prearc-cards" markdown>
 

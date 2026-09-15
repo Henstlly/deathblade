@@ -236,9 +236,10 @@
     return svg;
   }
 
-  function buildSelect(builds, selectedId) {
+  function buildSelect(builds, selectedId, ariaLabel) {
     var select = document.createElement("select");
     select.className = "build-compare-select";
+    select.setAttribute("aria-label", ariaLabel);
     builds.forEach(function (b) {
       var opt = document.createElement("option");
       opt.value = b.id;
@@ -410,7 +411,7 @@
     wrapA.className = "build-compare-select-wrap";
     var dotA = document.createElement("span");
     dotA.className = "build-compare-select-dot";
-    var selectA = buildSelect(compareBuilds, buildA.id);
+    var selectA = buildSelect(compareBuilds, buildA.id, "First build to compare");
     wrapA.appendChild(dotA);
     wrapA.appendChild(selectA);
 
@@ -422,7 +423,7 @@
     wrapB.className = "build-compare-select-wrap";
     var dotB = document.createElement("span");
     dotB.className = "build-compare-select-dot";
-    var selectB = buildSelect(compareBuilds, buildB.id);
+    var selectB = buildSelect(compareBuilds, buildB.id, "Second build to compare");
     wrapB.appendChild(dotB);
     wrapB.appendChild(selectB);
 

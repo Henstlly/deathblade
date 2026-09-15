@@ -27,7 +27,7 @@
 // site settled on this as THE tooltip system rather than one local to
 // the Ark Passive Calculator - previously Bid Calculator's Intent chips
 // (now .bid-calc-intent's .ap-build-chip buttons - see bid-calculator.js)
-// and the Surges/Min scratch-pad's .spm-calc-info-icon (now itself an
+// and the Casts/Min scratch-pad's .cpm-rate-calc-info-icon (now itself an
 // .ap-brace-info-icon - see resources.md/extra.css) were deliberately
 // left on native title, back when this file was .ap-calc-only. Nothing
 // about attach() below is actually Ark-Passive-specific - it was already

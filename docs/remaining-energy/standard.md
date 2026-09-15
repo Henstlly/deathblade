@@ -57,7 +57,7 @@ Since this is a beginner legacy build, this guide strays slightly from the norm 
 <details class="setup-note" data-kind="danger" open markdown>
 <summary><span class="setup-note-tag">Warn</span>Before Importing<span class="setup-note-arrow"></span></summary>
 
-Make sure you've read [Essentials](essentials.md), then apply both "Ark Passive" and "Skill" to be safe. For [Gems](#gems), follow the guide.
+Make sure you've read [Essentials](essentials.md), then apply both "<span class="skill-mention" data-glossary-id="arkpassive">Ark Passive</span>" and "Skill" to be safe. For [Gems](#gems), follow the guide.
 
 </details>
 
