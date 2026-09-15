@@ -1461,36 +1461,48 @@
       var buttons = document.querySelectorAll("button");
       for (var i = 0; i < buttons.length; i++) {
         var t = (buttons[i].textContent || "").trim();
-        // Bible shows "Estimated Raid Loadout" instead of "Raid Loadout"
-        // when the account is missing gem data for the real raid loadout
-        // and has to reconstruct an estimate - same switch action, just a
-        // different label. Missing this match entirely would have meant:
-        // button not found -> treated as "already confirmed on Raid" (see
-        // below) on a character that's actually still showing Chaos
-        // Dungeon data, silently importing the wrong loadout as if
-        // confirmed. Not yet confirmed against a real dump whether the
-        // exact string is "Estimated Raid Loadout" verbatim or something
-        // close to it - if this still misses on a real gem-missing
-        // character, the diagnostic dump below (before/after button
-        // markup) will show the real button text directly.
+        // The tab strip's exact two labels vary per-character based on
+        // circumstance, not a fixed site-wide pair of strings (confirmed
+        // against real dumps, 2026-09) - the active tab reads "Current
+        // Loadout (X)" and the OTHER, inactive tab is a plain switch
+        // button reading "<Y> Loadout":
+        //   - Chaos active:  "Current Loadout (Chaos Dungeon)" / "Raid Loadout"
+        //   - Raid active:   "Current Loadout (Raid)" / "Chaos Dungeon Loadout"
+        // "Estimated Raid Loadout" is believed (not fully confirmed) to
+        // replace "Raid Loadout" as the switch-button label specifically
+        // when the account has no gem data recorded for its raid loadout,
+        // forcing Bible to reconstruct an estimate instead of showing the
+        // real one - if this guess is wrong, the diagnostic dump below
+        // (before/after button markup) or the fallback's tab-label log
+        // will show the real string directly.
+        //
+        // "Current Loadout (X)" for the ACTIVE tab is not a switch action -
+        // do not match/click it here. When Raid is already active there is
+        // correctly no "Raid Loadout"/"Estimated Raid Loadout" button to
+        // find at all; see the fallback branch below, which checks for
+        // "Current Loadout (Raid)" specifically to recognize that case as
+        // confirmed instead of treating it as a failure.
         if (t === "Raid Loadout" || t === "Estimated Raid Loadout") return buttons[i];
       }
       return null;
     }
     // Every button whose label looks like a loadout tab, matched loosely
     // (contains "loadout", case-insensitive) rather than by the two exact
-    // strings findRaidLoadoutButton needs. This exists purely to tell two
-    // very different situations apart when findRaidLoadoutButton returns
-    // null, which the old code could not do and collapsed into "confirmed":
+    // strings findRaidLoadoutButton needs. This exists purely to tell the
+    // real situations apart when findRaidLoadoutButton returns null, which
+    // the old code could not do and collapsed into "confirmed":
     //   - length 0: this character has no loadout tab strip at all, so
     //     there is nothing to switch to and whatever is rendered IS the
     //     one loadout. Safe.
-    //   - length > 0: a tab strip DOES exist, but none of its buttons
-    //     matched the exact labels above. That means Bible relabeled the
-    //     tab (e.g. a new "Raid Loadout (Estimated)" variant) and the
-    //     auto-click silently did not happen - the single most likely way
-    //     this file breaks in the future, since it hard-codes two literal
-    //     strings against someone else's frontend. Must warn.
+    //   - length > 0 and one entry reads "Current Loadout (Raid...)": the
+    //     account was already showing Raid before this bookmarklet ran (see
+    //     findRaidLoadoutButton's comment - this is the normal, expected
+    //     shape for such an account, NOT a Bible relabel). Safe.
+    //   - length > 0 and none do: the account was showing something else
+    //     and no switch button was found for it either. That's the one
+    //     genuinely-unconfirmed case - possibly a real new label variant
+    //     this file doesn't know yet, which is why the labels get logged.
+    //     Must warn.
     function findLoadoutTabButtons() {
       var buttons = document.querySelectorAll("button");
       var out = [];
@@ -1561,20 +1573,46 @@
         }, 400);
         return;
       }
-      // No "Raid Loadout" button found. This used to unconditionally
+      // No "Raid Loadout" switch button found. This used to unconditionally
       // finish(lines, true), which was the one genuinely SILENT wrong-data
-      // path left in this file: if Bible ever relabels that tab, the click
-      // never happens, nothing warns, and Chaos-loadout accessories/gems/
-      // engravings import as if they were confirmed raid data. Split into
-      // the two real cases instead.
+      // path left in this file: if the switch button's label ever varies
+      // in a way this file doesn't know about, the click never happens,
+      // nothing warns, and Chaos-loadout accessories/gems/engravings
+      // import as if they were confirmed raid data. Split into the real
+      // cases instead.
       var loadoutTabs = findLoadoutTabButtons();
       if (window.console && console.log) {
-        console.log("[Bible import] no exact \"Raid Loadout\" button; loadout-ish tab labels seen: " + JSON.stringify(loadoutTabs));
+        console.log("[Bible import] no \"Raid Loadout\" switch button; loadout-ish tab labels seen: " + JSON.stringify(loadoutTabs));
+      }
+      // A tab strip exists but has no switch-to-raid button in it. Two
+      // real cases hide behind that, and they resolve oppositely:
+      //   - the account was last showing Raid already, so the tab strip's
+      //     active-tab label mentions "Current"/"Raid" together (confirmed
+      //     shape so far: plain "Current Loadout (Raid)" - see
+      //     findRaidLoadoutButton's comment). There is nothing to click
+      //     and nothing wrong; correctly confirmed.
+      //   - the account was last showing something else (Chaos Dungeon)
+      //     and genuinely never switched. Warn, and log the labels above
+      //     so the fix is a one-line string update here.
+      // UNCONFIRMED: what this active-tab label looks like when the raid
+      // loadout itself is estimated (no gem data) rather than real - never
+      // seen a real dump of that case. Could stay plain "Current Loadout
+      // (Raid)", could become "Current Loadout (Raid, Estimated)", could
+      // be a genuinely different tab arrangement altogether. Matched
+      // loosely here (both "Current" and "Raid" present anywhere in the
+      // label, not a strict "Current Loadout (Raid" prefix) specifically
+      // so an unknown punctuation/wording variant of THAT case still
+      // confirms correctly instead of repeating this same false-warning
+      // bug a third time - if a real "estimated + already active" dump
+      // ever surfaces (check this file's console log for the exact tab
+      // labels seen), tighten this back to an exact match and note it here.
+      for (var li = 0; li < loadoutTabs.length; li++) {
+        if (/current/i.test(loadoutTabs[li]) && /raid/i.test(loadoutTabs[li])) {
+          finish(lines, true);
+          return;
+        }
       }
       if (loadoutTabs.length) {
-        // A tab strip exists and we couldn't find the raid tab in it - we
-        // are looking at some OTHER loadout and never switched. Warn, and
-        // log the labels so the fix is a one-line string update here.
         finish(lines, false);
         return;
       }
