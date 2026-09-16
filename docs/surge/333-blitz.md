@@ -11,7 +11,7 @@
      all update together from that one place. -->
 <div class="build-stats" data-build="333-blitz" data-family="surge"></div>
 
-**Best For:**{: .best-for } Nothing, currently.
+**Best For:**{: .best-for } Please do not play this.
 
 **Tradeoff:**{: .tradeoff } The juice is not worth the squeeze.
 
@@ -65,7 +65,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 === "333 Blitz"
 
     ```
-    2920AA957EFFC05A5340538108BDDF1FE9427D9B74E621D2EAABC120F85A09B7576C6222DAFE1694B99EC1D83E8A2B32565898A75DC0C1D11CE75D0C75DA7B08
+    C2BFAC917391343DBC2FDFE774F012CA68D052E6BBDF24E99D94CB2304E39E6307031C2D86DDF93D1770D4AFD97E52786C90EECBF9E6A04C76B7DF6B0289ED3F
     ```
 
 ## Ark Setup
@@ -157,7 +157,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
   {"id": "surpriseattack", "level": 10, "tripods": [1, 1, 1], "rune": {"tier": "legendary", "name": "Poison"}},
   {"id": "windcut", "level": 10, "tripods": [3, 3, 1], "rune": {"tier": "legendary", "name": "Galewind"}},
   {"id": "spincutter", "level": 10, "tripods": [3, 3, 1], "rune": {"tier": "epic", "name": "Galewind"}},
-  {"id": "bladedance", "level": 14, "tripods": [1, 2, 2], "rune": {"tier": "epic", "name": "Galewind"}},
+  {"id": "bladedance", "level": 14, "tripods": [1, 1, 2], "rune": {"tier": "epic", "name": "Galewind"}},
   {"id": "earthcleaver", "level": 14, "tripods": [3, 3, 1], "rune": {"tier": "legendary", "name": "Vision"}},
   {"id": "turningslash", "level": 14, "tripods": [1, 3, 1], "rune": {"tier": "legendary", "name": "Rage"}},
   {"id": "maelstrom", "level": 10, "tripods": [3, 1, 2], "rune": {"tier": "legendary", "name": "Focus"}},
@@ -183,6 +183,8 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 <details class="setup-note" data-kind="note" markdown>
 <summary><span class="setup-note-tag">Note</span>Optional<span class="setup-note-arrow"></span></summary>
 
+- You can use the Weak Point Detection <span class="skill-mention" data-glossary-id="tripod">tripod</span> on Blade Dance instead.
+    - Requires Lv 10 CD gem or raid downtime for it not to become a bottleneck.
 - Earth Explosion <span class="skill-mention" data-glossary-id="tripod">tripod</span> on Earth Cleaver is up to personal preference.
     - Increased cast speed, but greatly lowers mobility and damage.
 - Thick Sword Energy tripod increases Wind Cut range but builds fewer stacks.
@@ -214,24 +216,13 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 <script type="application/json">
 [
   { "col": "dmg", "items": [
-    "surge", "blitzrush", "bladedance", "earthcleaver", "turningslash"
+    "surge", "blitzrush", "earthcleaver", "bladedance", "turningslash", "windcut"
   ] },
   { "col": "cd", "items": [
-    "bladedance", "earthcleaver", "blitzrush", "windcut", "maelstrom", "surpriseattack"
+    "blitzrush", "earthcleaver", "windcut", "maelstrom", "surpriseattack"
   ] }
 ]
 </script>
-</div>
-
-<div class="setup-notes" markdown>
-
-<details class="setup-note" data-kind="note" open markdown>
-<summary><span class="setup-note-tag">Note</span>Recommendation<span class="setup-note-arrow"></span></summary>
-
-- Use Blade Dance's Quick Prep tripod if your Blade Dance CD gem is not a high enough level.
-
-</details>
-
 </div>
 
 </div>
@@ -291,6 +282,6 @@ Apply damage <span class="skill-mention" data-glossary-id="synergy">synergy</spa
 
 <div class="dps-showcase" markdown>
 <div class="dps-showcase-frame" markdown>
-<div class="dps-chart" data-show-icons data-values="43.89,26.99,12.85,4.21,4.04" data-ids="surge,blitzrush,deathlyslash,bladedance,earthcleaver"></div>
+<div class="dps-chart" data-show-icons data-values="42,29.8,12.9,4,2.6,2.6,2.1" data-ids="surge,blitzrush,deathlyslash,earthcleaver,bladedance,turningslash,windcut"></div>
 </div>
 </div>
