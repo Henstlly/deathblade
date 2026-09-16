@@ -296,7 +296,7 @@ Alternate between these two cycles as needed for ceiling DPS:
 1. Cycle **2** offers safety by leaving Surprise Attack as a recovery option; Cycle **3** offers higher CPM.
 2. Rotating **2>3>2>3** is ideal, but based on boss patterns, variations like **2>3>3>2** or **2>2>3>3** are valid.
       - Cycle **3** is preferred during risky boss patterns because Wind Cut lacks Paralysis Immunity.
-      - Recover with Wind Cut or Surprise Attack, decide your next cycle based on which one's available.
+      - Recover with Wind Cut or Surprise Attack, and decide your next cycle based on which one's available.
 3. You can skip a Surprise Attack finisher whenever you're at 49+ stacks before Deathly Slash.
       - Same for 40+ stacks before Blade Dance, 30+ stacks before Upper Slash, and so on.
       - If you have 7+ stacks before you activate Death Trance, you can also skip the finisher.

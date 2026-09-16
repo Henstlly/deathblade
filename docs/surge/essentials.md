@@ -60,7 +60,7 @@ Atk/Move Speed Feast
 - Complete rework of 222 cores and playstyle. It's incredible now.
 - Blitz Rush gained a 27% cast speed <span class="skill-mention" data-glossary-id="tripod">tripod</span> and 20% more attack range.
 - Turning Slash and Surprise Attack's after-effects now also apply <span class="skill-mention" data-glossary-id="synergy">Synergy</span>.
-- Overall damage went up, Surge is genuinely competitive with RE.
+- Overall damage went up, and Surge is genuinely competitive with RE.
 - Surge's post-cast delay was removed, so animation cancelling is not needed.
 
 </details>
@@ -192,7 +192,7 @@ Not the end of the world if you're forced to use it
 <span class="food-req-item">![](../assets/shared/icon-feast.png){: .skill-icon } Atk/Move Speed feast</span> + <span class="food-req-item">![](../assets/shared/icon-vernesewine.png){: .skill-icon } Vernese Wine (Bard/Paladin)</span> or <span class="food-req-item">![](../assets/shared/icon-ealynsblessing.png){: .skill-icon } Ealyn's Blessing (Artist/Valkyrie)</span>
 { .food-req }
 
-**Pros:**{: .best-for } This is ceiling. Efficient damage scaling for 111, and 222's short cycles lessen the burden of its penalties.
+**Pros:**{: .best-for } This is ceiling. Efficient damage scaling for 111; 222's short cycles also lessen the burden of its penalties.
 
 **Cons:**{: .tradeoff } Doubles up on <span class="skill-mention" data-skill-id="maelstrom">Maelstrom</span> and situational shackles, only recommended if you know what you're doing.
 

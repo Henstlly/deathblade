@@ -2036,7 +2036,7 @@
 <div class="cpm-rate-calc">
 <div class="cpm-rate-calc-inputs">
 <span class="ap-brace-info-icon cpm-rate-calc-info-icon" role="img" aria-label="Time elapsed: &quot;2m 3s&quot;, &quot;123s&quot; (bare number = seconds), or mm:ss / hh:mm:ss. Max 120m" title="Time elapsed: &quot;2m 3s&quot;, &quot;123s&quot; (bare number = seconds), or mm:ss / hh:mm:ss. Max 120m">i</span>
-<input type="text" class="cpm-rate-calc-time" placeholder="2m 4s" inputmode="text" autocomplete="off" maxlength="10" aria-label="Time elapsed, e.g. 2m 3s or 123 seconds, max 120m 60s">
+<input type="text" class="cpm-rate-calc-time" placeholder="2m 3s" inputmode="text" autocomplete="off" maxlength="10" aria-label="Time elapsed, e.g. 2m 3s or 123 seconds, max 120m 60s">
 <span class="cpm-rate-calc-x">&times;</span>
 <input type="number" class="cpm-rate-calc-count" placeholder="31" min="0" max="999" step="1" aria-label="Number of casts, max 999">
 </div>

@@ -75,7 +75,7 @@ Atk/Move Speed Feast
 - Blitz Rush gained a 27% cast speed tripod and 20% more attack range.
 - Turning Slash's after-effect now also applies <span class="skill-mention" data-glossary-id="synergy">Synergy</span>.
 - Surge's buffed coefficient increased DPS for all RE builds by ~1%.
-- Buffed Ark Grid cores increased 111 HH DPS by ~2% and 313 DPS by ~1%.
+- Buffed Ark Grid cores increased 111 DPS by ~2% and 313 DPS by ~1%.
 
 </details>
 
