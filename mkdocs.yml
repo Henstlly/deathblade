@@ -70,7 +70,7 @@ extra_css:
 # for the full breakdown.
 extra_javascript:
   - javascripts/site-utils.js?v=10
-  - javascripts/lazy-calculators.js?v=3
+  - javascripts/lazy-calculators.js?v=5
   - javascripts/extra.js?v=2
   - javascripts/build-data.js?v=4
   - javascripts/build-stats-badge.js?v=1

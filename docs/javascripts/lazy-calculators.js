@@ -53,7 +53,7 @@
   var LAZY_BUNDLE = [
     "cpm-calculator.js?v=8",
     "bid-calculator.js?v=5",
-    "ark-passive-calculator.js?v=52",
+    "ark-passive-calculator.js?v=54",
     "bible-import.js?v=14",   // must follow ark-passive-calculator.js
     "ap-brace-tooltip.js?v=5", // needs skill-tooltip.js, which is still global
   ];

@@ -1842,8 +1842,16 @@
   // per-candidate-bracelet instead of assuming every bracelet shares the
   // reader's real Best Setup keystone (two bracelets with different Crit
   // Rate/Dmg/Stat lines can genuinely prefer different keystones).
-  function bestComboFor(candidateInputs) {
-    const shared = computeShared(candidateInputs);
+  // sharedOverride lets a caller hand in a `shared` object it already
+  // built by hand instead of a plain computeShared(candidateInputs) - the
+  // only current use is ringDmgGain/ringDmgLikeGain-style candidates below,
+  // whose magnitude is tracked as a manual critDmgTotal delta rather than
+  // a real inputs field (see ACC_RING_DMG_TABLE's own comment on why that
+  // table stays uncoupled from candidateInputs). Omitted (undefined) by
+  // every other caller, which keeps this exactly the same as before this
+  // parameter existed.
+  function bestComboFor(candidateInputs, sharedOverride) {
+    const shared = sharedOverride || computeShared(candidateInputs);
     let best = null;
     EVOLUTION_SPLITS.forEach((split) => {
       COMBINED_KEYSTONES.forEach((pair) => {
@@ -1858,33 +1866,54 @@
     const gridResult = computeGridAndSummary(inputs);
     const best = gridResult.best;
     if (!best) return [];
-    const { keenSense, limitBreak } = best.split;
-    const pair = best.keystone;
+    // best.split/best.keystone (the reader's live Best Setup keenSense/
+    // limitBreak/pair) are deliberately NOT destructured here anymore -
+    // every row below now re-derives its own winning cell per candidate
+    // via bestComboFor instead of assuming the reader's fixed pair still
+    // wins (see baselineBest's own comment just below), so nothing in
+    // this function needs them. `best` itself is kept only for the
+    // `if (!best) return []` guard above.
 
     const { inputsNB, sharedNB } = zeroedBraceletInputs(inputs);
-    const baselineMult = combinedMultiplier(inputsNB, sharedNB, keenSense, limitBreak, pair);
+    // Re-optimized baseline, not a fixed-pair eval: Crit Rate/Dmg/Stat and
+    // Additional Damage all feed effCrit/critDmgTotal/add (the grid formula
+    // itself), so which of the 9 cells is best can genuinely differ once a
+    // candidate line is added on top of the reader's real setup - confirmed
+    // by direct computation (candidates like a High Crit Rate or High
+    // Additional Damage line can flip the winning pair in a non-trivial
+    // slice of realistic gear profiles, the same failure mode
+    // kbwRealizedGainPct/adrenalineGridRatio were already fixed for above).
+    // Every candidate below re-derives its OWN best cell via bestComboFor
+    // instead of assuming the reader's fixed Best Setup pair still wins -
+    // matching Bracelet vs. Bracelet's own per-candidate search exactly.
+    const baselineBest = bestComboFor(inputsNB, sharedNB);
+    const baselineMult = baselineBest.mult;
     // The Additional Damage candidates' denominator has to match whatever
-    // "add" combinedMultiplier actually used for the winning pair - Master
-    // keystones add a flat +8.5% Add Dmg on top of addDmgBase (addDmgMaster),
-    // non-Master pairs (crit+pulv) don't. Using addDmgBase unconditionally
-    // here was the bug that made these two rows disagree with the sheet
-    // whenever Master won the grid - confirmed against the sheet's cached
-    // Brace!C19:E19 (2.06/2.40/2.75%) vs the old 2.19/2.55/2.92%.
-    const addDmgBaseline = pair.indexOf("master") !== -1 ? sharedNB.addDmgMaster : sharedNB.addDmgBase;
+    // "add" the NO-BRACELET baseline's OWN winning pair actually used -
+    // Master keystones add a flat +8.5% Add Dmg on top of addDmgBase
+    // (addDmgMaster), non-Master pairs (crit+pulv) don't. Using addDmgBase
+    // unconditionally here was the bug that made these two rows disagree
+    // with the sheet whenever Master won the grid - confirmed against the
+    // sheet's cached Brace!C19:E19 (2.06/2.40/2.75%) vs the old
+    // 2.19/2.55/2.92%. Now tied to baselineBest.pair (the re-optimized
+    // baseline's own winner) rather than the reader's live Best Setup pair,
+    // for the same reason baselineMult itself moved off the fixed pair.
+    const addDmgBaseline = baselineBest.pair.indexOf("master") !== -1 ? sharedNB.addDmgMaster : sharedNB.addDmgBase;
 
     // Crit Rate/Crit Dmg candidates reuse the exact same computeShared +
     // critRateTotal + combinedMultiplier machinery as the grid above -
     // just with one bracelet field swapped from "None" to the candidate
     // tier, and (for the two lines that carry it) the matching dual
     // checkbox flipped on - the same computeShared formula the checkboxes
-    // themselves drive, rather than a second hand-rolled copy of it.
+    // themselves drive, rather than a second hand-rolled copy of it. Goes
+    // through bestComboFor (full 9-cell re-search) rather than the fixed
+    // baselineBest.pair/split - see baselineBest's own comment above.
     function critLikeGain(field, tier, dualFlag) {
       const cloned = Object.assign({}, inputsNB);
       cloned[field] = tier;
       if (dualFlag) cloned[dualFlag] = true;
-      const shared = computeShared(cloned);
-      const mult = combinedMultiplier(cloned, shared, keenSense, limitBreak, pair);
-      return mult / baselineMult - 1;
+      const withBest = bestComboFor(cloned);
+      return withBest.mult / baselineMult - 1;
     }
 
     function tiers(fn) {
@@ -1894,12 +1923,28 @@
     // Raw Crit Stat delta candidate (the sheet's "Crit +80/100/120" row) -
     // mechanically identical to the Crit Rate % Line above once converted,
     // just fed in as a stat delta rather than a direct rate %, and using
-    // the exact tier values (no Low/Mid/High table lookup needed).
+    // the exact tier values (no Low/Mid/High table lookup needed). Also
+    // goes through bestComboFor now, for the same reason critLikeGain does.
     function critStatGain(statDelta) {
       const cloned = Object.assign({}, inputsNB);
       cloned.critStat = inputsNB.critStat + statDelta;
-      const mult = combinedMultiplier(cloned, sharedNB, keenSense, limitBreak, pair);
-      return mult / baselineMult - 1;
+      const withBest = bestComboFor(cloned);
+      return withBest.mult / baselineMult - 1;
+    }
+
+    // Additional Damage candidates (braceletAddA/braceletAddB) feed `add`
+    // (addDmgBase/addDmgMaster) exactly like Crit Rate/Dmg feed
+    // effCrit/critDmgTotal, so they get the same bestComboFor treatment -
+    // confirmed by direct computation that a High Additional Damage line
+    // can also flip the winning pair, not just Crit Rate/Dmg. Replaces the
+    // old `value / (1 + addDmgBaseline)` closed form, which silently
+    // assumed the baseline's fixed pair stayed optimal with the candidate
+    // line added too.
+    function addDmgGain(field, tier) {
+      const cloned = Object.assign({}, inputsNB);
+      cloned[field] = tier;
+      const withBest = bestComboFor(cloned);
+      return withBest.mult / baselineMult - 1;
     }
 
     const demonDmgPct = inputs.demonDmgPct / 100;
@@ -1972,26 +2017,26 @@
         label: ["Additional Damage +", ...trip("2.5", "3", "3.5"), "% & Dmg vs Demon/Archdemon +", { tier: "fixed", text: "2.5" }, "%"],
         note:
           "Displayed value assumes a Demon/Archdemon target. Additional Damage portion alone: " +
-          formatPctBare(BRACELET_ADD_B_TABLE.Low / (1 + addDmgBaseline)) + "/" +
-          formatPctBare(BRACELET_ADD_B_TABLE.Mid / (1 + addDmgBaseline)) + "/" +
-          formatPctBare(BRACELET_ADD_B_TABLE.High / (1 + addDmgBaseline)) + ".",
-        low: (BRACELET_ADD_B_TABLE.Low / (1 + addDmgBaseline) + 1) * (DEMON_DMG_ADD / (1 + demonDmgPct) + 1) - 1,
-        mid: (BRACELET_ADD_B_TABLE.Mid / (1 + addDmgBaseline) + 1) * (DEMON_DMG_ADD / (1 + demonDmgPct) + 1) - 1,
-        high: (BRACELET_ADD_B_TABLE.High / (1 + addDmgBaseline) + 1) * (DEMON_DMG_ADD / (1 + demonDmgPct) + 1) - 1,
+          formatPctBare(addDmgGain("braceletAddB", "Low")) + "/" +
+          formatPctBare(addDmgGain("braceletAddB", "Mid")) + "/" +
+          formatPctBare(addDmgGain("braceletAddB", "High")) + ".",
+        low: (addDmgGain("braceletAddB", "Low") + 1) * (DEMON_DMG_ADD / (1 + demonDmgPct) + 1) - 1,
+        mid: (addDmgGain("braceletAddB", "Mid") + 1) * (DEMON_DMG_ADD / (1 + demonDmgPct) + 1) - 1,
+        high: (addDmgGain("braceletAddB", "High") + 1) * (DEMON_DMG_ADD / (1 + demonDmgPct) + 1) - 1,
         // Sorts by its Additional-Damage-only portion (ignoring the
         // situational vs Demon/Archdemon bonus above), not by the full
         // displayed Mid value the rest of this sort otherwise uses - see
         // the sort call below. Keeps it from reading as a strictly better
         // pick than the plain Additional Damage line by default, without
         // the old hard-coded "always sort directly below addA" special case.
-        sortKey: BRACELET_ADD_B_TABLE.Mid / (1 + addDmgBaseline),
+        sortKey: addDmgGain("braceletAddB", "Mid"),
       },
       {
         id: "addA",
         label: ["Additional Damage +", ...trip("3", "3.5", "4"), "%"],
-        low: BRACELET_ADD_A_TABLE.Low / (1 + addDmgBaseline),
-        mid: BRACELET_ADD_A_TABLE.Mid / (1 + addDmgBaseline),
-        high: BRACELET_ADD_A_TABLE.High / (1 + addDmgBaseline),
+        low: addDmgGain("braceletAddA", "Low"),
+        mid: addDmgGain("braceletAddA", "Mid"),
+        high: addDmgGain("braceletAddA", "High"),
       },
       {
         label: ["Back Attack Damage +", ...trip("2.5", "3", "3.5"), "%"],
@@ -2433,8 +2478,11 @@
     const gridResult = computeGridAndSummary(inputs);
     const best = gridResult.best;
     if (!best) return { necklace: [], earrings: [], rings: [], universal: [] };
-    const { keenSense, limitBreak } = best.split;
-    const pair = best.keystone;
+    // best.split/best.keystone not destructured here - every row that
+    // needs the grid (Ring Crit Rate/Dmg, Necklace Additional Damage)
+    // re-derives its own winning cell per candidate via bestComboFor
+    // instead (see baselineRingsBest/baselineNecklaceBest below); `best`
+    // itself is kept only for the `if (!best)` guard above.
 
     function trip(low, mid, high) {
       return [
@@ -2477,12 +2525,39 @@
     // ----- Necklace: zero out ONLY .ap-necklace's own tracked tier -----
     const necklaceNB = Object.assign({}, inputs, { necklace: "None" });
     const sharedNecklaceNB = computeShared(necklaceNB);
-    const addDmgBaselineNecklaceNB =
-      pair.indexOf("master") !== -1 ? sharedNecklaceNB.addDmgMaster : sharedNecklaceNB.addDmgBase;
+    // Re-optimized baseline, not a fixed-pair eval - Additional Damage
+    // feeds addDmgBase/addDmgMaster (the grid formula itself), so the
+    // winning pair can genuinely differ once a candidate line is added,
+    // same failure mode already fixed for Bracelet's addA/addB above -
+    // confirmed to actually flip on this exact line (Necklace Additional
+    // Damage: 1,067 flips out of ~180k synthetic gear profiles tested).
+    const baselineNecklaceBest = bestComboFor(necklaceNB, sharedNecklaceNB);
+    const baselineMultNecklaceNB = baselineNecklaceBest.mult;
+    // ACC_NECKLACE_ADD_TABLE is deliberately NOT the same table as the
+    // live .ap-necklace field's NECKLACE_ADD_TABLE (see that table's own
+    // comment above - close but not identical, tuned separately), so this
+    // can't just clone necklaceNB with a swapped `necklace` tier the way
+    // ringRateGain below swaps ring1Rate - that would silently pull the
+    // WRONG table's values back in through computeShared. Instead this
+    // hands bestComboFor a manually-built `shared` override (the same
+    // sharedOverride parameter ringDmgGain below uses, for the same
+    // reason) with the candidate's own addDmgBase/addDmgMaster bumped
+    // directly, keeping ACC_NECKLACE_ADD_TABLE's own tuned figures intact
+    // while still letting the pair search see the change.
+    function necklaceAddGain(tier) {
+      const value = ACC_NECKLACE_ADD_TABLE[tier] || 0;
+      if (!value) return 0;
+      const shared = Object.assign({}, sharedNecklaceNB, {
+        addDmgBase: sharedNecklaceNB.addDmgBase + value,
+        addDmgMaster: sharedNecklaceNB.addDmgMaster + value,
+      });
+      const withBest = bestComboFor(necklaceNB, shared);
+      return withBest.mult / baselineMultNecklaceNB - 1;
+    }
     const necklaceAdd = {
-      low: ACC_NECKLACE_ADD_TABLE.Low / (1 + addDmgBaselineNecklaceNB),
-      mid: ACC_NECKLACE_ADD_TABLE.Mid / (1 + addDmgBaselineNecklaceNB),
-      high: ACC_NECKLACE_ADD_TABLE.High / (1 + addDmgBaselineNecklaceNB),
+      low: necklaceAddGain("Low"),
+      mid: necklaceAddGain("Mid"),
+      high: necklaceAddGain("High"),
     };
     // Outgoing Damage isn't tracked as a current-gear field anywhere in
     // this file (no ".ap-necklace-out" input exists to zero) - a pure
@@ -2517,28 +2592,39 @@
       ring2Dmg: "None",
     });
     const sharedRingsNB = computeShared(ringsNB);
-    const baselineMultRingsNB = combinedMultiplier(ringsNB, sharedRingsNB, keenSense, limitBreak, pair);
+    // Re-optimized baseline, not a fixed-pair eval - same reasoning as
+    // Bracelet/Necklace above: Ring Crit Rate/Dmg feed effCrit/
+    // critDmgTotal directly, so the winning pair can genuinely differ
+    // once a candidate ring line is added - confirmed to actually flip
+    // (Ring Crit Rate: 1,003 flips, Ring Crit Dmg: 202 flips out of
+    // ~180k synthetic gear profiles tested).
+    const baselineRingsBest = bestComboFor(ringsNB, sharedRingsNB);
+    const baselineMultRingsNB = baselineRingsBest.mult;
     // Crit Rate: RING_RATE_TABLE is an exact match to the sheet's own
     // candidate figures (see that table's comment above), so this can
     // swap ring1Rate straight to a tier name - identical shape to the
-    // Bracelet panel's critLikeGain.
+    // Bracelet panel's critLikeGain. Goes through bestComboFor (full
+    // 9-cell re-search) rather than the fixed pair/split, per the
+    // baseline comment just above.
     function ringRateGain(tier) {
       const cloned = Object.assign({}, ringsNB, { ring1Rate: tier });
-      const shared = computeShared(cloned);
-      const mult = combinedMultiplier(cloned, shared, keenSense, limitBreak, pair);
-      return mult / baselineMultRingsNB - 1;
+      const withBest = bestComboFor(cloned);
+      return withBest.mult / baselineMultRingsNB - 1;
     }
     // Crit Damage: ACC_RING_DMG_TABLE and RING_DMG_TABLE are now confirmed
     // identical at every tier (see ACC_RING_DMG_TABLE's own comment), but
     // this still adds the candidate's own magnitude as a manual
     // critDmgTotal delta rather than swapping ring1Dmg to a tier name -
     // no functional difference today, just avoids re-coupling two tables
-    // that were tracked separately on purpose.
+    // that were tracked separately on purpose. Uses bestComboFor's
+    // sharedOverride parameter to hand in that manually-built `shared`
+    // directly (see bestComboFor's own comment on the parameter) rather
+    // than a fixed combinedMultiplier call.
     function ringDmgGain(dmgPct) {
       if (!dmgPct) return 0;
       const shared = Object.assign({}, sharedRingsNB, { critDmgTotal: sharedRingsNB.critDmgTotal + dmgPct });
-      const mult = combinedMultiplier(ringsNB, shared, keenSense, limitBreak, pair);
-      return mult / baselineMultRingsNB - 1;
+      const withBest = bestComboFor(ringsNB, shared);
+      return withBest.mult / baselineMultRingsNB - 1;
     }
     const ringRate = {
       low: ringRateGain("Low"),
@@ -2917,8 +3003,6 @@
     const gridResult = computeGridAndSummary(inputs);
     const best = gridResult.best;
     if (!best) return null;
-    const { keenSense, limitBreak } = best.split;
-    const pair = best.keystone;
     const slot = inputs.avbSlot;
     // Earring's own candidate lines are the one case in this tool where
     // the slot's own Line 2 feeds Weapon Power% (gearWpEarring1/2 - see
@@ -2963,6 +3047,20 @@
     // tool's numbers didn't always match the reference panel above for
     // the exact same tier. Same fix computeAccessoryComparison's own
     // ringDmgGain already applies.
+    //
+    // Re-optimized (bestComboFor), not a fixed-pair eval, for the exact
+    // same reason Bracelet/Accessory Line Comparison/Chaos Core were
+    // fixed - addDmgDelta/critDmgDelta feed addDmgBase/addDmgMaster/
+    // critDmgTotal directly (the grid formula itself), so the winning
+    // pair can genuinely differ between the "no accessory" baseline and
+    // each candidate. This call site was NOT included in that earlier
+    // pass - it was incorrectly assumed to already re-optimize (it
+    // didn't; it reused one fixed keenSense/limitBreak/pair from the
+    // reader's live Best Setup for every zeroedGridMult/evalSide call)
+    // - fixed the same way here. Called once for the "no accessory"
+    // baseline (zeroedGridMult below) and once per candidate side inside
+    // evalSide, so both ends of the gridRatio now re-search independently,
+    // same shape as every other Line Comparison gain function.
     function gridMultFor(clonedInputs, addDmgDelta, critDmgDelta) {
       const shared = computeShared(clonedInputs);
       if (addDmgDelta) {
@@ -2972,7 +3070,7 @@
       if (critDmgDelta) {
         shared.critDmgTotal += critDmgDelta;
       }
-      return combinedMultiplier(clonedInputs, shared, keenSense, limitBreak, pair);
+      return bestComboFor(clonedInputs, shared).mult;
     }
 
     // Shared AP-total helper: wp/flatAp/percentApMult/wpPercentMult are
@@ -3201,8 +3299,10 @@
     const gridResult = computeGridAndSummary(inputs);
     const best = gridResult.best;
     if (!best) return [];
-    const { keenSense, limitBreak } = best.split;
-    const pair = best.keystone;
+    // best.split/best.keystone not destructured here - Flashy/Swift/
+    // Crushing/Stable all re-derive their own winning cell per candidate
+    // via bestComboFor instead (see baselineArkBest's own comment below);
+    // `best` itself is kept only for the `if (!best)` guard above.
 
     // Zeroes ONLY the 3 ArkGrid-tracked current-state fields - every
     // other field (bracelet, rings, Gearing, etc.) stays at its real
@@ -3243,22 +3343,47 @@
       );
     }
     const sharedNB = computeShared(arkNB);
-    const baselineMult = combinedMultiplier(arkNB, sharedNB, keenSense, limitBreak, pair);
-    const addDmgBaseline = pair.indexOf("master") !== -1 ? sharedNB.addDmgMaster : sharedNB.addDmgBase;
+    // Re-optimized baseline, not a fixed-pair eval - Flashy/Swift/
+    // Crushing feed effCrit/critDmgTotal directly (the grid formula
+    // itself), so the winning pair can genuinely differ once a candidate
+    // is added, same failure mode already fixed for Bracelet/Ring/
+    // Necklace above - confirmed to actually flip on Flashy specifically
+    // (Chaos Core: Flashy, Crit Hit Dmg: 228 flips out of ~180k synthetic
+    // gear profiles tested); Swift/Crushing run through this exact same
+    // critLikeGain-shaped code (same formula, same fixed-pair call
+    // before this fix), so there's no reason to think they're exempt.
+    const baselineArkBest = bestComboFor(arkNB, sharedNB);
+    const baselineMult = baselineArkBest.mult;
+    // Stable's Additional Dmg row feeds addDmgBase/addDmgMaster the same
+    // way Bracelet's addA/addB and Accessory's Necklace Additional Damage
+    // do above, and was left on the old fixed-pair `/ (1 + addDmgBaseline)`
+    // shortcut when those two were fixed - same latent bug, just not
+    // caught in the original scoping pass. Fixed the same way here:
+    // bestComboFor's sharedOverride with addDmgBase/addDmgMaster bumped
+    // by the candidate's own STABLE_ATK_TABLE value, keeping the table
+    // itself untouched.
+    function stableAddGain(value) {
+      if (!value) return 0;
+      const shared = Object.assign({}, sharedNB, {
+        addDmgBase: sharedNB.addDmgBase + value,
+        addDmgMaster: sharedNB.addDmgMaster + value,
+      });
+      const withBest = bestComboFor(arkNB, shared);
+      return withBest.mult / baselineMult - 1;
+    }
 
     // Crit Hit Dmg (Flashy)/Crit Dmg (Swift)/Crit Rate (Crushing) all
     // interact with the grid non-linearly (crit rate's cap, Master's
     // +7% headroom, etc.), so - same as every Bracelet Crit Rate/Crit
-    // Dmg row - these go through a full combinedMultiplier recompute
-    // rather than a closed-form shortcut. Swift/Crushing each have their
-    // own tracked field now (swiftCore/crushingCore, zeroed in arkNB
-    // above), same as Flashy/Stable.
+    // Dmg row - these go through a full bestComboFor recompute (full
+    // 9-cell re-search) rather than a fixed-pair combinedMultiplier call.
+    // Swift/Crushing each have their own tracked field now (swiftCore/
+    // crushingCore, zeroed in arkNB above), same as Flashy/Stable.
     function critLikeGain(mutateFn) {
       const cloned = Object.assign({}, arkNB);
       mutateFn(cloned);
-      const shared = computeShared(cloned);
-      const mult = combinedMultiplier(cloned, shared, keenSense, limitBreak, pair);
-      return mult / baselineMult - 1;
+      const withBest = bestComboFor(cloned);
+      return withBest.mult / baselineMult - 1;
     }
 
     // Builds one row's 5 cells from a single per-grade gain function:
@@ -3299,11 +3424,11 @@
     // Chaos Core: Stable - Additional Dmg only (DR excluded). Reuses
     // STABLE_ATK_TABLE directly (already the exact cumulative totals
     // this needs, since it's the same field the main grid already
-    // tracks), divided by the Stable-free baseline the same way every
-    // Bracelet Additional Damage row divides by addDmgBaseline.
+    // tracks), run through stableAddGain's re-optimized with/without
+    // search - see that function's own comment above.
     rows.push({
       label: "Chaos Core: Stable - Additional Dmg",
-      ...points6((grade, pts) => STABLE_ATK_TABLE[grade + "|" + pts] / (1 + addDmgBaseline)),
+      ...points6((grade, pts) => stableAddGain(STABLE_ATK_TABLE[grade + "|" + pts])),
     });
 
     // Chaos Core: Swift - Crit Dmg only (Attack Speed excluded). Own
