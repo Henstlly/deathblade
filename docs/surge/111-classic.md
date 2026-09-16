@@ -315,6 +315,6 @@ Alternate main cycle meant to try-hard <span class="skill-mention" data-skill-id
 
 <div class="dps-showcase" markdown>
 <div class="dps-showcase-frame" markdown>
-<div class="dps-chart" data-show-icons data-values="74.5,6.5,4.2,2.8,2.7,2.7, 2.5" data-ids="surge,breakingmoon,earthcleaver,blitzrush,bladedance,turningslash,windcut"></div>
+<div class="dps-chart" data-show-icons data-values="75,6.5,4,2.7,2.6,2.6, 2.5" data-ids="surge,breakingmoon,earthcleaver,blitzrush,bladedance,turningslash,windcut"></div>
 </div>
 </div>

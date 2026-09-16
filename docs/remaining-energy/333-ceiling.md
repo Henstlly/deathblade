@@ -398,6 +398,6 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 
 <div class="dps-showcase" markdown>
 <div class="dps-showcase-frame" markdown>
-<div class="dps-chart" data-show-icons data-values="34.6,17.8,15.5,7.7,6.7,6.5,5.6,4.7,0.5,0.3" data-ids="fatalwave,deathlyslash,surge,twinshadows,soulabsorber,turningslash,blitzrush,voidstrike,bleed,maelstrom"></div>
+<div class="dps-chart" data-show-icons data-values="34.3,17.2,16.6,7.7,7,6.5,5,4" data-ids="fatalwave,deathlyslash,surge,twinshadows,soulabsorber,turningslash,voidstrike,blitzrush"></div>
 </div>
 </div>
