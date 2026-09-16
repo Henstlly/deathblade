@@ -79,7 +79,7 @@ extra_javascript:
   - javascripts/rune-data.js?v=1
   - javascripts/skill-setup.js?v=8
   - javascripts/essentials-table.js?v=5
-  - javascripts/core-options-data.js?v=2
+  - javascripts/core-options-data.js?v=3
   - javascripts/ark-core-badge.js?v=7
   - javascripts/ap-node-names.js?v=4
   - javascripts/ap-node-effects.js?v=3
