@@ -283,6 +283,8 @@ Apply damage <span class="skill-mention" data-glossary-id="synergy">synergy</spa
      or a balance pass. Full schema is in javascripts/dps-chart.js's
      "EASY EDIT GUIDE" comment. -->
 
+<p class="dps-showcase-caption">Ancient cores, full Lv 10 gems</p>
+
 <div class="dps-showcase" markdown>
 <div class="dps-showcase-frame" markdown>
 <div class="dps-chart" data-show-icons data-values="42,29.8,12.9,4,2.6,2.6,2.1" data-ids="surge,blitzrush,deathlyslash,earthcleaver,bladedance,turningslash,windcut"></div>
