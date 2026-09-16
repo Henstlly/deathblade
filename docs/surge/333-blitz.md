@@ -65,7 +65,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 === "333 Blitz"
 
     ```
-    72790B60FE3AFEBD2482B51F6345AAC43375793123768ED909F6C64D55EDB63C1C1DFCA9B14A53915A50BF156BCAEA1208F503DE67AEC73024A73540045593E2
+    2920AA957EFFC05A5340538108BDDF1FE9427D9B74E621D2EAABC120F85A09B7576C6222DAFE1694B99EC1D83E8A2B32565898A75DC0C1D11CE75D0C75DA7B08
     ```
 
 ## Ark Setup
@@ -183,8 +183,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 <details class="setup-note" data-kind="note" markdown>
 <summary><span class="setup-note-tag">Note</span>Optional<span class="setup-note-arrow"></span></summary>
 
-- You can use the Quick Prep <span class="skill-mention" data-glossary-id="tripod">tripod</span> on Blade Dance at lower gem levels.
-- Earth Explosion tripod on Earth Cleaver is up to personal preference.
+- Earth Explosion <span class="skill-mention" data-glossary-id="tripod">tripod</span> on Earth Cleaver is up to personal preference.
     - Increased cast speed, but greatly lowers mobility and damage.
 - Thick Sword Energy tripod increases Wind Cut range but builds fewer stacks.
 - Head Hunt can be used instead of Earth Cleaver at a DPS loss if you prefer.
@@ -218,10 +217,21 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
     "surge", "blitzrush", "bladedance", "earthcleaver", "turningslash"
   ] },
   { "col": "cd", "items": [
-    "windcut", "blitzrush", "bladedance", "surpriseattack", "maelstrom", "earthcleaver"
+    "bladedance", "earthcleaver", "blitzrush", "windcut", "maelstrom", "surpriseattack"
   ] }
 ]
 </script>
+</div>
+
+<div class="setup-notes" markdown>
+
+<details class="setup-note" data-kind="note" open markdown>
+<summary><span class="setup-note-tag">Note</span>Recommendation<span class="setup-note-arrow"></span></summary>
+
+- Use Blade Dance's Quick Prep tripod if your Blade Dance CD gem is not a high enough level.
+
+</details>
+
 </div>
 
 </div>
