@@ -175,6 +175,17 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 
 </details>
 
+<details class="setup-note" data-kind="danger" open markdown>
+<summary><span class="setup-note-tag">Warn</span>09/16/26 Balance Patch<span class="setup-note-arrow"></span></summary>
+
+- Swift Fingers **may** become the default 1st row tripod for Blitz Rush.
+    - Minor DPC loss, but CPM and playability increases may make up for it.
+    - Void Strike is raised to Lv 13 and Blitz Rush is lowered to Lv 12.
+    - Gem priority of Void Strike and Blitz Rush is swapped.
+- Needs testing before making a recommendation, 111 is so fast that it might not benefit.
+
+</details>
+
 </div>
 
 </div>

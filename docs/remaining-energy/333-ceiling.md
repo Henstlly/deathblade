@@ -53,13 +53,13 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 === "333 Ceiling ★"
 
     ```
-    8996BED713426C25CB993BCA48EB9CBA2BF93921A91CAA15F463DED8BF367B2AF73535AAC800498B7340CA45735567DFFAA91A4914C7B288362130D9E34634CC
+    900CC6DEE164317B007DB080728058559F253356D493D9068FC9464270019E2DA0657696B30F009427D2603F2E13AB070E8A77607E775659BE0F35EF964A9929
     ```
 
 === "Orb Circulation 5 (easier)"
 
     ```
-    D4D17B7F291340AAD2E9831A065E7F9870B3612FFA798E77FC1FFEE9E4D68E400597FDB2A3DCAA11D5DB53B85812DF1042A685249158B4E08BB87A614E428350
+    76A1B31F95DC1F7B50FB830D485E547AE6140D5427029F9729DD63D83C3AAE2A3EEF991E2263BA7AC3B9D67056DB26958AC8DB67D4D0E20EB22F0A70C1E86A35
     ```
 
     - Uses <span class="skill-mention" data-ap-id="orbcirculation" data-level="5">Orb Circulation 5</span>, which makes this build more forgiving at a ~3% DPS loss.
@@ -194,12 +194,12 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 [
   {"id": "soulabsorber", "level": 14, "tripods": [3, 1, 2], "rune": {"tier": "epic", "name": "Wealth"}},
   {"id": "twinshadows", "level": 14, "tripods": [2, 1, 2], "rune": {"tier": "epic", "name": "Wealth"}},
-  {"id": "headhunt", "level": 7, "tripods": [1, 2], "rune": {"tier": "uncommon", "name": "Wealth"}},
+  {"id": "headhunt", "level": 7, "tripods": [2, 2], "rune": {"tier": "uncommon", "name": "Wealth"}},
   {"id": "turningslash", "level": 14, "tripods": [1, 3, 1], "rune": {"tier": "rare", "name": "Wealth"}},
   {"id": "maelstrom", "level": 10, "tripods": [2, 1, 2], "rune": {"tier": "rare", "name": "Wealth"}},
   {"id": "fatalwave", "level": 14, "tripods": [2, 3, 2], "rune": {"tier": "legendary", "name": "Galewind"}},
-  {"id": "blitzrush", "level": 14, "tripods": [2, 1, 1], "rune": {"tier": "rare", "name": "Wealth"}},
-  {"id": "voidstrike", "level": 11, "tripods": [3, 1, 2], "rune": {"tier": "legendary", "name": "Wealth"}},
+  {"id": "blitzrush", "level": 12, "tripods": [1, 1, 1], "rune": {"tier": "rare", "name": "Wealth"}},
+  {"id": "voidstrike", "level": 13, "tripods": [3, 1, 2], "rune": {"tier": "legendary", "name": "Wealth"}},
   {"id": "surge", "subtitle": "Identity"},
   {"id": "deathlyslash", "subtitle": "Technique"},
   {"id": "bladeassault", "subtitle": "Awakening"}
@@ -219,11 +219,10 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 <details class="setup-note" data-kind="note" markdown>
 <summary><span class="setup-note-tag">Note</span>Optional<span class="setup-note-arrow"></span></summary>
 
-- Orb Control <span class="skill-mention" data-glossary-id="tripod">tripod</span> on Fatal Wave is **not viable** and you should not use it for any reason.
-- You can bring Head Hunt down to Lv 1 and Void Strike up to Lv 14 for +0.4% DPS and lower mana use.
+- You can use Quick Prep <span class="skill-mention" data-glossary-id="tripod">tripod</span> on Head Hunt if you have no mana issues.
+- You can bring Head Hunt down to Lv 1-4 for lower mana use and micro-mobility.
     - However, Lv 7 is more practical and makes recovery much easier and faster. ★
-    - At Lv 7, Magick Control tripod can help solve mana issues if you don't need the CDR.
-    - Lv 4 Head Hunt (Quick Prep) with Void Strike Lv 13 is a decent overall compromise.
+- Orb Control tripod on Fatal Wave is **not viable** and you shouldn't use it for any reason.
 
 </details>
 
@@ -259,19 +258,6 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 ]
 </script>
 </div>
-
-</details>
-
-<details class="setup-note" data-kind="danger" markdown>
-<summary><span class="setup-note-tag">Warn</span>Balance Patch<span class="setup-note-arrow"></span></summary>
-
-- Swift Fingers will become the default 1st row tripod for Blitz Rush.
-    - ~1.5% DPS loss but CPM and playability increases make up for it.
-    - Void Strike is raised to Lv 13 and Blitz Rush is lowered to Lv 12.
-    - Gem priority of Void Strike and Blitz Rush is swapped.
-- Magick Control may become the default Head Hunt tripod.
-- Apply changes manually if the guide is not updated in time.
-- See [Essentials](essentials.md) for class-wide changes.
 
 </details>
 
