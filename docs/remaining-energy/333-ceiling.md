@@ -279,7 +279,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 [
   { "col": "dmg", "items": [
     "fatalwave", "surge", "twinshadows", "soulabsorber",
-    "turningslash", "blitzrush", "voidstrike"
+    "turningslash", "voidstrike", "blitzrush"
   ] },
   { "col": "cd", "items": [
     "maelstrom", "blitzrush", "turningslash", "fatalwave"
