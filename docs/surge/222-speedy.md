@@ -247,7 +247,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 
 There's an optimal skill order, but you have flexibility when facing downtime or weaving in mobility skills.
 
-'Destiny: Sharp Senses' can be stacked up to 5 times by using (Normal) skills to empower Deathly Slash.
+'Destiny: Enhanced Sharpness' can be stacked up to 5 times by using (Normal) skills to empower Deathly Slash.
 
 Use Dark Axel to guarantee back attacks on Deathly Slash and Surge if needed.
 
