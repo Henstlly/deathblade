@@ -17,7 +17,7 @@
 
 - Powerful burst windows with the Breaking Moon combo.
 - No need to hold <span class="skill-mention" data-glossary-id="counter">Counter</span>, it charges up to two stacks.
-- Very high gem efficiency, Surge is nearly all of your DPS.
+- Very high gem efficiency: Surge is nearly all of your DPS.
 - Accessible from zero <span class="skill-mention" data-glossary-id="arkgrid">Ark Grid</span> cores with minor adjustments.
 - Must constantly balance Surge <span class="skill-mention" data-glossary-id="backattack">back attack</span> rate with Surge <span class="skill-mention" data-glossary-id="cpm">CPM</span>.
 
@@ -128,7 +128,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 
 - Use the [Ark Passive Calculator](../resources.md#ark-passive-calculator) to optimize Evolution nodes.
 - In some cases (low <span class="skill-mention" data-glossary-id="specializationstat">Specialization</span>, +CD% <span class="skill-mention" data-glossary-id="bracelet">bracelet</span>) <span class="skill-mention" data-ap-id="releasepotential" data-level="4">Release Potential 4</span> + <span class="skill-mention" data-ap-id="instantspell" data-level="2">Instant Spell 2</span> may be preferred.
-    - This setting increases mana consumption, may require the use of mana food instead of wine.
+    - This setting increases mana consumption and may require the use of mana food instead of wine.
 
 </details>
 

@@ -17,7 +17,7 @@
 
 - Uses Fatal Wave as two fast casts (<span class="skill-mention" data-glossary-id="ftfcombo">FTF</span> combo) via a skill reset.
 - Head Hunt is always free for counters, recovery, purify, or <span class="skill-mention" data-skill-id="adrenaline">Adrenaline</span> upkeep.
-- High gem efficiency, Fatal Wave and Deathly Slash are most of your DPS.
+- High gem efficiency: Fatal Wave and Deathly Slash are most of your DPS.
 - Susceptible to high ping or low FPS, but you can compensate with a few changes.
 
 </div>
@@ -229,7 +229,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 <details class="setup-note" data-kind="example" markdown>
 <summary><span class="setup-note-tag">Alt</span>Fatal Wealth<span class="setup-note-arrow"></span></summary>
 
-- <span class="skill-mention" data-rune-name="Wealth" data-rune-tier="epic">Epic Wealth</span>  rune on Fatal Wave can make this build more forgiving at a ~4% DPS loss.
+- <span class="skill-mention" data-rune-name="Wealth" data-rune-tier="epic">Epic Wealth</span> rune on Fatal Wave can make this build more forgiving at a ~4% DPS loss.
 - It won't cycle as smoothly, but the reduced stress and urgency may suit some people.
 - Honestly, don't play this; 333 with <span class="skill-mention" data-ap-id="orbcirculation" data-level="5">OC 5</span>, 313, or literally any Surge build will perform better.
 
