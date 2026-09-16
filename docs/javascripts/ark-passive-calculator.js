@@ -2025,11 +2025,11 @@
         high: (addDmgGain("braceletAddB", "High") + 1) * (DEMON_DMG_ADD / (1 + demonDmgPct) + 1) - 1,
         // Sorts by its Additional-Damage-only portion (ignoring the
         // situational vs Demon/Archdemon bonus above), not by the full
-        // displayed Mid value the rest of this sort otherwise uses - see
+        // displayed High value the rest of this sort otherwise uses - see
         // the sort call below. Keeps it from reading as a strictly better
         // pick than the plain Additional Damage line by default, without
         // the old hard-coded "always sort directly below addA" special case.
-        sortKey: addDmgGain("braceletAddB", "Mid"),
+        sortKey: addDmgGain("braceletAddB", "High"),
       },
       {
         id: "addA",
@@ -2170,12 +2170,12 @@
     }
 
     // Sorts by each row's own sortKey when it has one (currently only
-    // addB - see that row's comment), falling back to the displayed Mid
+    // addB - see that row's comment), falling back to the displayed High
     // value otherwise. Lets addB rank by its guaranteed Additional Damage
     // portion instead of the situational Demon/Archdemon-inflated number
     // actually shown, without a hard-coded "always sort directly below
     // addA" special case.
-    rows.sort((a, b) => (b.sortKey !== undefined ? b.sortKey : b.mid) - (a.sortKey !== undefined ? a.sortKey : a.mid));
+    rows.sort((a, b) => (b.sortKey !== undefined ? b.sortKey : b.high) - (a.sortKey !== undefined ? a.sortKey : a.high));
 
     return rows;
   }
@@ -3518,10 +3518,12 @@
       }
     }
 
-    // Sorted by Ancient 17p - a reasonable "typical serious investment"
-    // reference point, same role Mid (17p) played in the old Low/Mid/
-    // High-per-grade layout's own sort.
-    rows.sort((a, b) => b.ancient17 - a.ancient17);
+    // Sorted by Ancient 20p - the best-case grade/points combo, same role
+    // High played in the Bracelet/Accessory panels' own sort (this used
+    // to rank by Ancient 17p, the "typical serious investment" reference
+    // point that played Mid's role - moved to match once those panels
+    // switched from Mid to High).
+    rows.sort((a, b) => b.ancient20 - a.ancient20);
     return rows;
   }
 
@@ -5502,7 +5504,7 @@
     container.innerHTML = "";
     rows.forEach((row, index) => {
       const tr = document.createElement("tr");
-      // rows[] is sorted descending by ancient17 (see computeArkGridComparison's
+      // rows[] is sorted descending by ancient20 (see computeArkGridComparison's
       // own rows.sort call), same ranking renderComparisonRows above relies
       // on - no best-row highlight applied though, same as that renderer
       // (see extra.css's .ap-brace-compare-footer-note comment for why).
