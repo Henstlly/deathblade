@@ -912,15 +912,27 @@
              disable-and-reset treatment enforceBvbLineExclusivity already
              gives the 3 free lines' own duplicate types (see that
              function and normalizeChaosCoreExclusivity's own comment for
-             the same "reset the stale side" precedent). -->
+             the same "reset the stale side" precedent).
+
+             Every field in Bracelet A/B (Spec Stat included) is deliberately
+             id-less, same sandbox convention as Engraving Comparison below
+             (see that section's own comment) - this whole card is a
+             hypothetical, not the reader's real tracked setup, so nothing
+             here should be saved/exported/reset-tracked. An earlier
+             accessibility pass gave the two Spec Stat inputs a real id (to
+             pair with label for=) without accounting for this - that
+             silently pulled them into collectFieldData/applyFieldData while
+             every sibling field in the same card stayed sandboxed. Fixed by
+             using aria-label instead, same as Basic Effect/Line 3-5 already
+             do - keep new accessibility work on this card off id/for. -->
         <div class="ap-bvb-cards">
           <div class="ap-bvb-card ap-bvb-card-a">
             <p class="ap-gear-card-title ap-bvb-card-title">Bracelet A</p>
             <div class="ap-calc-field-row">
-              <label class="ap-calc-field-label" for="ap-bvb-a-spec">Spec Stat</label>
+              <label class="ap-calc-field-label">Spec Stat</label>
               <span class="ap-brace-warn-icon ap-bvb-spec-warn" title="Recommended to keep Specialization at 83 or higher on RE for CDR." hidden>WARN</span>
               <span class="ap-brace-info-icon ap-bvb-spec-note" title="This only reflects Spec's damage share on RE - it doesn't capture CDR or orb gen." hidden>i</span>
-              <input type="number" id="ap-bvb-a-spec" class="ap-bvb-a-spec" min="60" max="120" step="1" value="100">
+              <input type="number" class="ap-bvb-a-spec" min="60" max="120" step="1" value="100" aria-label="Bracelet A Spec Stat">
             </div>
             <div class="ap-calc-field-row">
               <label class="ap-calc-field-label">Basic Effect</label>
@@ -1023,10 +1035,10 @@
           <div class="ap-bvb-card ap-bvb-card-b">
             <p class="ap-gear-card-title ap-bvb-card-title">Bracelet B</p>
             <div class="ap-calc-field-row">
-              <label class="ap-calc-field-label" for="ap-bvb-b-spec">Spec Stat</label>
+              <label class="ap-calc-field-label">Spec Stat</label>
               <span class="ap-brace-warn-icon ap-bvb-spec-warn" title="Recommended to keep Specialization at 83 or higher on RE for CDR." hidden>WARN</span>
               <span class="ap-brace-info-icon ap-bvb-spec-note" title="This only reflects Spec's damage share on RE - it doesn't capture CDR or orb gen." hidden>i</span>
-              <input type="number" id="ap-bvb-b-spec" class="ap-bvb-b-spec" min="60" max="120" step="1" value="80">
+              <input type="number" class="ap-bvb-b-spec" min="60" max="120" step="1" value="80" aria-label="Bracelet B Spec Stat">
             </div>
             <div class="ap-calc-field-row">
               <label class="ap-calc-field-label">Basic Effect</label>
