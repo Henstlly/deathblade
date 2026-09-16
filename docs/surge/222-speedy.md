@@ -104,8 +104,8 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 <div class="ark-cores" data-family="surge" markdown>
 <script type="application/json">
 [
-  { "core": "sun", "label": "Deadly Feast", "points": 0 },
-  { "core": "moon", "label": "Dual Blade Dance", "points": 0 },
+  { "core": "sun", "label": "Slaughter Spectacle", "points": 0 },
+  { "core": "moon", "label": "Twin Swords Dance", "points": 0 },
   { "core": "star", "label": "Swift Resolution", "points": 1 }
 ]
 </script>

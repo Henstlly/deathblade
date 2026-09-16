@@ -1208,7 +1208,7 @@
     // GAPS comment).
     var ORDER_SUN_MOON_TO_BUILD = {
       "Deathblade Surge||Surge Core": "surge-111",
-      "Sword Reset||Destiny Core": "surge-222",
+      "Slaughter Spectacle||Twin Swords Dance": "surge-222",
       "Deathblade Rush||Death Blitz": "surge-333",
       // RE 111 and RE 313 write the same canonical "re-111" id - the
       // calculator merged them into one Build toggle chip since they're

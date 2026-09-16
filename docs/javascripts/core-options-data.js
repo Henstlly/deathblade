@@ -159,21 +159,17 @@
         { bp: "20P", text: "Blitz Rush Damage +0.6%." },
       ],
     },
-    // 222's Sun/Moon cores are being replaced outright by these two.
-    // Full option text comes from KR patch notes, not an in-game
-    // screenshot like the rest of this file, since these weren't
-    // obtainable outside Korea when transcribed.
-    "Deadly Feast": {
+    "Slaughter Spectacle": {
       options: [
         { bp: "10P", text: "Normal Skill Damage +3.0%." },
-        { bp: "14P", text: "On Destiny activation, gain the 'Destiny: Killing Feast' buff. 'Destiny: Killing Feast': Using Deathly Slash consumes the effect to increase its damage by 30.0%." },
-        { bp: "17P", text: "Using a Normal Skill (excluding Deathly Slash) while 'Destiny: Killing Feast' is active grants 'Destiny: Sharp Senses', stackable up to 5 times. 'Destiny: Sharp Senses': consumed by Deathly Slash to increase its damage by 4.0% per stack." },
+        { bp: "14P", text: "On Destiny activation, gain the Destiny: Slaughter Spectacle effect. Destiny: Slaughter Spectacle: On Deathly Slash use, consume the Destiny: Slaughter Spectacle effect. Damage +30.0%." },
+        { bp: "17P", text: "While Destiny: Slaughter Spectacle is active, using a Normal Skill other than Deathly Slash grants Destiny: Enhanced Sharpness effect, stackable up to 5 times. Destiny: Enhanced Sharpness: On Deathly Slash use, consume the Destiny: Enhanced Sharpness effect. Damage + 4.0% per stack." },
         { bp: "18P", text: "Normal Skill Damage +0.3%." },
         { bp: "19P", text: "Normal Skill Damage +0.3%." },
         { bp: "20P", text: "Normal Skill Damage +0.3%." },
       ],
     },
-    "Dual Blade Dance": {
+    "Twin Swords Dance": {
       options: [
         { bp: "10P", text: "Normal Skill Damage +3.0%." },
         { bp: "14P", text: "Entering Death Trance triggers Destiny." },
