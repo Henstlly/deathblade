@@ -135,7 +135,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 <details class="setup-note" data-kind="note" markdown>
 <summary><span class="setup-note-tag">Note</span>Ark Grid<span class="setup-note-arrow"></span></summary>
 
-- You can level Ark Grid cores to your preference, but 17p Surge Core grants a second Earth Cleaver stack. This frees up a gem slot and allows you to cast Earth Cleaver without without needing to hold it for a raid mechanic.
+- You can level Ark Grid cores to your preference, but 17p Surge Core grants a second Earth Cleaver stack. This frees up a gem slot and allows you to cast Earth Cleaver without needing to hold it for an upcoming raid mechanic.
 
 </details>
 
