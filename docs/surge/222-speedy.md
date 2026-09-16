@@ -260,12 +260,12 @@ Use the Opener cycle and either loop it forever (easy) or continue on to the adv
 <div class="cycle-card-header"><span class="cycle-num cycle-num-1">1</span><span class="cycle-title">Opener/Overstack Cycle - 68 Stacks</span></div>
 <div class="rotation-line" markdown>
 <script type="application/json">
-["windcut", "deathtrance", { "id": "surpriseattack", "swapNext": true }, "maelstrom", "windcut", "upperslash", "turningslash", "bladedance", "deathlyslash", "surpriseattack", "surge"]
+["windcut", "deathtrance", { "id": "maelstrom", "swapNext": true }, "surpriseattack", "windcut", "upperslash", "turningslash", "bladedance", "deathlyslash", "surpriseattack", "surge"]
 </script>
 </div>
 </div>
 
-1. Surprise Attack and Maelstrom are interchangeable, but the Surprise Attack finisher's CD lines up better as shown.
+1. Surprise Attack and Maelstrom's first casts are interchangeable, adjust if needed.
 
 <div class="setup-panel" data-accent="lavender" markdown>
 <div class="setup-notes" markdown>
