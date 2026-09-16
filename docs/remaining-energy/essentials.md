@@ -170,6 +170,7 @@ Atk/Move Speed Feast
 </div>
 
 Lower values are fine, but may experience some downtime.
+{ .food-req }
 
 <div class="setup-notes" markdown>
 

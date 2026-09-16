@@ -267,6 +267,8 @@ Use the Opener cycle and either loop it forever (easy) or continue on to the adv
 </div>
 </div>
 
+1. Surprise Attack and Maelstrom are interchangeable, but the Surprise Attack finisher's CD lines up better as shown.
+
 <div class="setup-panel" data-accent="lavender" markdown>
 <div class="setup-notes" markdown>
 
@@ -295,11 +297,12 @@ Alternate between these two cycles as needed for ceiling DPS:
 
 1. Cycle **2** offers safety by leaving Surprise Attack as a recovery option; Cycle **3** offers higher CPM.
 2. Rotating **2>3>2>3** is ideal, but based on boss patterns, variations like **2>3>3>2** or **2>2>3>3** are valid.
-      - Recover stacks with Wind Cut or Surprise Attack, decide your next cycle based on which one is available.
+      - Cycle **3** is preferred during risky boss patterns because Wind Cut lacks Paralysis Immunity.
+      - Recover with Wind Cut or Surprise Attack, decide your next cycle based on which one's available.
 3. You can skip a Surprise Attack finisher whenever you're at 49+ stacks before Deathly Slash.
-      - Same for 40+ stacks before Blade Dance, 30+ stacks before Upper Slash, etc.
-      - If you have 7+ stacks at the moment you activate Death Arts, you can skip it.
-      - Be mindful of missed Maelstrom/Wind Cut hits from boss patterns and movement.
+      - Same for 40+ stacks before Blade Dance, 30+ stacks before Upper Slash, and so on.
+      - If you have 7+ stacks before you activate Death Trance, you can also skip the finisher.
+      - At 12-14+ stacks before Death Trance, you can skip it as well as the Wind Cut precast.
 
 It helps to think of everything within <span class="skill-inline" data-skill-id="deathtrance"><span class="skill-inline-name">Death Trance</span></span> and <span class="skill-inline" data-skill-id="deathlyslash"><span class="skill-inline-name">Deathly Slash</span></span> as 53 stacks, and the Wind Cut Precast or Surprise Attack finisher as flexible options that give you the 7+ stacks needed to complete a 60+ stack Surge.
 </details>
@@ -312,6 +315,7 @@ It helps to think of everything within <span class="skill-inline" data-skill-id=
 3. It's better to cast a ~59 stack Surge if the alternative is waiting more than 1.5 seconds.
 4. Delaying Deathly Slash + Surge by more than 1.75 seconds to ensure a back attack is a DPS loss.
 5. Delaying *only* Surge by more than 1 second to ensure a back attack is also a DPS loss.
+6. <span class="skill-mention" data-skill-id="bladeassault">Blade Assault</span> hits low and takes too long. Save it for <span class="skill-mention" data-glossary-id="pushimmunity">push immunity</span> or Hyper Awakening, not damage.
 
 *From zero orbs:*
 { .lead }

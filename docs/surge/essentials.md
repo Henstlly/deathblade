@@ -128,7 +128,7 @@ Atk/Move Speed Feast
 </summary>
 <div class="engraving-card-body" markdown>
 
-Pair with <span class="skill-mention" data-skill-id="curseddoll">Cursed Doll</span> if starting out or stuck with it.
+Pair with <span class="skill-mention" data-skill-id="curseddoll">Cursed Doll</span> if you're just starting out
 { .food-req }
 
 **Pros:**{: .best-for } A safe default with few drawbacks.
@@ -158,9 +158,29 @@ Pair with <span class="skill-mention" data-skill-id="curseddoll">Cursed Doll</sp
 </div>
 </details>
 
+<details class="engraving-card" data-accent="cursed" open markdown>
+<summary>
+<span class="engraving-card-name" data-skill-id="curseddoll">Cursed Doll</span>
+<span class="engraving-card-badges" markdown>
+<span class="engraving-card-badge engraving-card-badge-safe">Alternative</span>
+</span>
+<span class="engraving-card-arrow"></span>
+</summary>
+<div class="engraving-card-body" markdown>
+
+Not the end of the world if you're forced to use it
+{ .food-req }
+
+**Pros:**{: .best-for } Inexpensive and reliable.
+
+**Cons:**{: .tradeoff } The healing penalty can be frustrating and its damage bonus is lower than the rest.
+
+</div>
+</details>
+
 <details class="engraving-card" data-accent="combo" open markdown>
 <summary>
-<span class="engraving-card-name"><span class="skill-mention" data-skill-id="raidcaptain">RC</span> + <span class="skill-mention" data-skill-id="massincrease">MI</span> 🦁 🐆 🐯</span>
+<span class="engraving-card-name"><span class="skill-mention" data-skill-id="raidcaptain">Raid Captain</span> + <span class="skill-mention" data-skill-id="massincrease">Mass Increase</span> 🦁 🐆</span>
 <span class="engraving-card-badges" markdown>
 <span class="engraving-card-badge engraving-card-badge-ceiling">★ Ceiling</span>
 <span class="engraving-card-badge engraving-card-badge-food">Food Option</span>
@@ -169,15 +189,12 @@ Pair with <span class="skill-mention" data-skill-id="curseddoll">Cursed Doll</sp
 </summary>
 <div class="engraving-card-body" markdown>
 
-<span class="food-req-item">![](../assets/shared/icon-feast.png){: .skill-icon } </span> + <span class="food-req-item">![](../assets/shared/icon-vernesewine.png){: .skill-icon } Vernese Wine</span> with Bard or Paladin
+<span class="food-req-item">![](../assets/shared/icon-feast.png){: .skill-icon } Atk/Move Speed feast</span> + <span class="food-req-item">![](../assets/shared/icon-vernesewine.png){: .skill-icon } Vernese Wine</span> (Bard/Paladin) or <span class="food-req-item">![](../assets/shared/icon-ealynsblessing.png){: .skill-icon } Ealyn's Blessing</span> (Artist/Valkyrie)
 { .food-req }
 
-<span class="food-req-item">![](../assets/shared/icon-feast.png){: .skill-icon } </span> + <span class="food-req-item">![](../assets/shared/icon-ealynsblessing.png){: .skill-icon } Ealyn's Blessing</span> with Artist or Valkyrie
-{ .food-req }
+**Pros:**{: .best-for } This is ceiling. Efficient damage scaling for 111, and 222's short cycles lessen the burden of its penalties.
 
-**Pros:**{: .best-for } This is ceiling. Fewer drawbacks for 222.
-
-**Cons:**{: .tradeoff } Doubles up on <span class="skill-mention" data-skill-id="maelstrom">Maelstrom</span> and food shackles.
+**Cons:**{: .tradeoff } Doubles up on <span class="skill-mention" data-skill-id="maelstrom">Maelstrom</span> and situational shackles, only recommended if you know what you're doing.
 
 </div>
 </details>

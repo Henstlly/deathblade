@@ -2568,6 +2568,20 @@ h3 { color: var(--dbc-teal); }
   grid-template-columns: repeat(auto-fit, minmax(max(320px, calc((100% - 0.8em) / 2)), 1fr));
   gap: 0.8em;
 }
+/* :last-child:nth-child(odd) is what actually detects "alone in the final
+   row" here, not a hardcoded card count - in this 2-col grid, the last
+   card only ends up solo when the total count is odd (its row has no
+   sibling), so nth-child(odd) on :last-child is true exactly then. Surge
+   went from 4 cards to 5 once Cursed Doll was added (odd now, RC+MI is the
+   one left alone), but this doesn't name that card specifically: it's
+   whatever card happens to be last, so it keeps working unchanged if a
+   card is ever added/removed/reordered again on either page. At the
+   narrow (single-column) width auto-fit already collapses to, every card
+   is already full-width, so this has no effect there - only matters once
+   there's room for 2 columns and a leftover single card in the last row. */
+.md-typeset .engraving-cards > .engraving-card:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
 
 /* Built on <details>/<summary> (same instinct as .skill-card/.setup-note -
    a flush, on-brand card instead of a generic library admonition), but a
