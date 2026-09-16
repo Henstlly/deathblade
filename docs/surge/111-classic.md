@@ -210,7 +210,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 <script type="application/json">
 [
   { "col": "dmg", "items": [
-    "surge", "earthcleaver", "bladedance", "blitzrush", "turningslash", { "id": "windcut", "alts": [
+    "surge", "earthcleaver", "blitzrush", "bladedance", "turningslash", { "id": "windcut", "alts": [
       { "id": "spincutter", "note": "Use Spincutter CD gem instead if you prefer, Wind Cut has a very low damage share." },
       { "id": "earthcleaver", "note": "Use Earth Cleaver CD gem instead pre-Ark Grid as you won't have its second stack." }
     ] }
@@ -312,6 +312,6 @@ Alternate main cycle meant to try-hard <span class="skill-mention" data-skill-id
 
 <div class="dps-showcase" markdown>
 <div class="dps-showcase-frame" markdown>
-<div class="dps-chart" data-show-icons data-values="74.41,6.51,4.22,4.1,2.73,2.55" data-ids="surge,breakingmoon,earthcleaver,bladedance,blitzrush,turningslash"></div>
+<div class="dps-chart" data-show-icons data-values="74.5,6.5,4.2,2.8,2.7,2.7, 2.5" data-ids="surge,breakingmoon,earthcleaver,blitzrush,bladedance,turningslash,windcut"></div>
 </div>
 </div>
