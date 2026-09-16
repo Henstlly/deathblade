@@ -52,16 +52,16 @@ Atk/Move Speed Feast
 
 <!-- TODO: drop this whole block once the September balance patch ships -->
 <details class="setup-note" data-kind="danger" markdown>
-<summary><span class="setup-note-tag">Warn</span>Upcoming Balance Patch<span class="setup-note-arrow"></span></summary>
+<summary><span class="setup-note-tag">Warn</span>09/16/26 Balance Patch<span class="setup-note-arrow"></span></summary>
 
-- Death Trance will no longer auto-deactivate mid-stack via a side node.
-- Stack cap goes from 60 to 80, and extra stacks will roll over.
-- Breaking Moon becomes a Normal skill and will give 60 stacks on hit.
-- Complete rework of 222 cores and playstyle. It's actually good after this.
-- Blitz Rush will gain a 27% cast speed <span class="skill-mention" data-glossary-id="tripod">tripod</span> and 20% more attack range.
-- Turning Slash and Surprise Attack's after-effects will also apply <span class="skill-mention" data-glossary-id="synergy">Synergy</span>.
-- Overall damage goes up, and Surge becomes competitive with RE.
-- Surge's post-cast delay is removed, so animation cancelling will no longer be needed.
+- Death Trance no longer auto-deactivates mid-stack via a side node.
+- Stack cap went from 60 to 80, and extra stacks now roll over.
+- Breaking Moon became a Normal skill and gives 60 stacks on hit.
+- Complete rework of 222 cores and playstyle. It's incredible now.
+- Blitz Rush gained a 27% cast speed <span class="skill-mention" data-glossary-id="tripod">tripod</span> and 20% more attack range.
+- Turning Slash and Surprise Attack's after-effects now also apply <span class="skill-mention" data-glossary-id="synergy">Synergy</span>.
+- Overall damage went up, Surge is genuinely competitive with RE.
+- Surge's post-cast delay was removed, so animation cancelling is not needed.
 
 </details>
 
@@ -189,7 +189,7 @@ Not the end of the world if you're forced to use it
 </summary>
 <div class="engraving-card-body" markdown>
 
-<span class="food-req-item">![](../assets/shared/icon-feast.png){: .skill-icon } Atk/Move Speed feast</span> + <span class="food-req-item">![](../assets/shared/icon-vernesewine.png){: .skill-icon } Vernese Wine</span> (Bard/Paladin) or <span class="food-req-item">![](../assets/shared/icon-ealynsblessing.png){: .skill-icon } Ealyn's Blessing</span> (Artist/Valkyrie)
+<span class="food-req-item">![](../assets/shared/icon-feast.png){: .skill-icon } Atk/Move Speed feast</span> + <span class="food-req-item">![](../assets/shared/icon-vernesewine.png){: .skill-icon } Vernese Wine (Bard/Paladin)</span> or <span class="food-req-item">![](../assets/shared/icon-ealynsblessing.png){: .skill-icon } Ealyn's Blessing (Artist/Valkyrie)</span>
 { .food-req }
 
 **Pros:**{: .best-for } This is ceiling. Efficient damage scaling for 111, and 222's short cycles lessen the burden of its penalties.

@@ -1,7 +1,5 @@
 # 111 (Classic) 🦁
 
-<p class="page-banner page-banner-warning">Not available on NA/EU servers yet. Rotations are subject to change.</p>
-
 <div class="build-card-row" markdown>
 <div class="build-card" data-updated="2026-09-15" markdown>
 

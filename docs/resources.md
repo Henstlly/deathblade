@@ -2011,9 +2011,9 @@
 
 ## CPM Calculator
 
-<p class="page-banner page-banner-warning">Not applicable to NA/EU servers yet.</p>
-
 *Compares Trixion damage to raid damage across builds. Watch [this](https://www.youtube.com/watch?v=dlUS8vUaNLA) to learn about Trixion multipliers.*
+
+<p class="page-banner page-banner-warning">This tool's data is imported from KR and is meant to provide an estimate, not a truly accurate result.</p>
 
 <div class="cpm-calc">
 

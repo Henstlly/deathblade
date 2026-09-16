@@ -70,13 +70,12 @@ Atk/Move Speed Feast
 
 <!-- TODO: drop this whole block once the September balance patch ships -->
 <details class="setup-note" data-kind="danger" markdown>
-<summary><span class="setup-note-tag">Warn</span>Upcoming Balance Patch<span class="setup-note-arrow"></span></summary>
+<summary><span class="setup-note-tag">Warn</span>09/16/26 Balance Patch<span class="setup-note-arrow"></span></summary>
 
-- Blitz Rush will gain a 27% cast speed tripod and 20% more attack range.
-- Turning Slash's after-effect will also apply <span class="skill-mention" data-glossary-id="synergy">Synergy</span>.
-- Surge's buffed coefficient will increase DPS for all RE builds by ~1%.
-- Buffed Ark Grid cores will increase 111 HH DPS by ~2% and 313 DPS by ~1%.
-- See [333 (Ceiling)](333-ceiling.md) or [313 (High Floor)](313-high-floor.md) for build-specific <span class="skill-mention" data-glossary-id="tripod">tripod</span>/gem adjustments.
+- Blitz Rush gained a 27% cast speed tripod and 20% more attack range.
+- Turning Slash's after-effect now also applies <span class="skill-mention" data-glossary-id="synergy">Synergy</span>.
+- Surge's buffed coefficient increased DPS for all RE builds by ~1%.
+- Buffed Ark Grid cores increased 111 HH DPS by ~2% and 313 DPS by ~1%.
 
 </details>
 
@@ -178,9 +177,9 @@ Lower values are fine, but may experience some downtime.
 <summary><span class="setup-note-tag">Tip</span>Trixion CPM Goals<span class="setup-note-arrow"></span></summary>
 
 - Aim for your build's Surge <span class="skill-mention" data-glossary-id="cpm">CPM</span> goal in <span class="skill-mention" data-glossary-id="trixion">Trixion</span> to check for issues:
-    - For [111 (Head Hunt)](111-head-hunt.md) and [313 (High Floor)](313-high-floor.md), try to approach 16 Surge CPM.
-    - For [333 (Ceiling)](333-ceiling.md), try to approach 14.5 Surge CPM (15 after Balance Patch).
-    - Use the [DPS Meter](https://github.com/snoww/loa-logs) and equip maxed <span class="skill-mention" data-skill-id="spiritabsorption">Spirit Absorption</span>/<span class="skill-mention" data-skill-id="maxmp">Max MP</span> engravings!
+    - For 333, try to approach 15 Surge CPM.
+    - For 111 and 313, try to approach 16 Surge CPM.
+    - Use the [DPS Meter](https://github.com/snoww/loa-logs) and equip maxed <span class="skill-mention" data-skill-id="spiritabsorption">Spirit Absorption</span>/<span class="skill-mention" data-skill-id="maxmp">Max MP</span>!
 
 </details>
 
