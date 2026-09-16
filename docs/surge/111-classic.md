@@ -1,7 +1,7 @@
 # 111 (Classic) 🦁
 
 <div class="build-card-row" markdown>
-<div class="build-card" data-updated="2026-09-15" markdown>
+<div class="build-card" data-updated="2026-09-16" markdown>
 
 <!-- Difficulty/Trixion/Playstyle stats above, AND the pentagon badge below,
      both read from javascripts/build-data.js (window.DB_BUILD_DATA) - there is
@@ -54,7 +54,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 === "111 Classic ★"
 
     ```
-    C3F04234FA32C1729EEDFABA2234BC6B08F047143CF6F3611F2A0C9CC2A608B1E56A5A154C449B6B9BD35AFC0B3E9E3F269BE4AF161CF8CC14B26539511518B5
+    2D89F44CB0B24806735E07C73478C083707228B4DA81D81F51074C802D5C5D795500F1C3281A6873549CD74ED4CB4E8BD59BE03D263B86A22C024C157D52B6F2
     ```
 
 === "Pre-Ark Grid"
@@ -63,7 +63,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
     6E22435EC38A3B36B27F6EE93801A0ADC45A582A1D8C1F6C3B8D7052A57696552DA526A2AAE1EB722ED1F929BE107E3749DAB4E7C0737BCC237D520B3D040A34
     ```
 
-    - Adds Earth Cleaver CD and uses Blade Dance's Quick Prep tripod to accommodate a lack of Ark Grid.
+    - Adds Earth Cleaver CD instead of Wind Cut DMG to accommodate a lack of Ark Grid.
     - If you're a beginner, swap <span class="skill-mention" data-skill-id="raidcaptain">Raid Captain</span> for <span class="skill-mention" data-skill-id="curseddoll">Cursed Doll</span> until you're more experienced with the class.
 
 ## Ark Setup
@@ -135,7 +135,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 <details class="setup-note" data-kind="note" markdown>
 <summary><span class="setup-note-tag">Note</span>Ark Grid<span class="setup-note-arrow"></span></summary>
 
-- You can level Ark Grid cores to your preference, but 17p Surge Core grants a second Earth Cleaver stack. This lets you slot a cooldown gem into Blade Dance and use its Weak Point Detection tripod.
+- You can level Ark Grid cores to your preference, but 17p Surge Core grants a second Earth Cleaver stack. This frees up a gem slot and allows you to cast Earth Cleaver without without needing to hold it for a raid mechanic.
 
 </details>
 
@@ -158,7 +158,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
   {"id": "surpriseattack", "level": 10, "tripods": [1, 1, 1], "rune": {"tier": "legendary", "name": "Rage"}},
   {"id": "windcut", "level": 10, "tripods": [3, 3, 1], "rune": {"tier": "legendary", "name": "Galewind"}},
   {"id": "spincutter", "level": 10, "tripods": [3, 3, 1], "rune": {"tier": "epic", "name": "Galewind"}},
-  {"id": "bladedance", "level": 14, "tripods": [1, 2, 2], "rune": {"tier": "epic", "name": "Galewind"}},
+  {"id": "bladedance", "level": 14, "tripods": [1, 1, 2], "rune": {"tier": "epic", "name": "Galewind"}},
   {"id": "earthcleaver", "level": 14, "tripods": [3, 3, 1], "rune": {"tier": "legendary", "name": "Vision"}},
   {"id": "turningslash", "level": 14, "tripods": [1, 3, 1], "rune": {"tier": "legendary", "name": "Poison"}},
   {"id": "maelstrom", "level": 10, "tripods": [3, 1, 2], "rune": {"tier": "legendary", "name": "Focus"}},
@@ -184,7 +184,8 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 <details class="setup-note" data-kind="note" markdown>
 <summary><span class="setup-note-tag">Note</span>Optional<span class="setup-note-arrow"></span></summary>
 
-- You can keep the Quick Prep <span class="skill-mention" data-glossary-id="tripod">tripod</span> on Blade Dance at lower gem levels.
+- You can use the Weak Point Detection <span class="skill-mention" data-glossary-id="tripod">tripod</span> on Blade Dance instead.
+    - Requires Lv 10 CD gem or raid downtime for it not to become a bottleneck.
 - Earth Explosion tripod on Earth Cleaver is up to personal preference.
     - Increased cast speed, but greatly lowers mobility and damage.
 - Thick Sword Energy tripod increases Wind Cut range but builds fewer stacks.
@@ -209,14 +210,14 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 <script type="application/json">
 [
   { "col": "dmg", "items": [
-    "surge", "earthcleaver", "bladedance", "blitzrush", "turningslash"
+    "surge", "earthcleaver", "bladedance", "blitzrush", "turningslash", { "id": "windcut", "alts": [
+      { "id": "spincutter", "note": "Use Spincutter CD gem instead if you prefer, Wind Cut has a very low damage share." },
+      { "id": "earthcleaver", "note": "Use Earth Cleaver CD gem instead pre-Ark Grid as you won't have its second stack unlocked." }
+    ] }
   ] },
   { "col": "cd", "items": [
-    "windcut",
     "blitzrush",
-    { "id": "bladedance", "alts": [
-      { "id": "earthcleaver", "note": "Use Earth Cleaver instead of Blade Dance pre-Ark Grid; set Quick Prep tripod on Blade Dance to compensate." }
-    ] },
+    "windcut",
     "maelstrom",
     "surpriseattack",
     "turningslash"
@@ -256,6 +257,7 @@ Use the Breaking Moon cycle whenever it's available, then repeat the main cycle 
 </div>
 
 1. If you already have a Maelstrom buff of 3 seconds or more, consider skipping it to conserve a stack.
+2. The Maelstrom cast here can desync from the main cycle, use your own judgment when recasting it.
 
 <div class="cycle-card" markdown>
 <div class="cycle-card-header"><span class="cycle-num cycle-num-2">2</span><span class="cycle-title">Main Repeating Cycle</span></div>
