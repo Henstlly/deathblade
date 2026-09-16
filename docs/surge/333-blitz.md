@@ -216,7 +216,10 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 <script type="application/json">
 [
   { "col": "dmg", "items": [
-    "surge", "blitzrush", "earthcleaver", "bladedance", "turningslash", "windcut"
+    "surge", "blitzrush", "earthcleaver", "bladedance", "turningslash", { "id": "windcut", "alts": [
+      { "id": "spincutter", "note": "Use Spincutter CD gem instead if you prefer, Wind Cut has a very low damage share." },
+      { "id": "bladedance", "note": "Use Blade Dance CD gem instead if you set its tripod to Weak Point Detection." }
+    ] }
   ] },
   { "col": "cd", "items": [
     "blitzrush", "earthcleaver", "windcut", "maelstrom", "surpriseattack"
