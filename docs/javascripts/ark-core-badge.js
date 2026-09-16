@@ -69,7 +69,7 @@
   // "Destiny" is the one keyword the in-game tooltip itself colors (see
   // the reference screenshots this data was transcribed from) - matched
   // as a whole word so it also picks up the leading "Destiny" in a named
-  // buff like "Destiny: Killing Feast" without matching unrelated text.
+  // buff like "Destiny: Slaughter Spectacle" without matching unrelated text.
   var DESTINY_RE = /\bDestiny\b/g;
 
   // Appends `text` to `parent` as plain text nodes, splitting out any

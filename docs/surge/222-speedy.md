@@ -328,6 +328,8 @@ It helps to think of everything within <span class="skill-inline" data-skill-id=
      or a balance pass. Full schema is in javascripts/dps-chart.js's
      "EASY EDIT GUIDE" comment. -->
 
+<p class="dps-showcase-caption">Ancient cores, full Lv 10 gems</p>
+
 <div class="dps-showcase" markdown>
 <div class="dps-showcase-frame" markdown>
 <div class="dps-chart" data-show-icons data-values="47.8,35.5,7.1,3.2,2.4,0.8" data-ids="surge,deathlyslash,bladedance,turningslash,windcut,surpriseattack"></div>

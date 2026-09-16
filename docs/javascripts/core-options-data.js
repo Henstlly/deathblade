@@ -43,7 +43,7 @@
       options: [
         { bp: "10P", text: "Normal Skill Damage +2.0%." },
         { bp: "14P", text: "Using Turning Slash activates Destiny." },
-        { bp: "17P", text: "Fatal Wave cooldown -4.0s. Damage +16.0%. MP Cost -50.0%." },
+        { bp: "17P", text: "Fatal Wave cooldown -4.0s. Damage +16.0%. MP Cost -50%." },
         { bp: "18P", text: "Normal Skill Damage +0.2%." },
         { bp: "19P", text: "Normal Skill Damage +0.2%." },
         { bp: "20P", text: "Normal Skill Damage +0.2%." },
@@ -102,7 +102,7 @@
     "Surge Core": {
       options: [
         { bp: "10P", text: "Deathblade Surge Damage +2.5%." },
-        { bp: "14P", text: "Entering Death Trance triggers Destiny." },
+        { bp: "14P", text: "Using Death Trance activates Destiny." },
         { bp: "17P", text: "Damage to foes +4.0%. Earth Cleaver becomes stackable up to 2 times." },
         { bp: "18P", text: "Deathblade Surge Damage +0.25%." },
         { bp: "19P", text: "Deathblade Surge Damage +0.25%." },
@@ -122,7 +122,7 @@
     "Swift Resolution": {
       options: [
         { bp: "10P", text: "Deathly Slash cooldown -2.0s." },
-        { bp: "14P", text: "With Quick Prep, Blade Dance cooldown +6.0s, but damage +90.0%." },
+        { bp: "14P", text: "With Quick Prep, Blade Dance Damage +90.0%. Cooldown +6.0s." },
         { bp: "17P", text: "Deathly Slash Damage +15.0%." },
         { bp: "18P", text: "Normal Skill Damage +0.3%." },
         { bp: "19P", text: "Normal Skill Damage +0.3%." },
@@ -143,7 +143,7 @@
       options: [
         { bp: "10P", text: "Damage to foes +1.5%." },
         { bp: "14P", text: "Using Turning Slash activates Destiny." },
-        { bp: "17P", text: "Blitz Rush Casting Speed +20.0%. Damage +16.0%. MP Cost -50.0%." },
+        { bp: "17P", text: "Blitz Rush Casting Speed +20.0%. Damage +16.0%. MP Cost -50%." },
         { bp: "18P", text: "Blitz Rush Damage +0.6%." },
         { bp: "19P", text: "Blitz Rush Damage +0.6%." },
         { bp: "20P", text: "Blitz Rush Damage +0.6%." },
@@ -163,7 +163,7 @@
       options: [
         { bp: "10P", text: "Normal Skill Damage +3.0%." },
         { bp: "14P", text: "On Destiny activation, gain the Destiny: Slaughter Spectacle effect. Destiny: Slaughter Spectacle: On Deathly Slash use, consume the Destiny: Slaughter Spectacle effect. Damage +30.0%." },
-        { bp: "17P", text: "While Destiny: Slaughter Spectacle is active, using a Normal Skill other than Deathly Slash grants Destiny: Enhanced Sharpness effect, stackable up to 5 times. Destiny: Enhanced Sharpness: On Deathly Slash use, consume the Destiny: Enhanced Sharpness effect. Damage + 4.0% per stack." },
+        { bp: "17P", text: "While Destiny: Slaughter Spectacle is active, using a Normal Skill other than Deathly Slash grants the Destiny: Enhanced Sharpness effect, stackable up to 5 times. Destiny: Enhanced Sharpness: On Deathly Slash use, consume the Destiny: Enhanced Sharpness effect. Damage +4.0% per stack." },
         { bp: "18P", text: "Normal Skill Damage +0.3%." },
         { bp: "19P", text: "Normal Skill Damage +0.3%." },
         { bp: "20P", text: "Normal Skill Damage +0.3%." },
@@ -172,8 +172,8 @@
     "Twin Swords Dance": {
       options: [
         { bp: "10P", text: "Normal Skill Damage +3.0%." },
-        { bp: "14P", text: "Entering Death Trance triggers Destiny." },
-        { bp: "17P", text: "Blade Dance and Deathly Slash Casting Speed +10.0%. Damage +12.0%." },
+        { bp: "14P", text: "Using Death Trance activates Destiny." },
+        { bp: "17P", text: "Casting Speed of Blade Dance and Deathly Slash +10.0%. Damage +12.0%." },
         { bp: "18P", text: "Normal Skill Damage +0.3%." },
         { bp: "19P", text: "Normal Skill Damage +0.3%." },
         { bp: "20P", text: "Normal Skill Damage +0.3%." },
