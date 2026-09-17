@@ -843,6 +843,30 @@
     return currentBraceSpecBuildId(root) === "surge-222";
   }
 
+  // Maelstrom Uptime's own sensible default varies by build: RE and
+  // Surge 111/333 share a rotation shape close enough that one number
+  // fits both, but Surge 222's own faster-paced rotation clears more of
+  // its casts, so a flatly shared default would undersell 222 (if set to
+  // the RE/111/333 number) or oversell RE/111/333 (if set to 222's own
+  // number). Grouped the same way Mana Food's own RE<->Surge default
+  // crossing listener is below, just with 3 groups instead of 2 - see
+  // that listener's own comment for why this only re-applies on an
+  // actual GROUP crossing, not every build switch (RE 111 -> RE 313, or
+  // Surge 111 -> Surge 333, must NOT stomp a mid-session manual
+  // Maelstrom Uptime edit).
+  const MAELSTROM_UPTIME_DEFAULT_RE = 85;
+  const MAELSTROM_UPTIME_DEFAULT_SURGE = 80;
+  const MAELSTROM_UPTIME_DEFAULT_SURGE_222 = 90;
+  function maelstromUptimeDefaultGroup(root) {
+    if (!isSurgeBuild(root)) return "re";
+    return is222Build(root) ? "surge-222" : "surge";
+  }
+  function maelstromUptimeDefaultForGroup(group) {
+    if (group === "surge-222") return MAELSTROM_UPTIME_DEFAULT_SURGE_222;
+    if (group === "surge") return MAELSTROM_UPTIME_DEFAULT_SURGE;
+    return MAELSTROM_UPTIME_DEFAULT_RE;
+  }
+
   // Fallback default for the Family chips (RE / Surge) in the two-tier
   // Build toggle, used only when the target family has no remembered
   // variant yet this session (see initApCalcRoot's familyVariantMemory,
@@ -3651,10 +3675,10 @@
   // +16% Attack Speed for 6s on proc. Modeled as a flat, independent
   // uptime source - same treatment as Paladin's Move Speed above - rather
   // than trying to correlate its proc timing with Maelstrom's own uptime;
-  // 25% is a simple, representative average uptime across a rotation.
+  // 20% is a simple, representative average uptime across a rotation.
   // Toggled on by default since the rune itself is assumed taken.
   const RAGE_RUNE_SPEED_BONUS = 16;
-  const RAGE_RUNE_MOVE_SPEED_UPTIME = 25;
+  const RAGE_RUNE_MOVE_SPEED_UPTIME = 20;
   const RAID_CAPTAIN_MOVE_SPEED_CAP = 140;
   // Mana Food's flat Dmg from unlocking the Bleed rune on Maelstrom - not
   // gated on Raid Captain or any other engraving (any loadout running
@@ -5899,6 +5923,7 @@
     normalizeSpeedChoiceExclusivity(root);
     syncSpeedChoiceFamilyTracking(root);
     syncFamilyVariantMemory(root);
+    syncMaelstromUptimeGroupTracking(root);
     resetAvbMemory(root);
     // Instantly re-calculate calculations and refresh value/range displays
     update(root);
@@ -5921,6 +5946,7 @@
     normalizeSpeedChoiceExclusivity(root);
     syncSpeedChoiceFamilyTracking(root);
     syncFamilyVariantMemory(root);
+    syncMaelstromUptimeGroupTracking(root);
     resetAvbMemory(root);
     updatePresetButtonStates(root);
     update(root);
@@ -6048,6 +6074,7 @@
     normalizeSpeedChoiceExclusivity(root);
     syncSpeedChoiceFamilyTracking(root);
     syncFamilyVariantMemory(root);
+    syncMaelstromUptimeGroupTracking(root);
     resetAvbMemory(root);
     saveInputs(root, activeId);
     update(root);
@@ -6273,6 +6300,21 @@
     const buildSelectEl = root.querySelector(".ap-brace-spec-build");
     if (!buildSelectEl) return;
     buildSelectEl.dataset.lastFamilyIsSurge = isSurgeBuild(root) ? "1" : "0";
+  }
+
+  // Same fix, same reason, as syncSpeedChoiceFamilyTracking above - but
+  // for the Maelstrom Uptime default-group crossing listener's own "last
+  // known group" memory (buildSelectEl.dataset.lastMaelstromGroup, see
+  // that listener's own comment in initApCalcRoot). Called alongside the
+  // other sync* functions from every bulk field mutation (Reset, preset
+  // switch, import, init) for the same reason: those all set the build
+  // select's value directly without dispatching "change", so a stale
+  // remembered group could otherwise miss the reader's very next real
+  // group crossing.
+  function syncMaelstromUptimeGroupTracking(root) {
+    const buildSelectEl = root.querySelector(".ap-brace-spec-build");
+    if (!buildSelectEl) return;
+    buildSelectEl.dataset.lastMaelstromGroup = maelstromUptimeDefaultGroup(root);
   }
 
   // Same fix, same reason, as syncSpeedChoiceFamilyTracking above - but
@@ -6722,6 +6764,7 @@
       normalizeSpeedChoiceExclusivity(root);
       syncSpeedChoiceFamilyTracking(root);
       syncFamilyVariantMemory(root);
+      syncMaelstromUptimeGroupTracking(root);
       resetAvbMemory(root);
       updatePresetButtonStates(root);
 
@@ -6988,6 +7031,29 @@
           if (nowIsSurge !== lastIsSurge) {
             manaFoodEl.checked = !nowIsSurge;
             buildSelectEl.dataset.lastFamilyIsSurge = nowIsSurge ? "1" : "0";
+          }
+        });
+      }
+
+      // Maelstrom Uptime's own sensible default varies by build GROUP
+      // (RE, Surge 111/333, Surge 222 - see maelstromUptimeDefaultGroup's
+      // own comment), the same idea as Mana Food's RE<->Surge default
+      // crossing listener just above with a 3rd group split out of
+      // Surge - and for the same reason, only re-applies on an actual
+      // group crossing, not every build switch, so a mid-session manual
+      // edit survives switching between two builds in the SAME group
+      // (e.g. Surge 111 -> Surge 333, or RE 111 -> RE 313).
+      const maelstromUptimeEl = root.querySelector(".ap-engr-maelstrom-uptime");
+      if (maelstromUptimeEl && buildSelectEl) {
+        if (buildSelectEl.dataset.lastMaelstromGroup === undefined) {
+          buildSelectEl.dataset.lastMaelstromGroup = maelstromUptimeDefaultGroup(root);
+        }
+        buildSelectEl.addEventListener("change", () => {
+          const nowGroup = maelstromUptimeDefaultGroup(root);
+          const lastGroup = buildSelectEl.dataset.lastMaelstromGroup;
+          if (nowGroup !== lastGroup) {
+            maelstromUptimeEl.value = String(maelstromUptimeDefaultForGroup(nowGroup));
+            buildSelectEl.dataset.lastMaelstromGroup = nowGroup;
           }
         });
       }
