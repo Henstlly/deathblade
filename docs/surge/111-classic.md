@@ -252,13 +252,14 @@ Use the Breaking Moon cycle whenever it's available, then repeat the main cycle 
 <div class="cycle-card-header"><span class="cycle-num cycle-num-1">1</span><span class="cycle-title">Breaking Moon Cycle</span></div>
 <div class="rotation-line" markdown>
 <script type="application/json">
-[{ "icons": ["turningslash", "surpriseattack"], "situational": "synergy/adrenaline" }, "windcut", "deathtrance", "maelstrom", "surpriseattack", "breakingmoon", "surge"]
+[{ "icons": ["turningslash", "surpriseattack"], "situational": "synergy" }, "windcut", "deathtrance", { "icons": ["maelstrom", "surpriseattack"] }, "breakingmoon", "surge"]
 </script>
 </div>
 </div>
 
-1. If you already have a Maelstrom buff of 3 seconds or more, consider skipping it to conserve a stack.
-2. The Maelstrom cast here can desync from the main cycle, use your own judgment when recasting it.
+1. If you have a leftover Rage/Maelstrom buff or no Maelstrom stacks: cast Surprise Attack instead.
+2. The Maelstrom cast here can desync from the main cycle, use your own judgment for the follow-up.
+3. Do NOT worry about Raid Captain efficiency, Keen Blunt Weapon is just as inefficient for this cycle.
 
 <div class="cycle-card" markdown>
 <div class="cycle-card-header"><span class="cycle-num cycle-num-2">2</span><span class="cycle-title">Main Repeating Cycle</span></div>
@@ -279,18 +280,18 @@ Use the Breaking Moon cycle whenever it's available, then repeat the main cycle 
 <details class="setup-note" data-kind="example" markdown>
 <summary><span class="setup-note-tag">Alt</span>Lion Mode (Optional)<span class="setup-note-arrow"></span></summary>
 
-Alternate main cycle meant to try-hard <span class="skill-mention" data-skill-id="raidcaptain">Raid Captain</span> and <span class="skill-mention" data-skill-id="massincrease">Mass Increase</span> efficiency in raids:
+Alternate main cycle meant to try-hard engraving efficiency in a practical **raid setting** with downtime:
 
 <div class="cycle-card" markdown>
 <div class="cycle-card-header"><span class="cycle-num cycle-num-2">2</span><span class="cycle-title">Main Repeating Cycle</span></div>
 <div class="rotation-line" markdown>
 <script type="application/json">
-[{ "id": "maelstrom", "situational": true }, "windcut", "deathtrance", "surpriseattack", "windcut", "earthcleaver", "turningslash", { "id": "maelstrom", "situational": true }, "bladedance", "blitzrush", "surpriseattack", "surge"]
+[{ "id": "maelstrom", "situational": true }, "windcut", "deathtrance", "surpriseattack", "windcut", "earthcleaver", "turningslash", { "id": "maelstrom", "situational": true }, "bladedance", "blitzrush", "surpriseattack", { "id": "spincutter", "situational": "reposition" }, "surge"]
 </script>
 </div>
 </div>
 
-1. Just recast Maelstrom as it expires, but some optimal cast spots are suggested.
+1. Just recast Maelstrom as needed, but some optimal cast spots are suggested.
 2. Use your judgment. Not every skill needs the Maelstrom buff, so prioritize Surge.
 3. Consider skipping Maelstrom to conserve a stack if you received a <span class="skill-mention" data-rune-name="Rage">Rage</span> buff.
 </details>
