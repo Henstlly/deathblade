@@ -81,8 +81,8 @@ extra_javascript:
   - javascripts/essentials-table.js?v=5
   - javascripts/core-options-data.js?v=5
   - javascripts/ark-core-badge.js?v=8
-  - javascripts/ap-node-names.js?v=4
-  - javascripts/ap-node-effects.js?v=3
+  - javascripts/ap-node-names.js?v=5
+  - javascripts/ap-node-effects.js?v=4
   - javascripts/ark-passive-tree.js?v=7
   - javascripts/gem-priority.js?v=6
   - javascripts/pentagon-badge.js?v=4
