@@ -1,5 +1,7 @@
 # 333 (Blitz) <span class="tiger-emoji" title="rawr">🐯</span>
 
+<p class="page-banner page-banner-warning">This build is not viable and no one plays it, so information here WILL be wrong. Do not disrespect the tiger, however.</p>
+
 <div class="build-card-row" markdown>
 <div class="build-card" data-updated="2026-09-16" markdown>
 
