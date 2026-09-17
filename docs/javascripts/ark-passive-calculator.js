@@ -823,16 +823,24 @@
   // select - see its own comment in resources.md) straight from the DOM,
   // for call sites that need the build's config (isSurge, share) before a
   // full readInputs() has happened yet - Engraving Comparison's derived
-  // Playstyle, the Mana Food default listener, and readEngravingInputs's
-  // own surgeShare field (see raidCaptainSurgeRageMoveSpeed) all go
-  // through this one lookup so they can never disagree about which build
-  // is actually selected.
+  // Playstyle and the Mana Food default listener both go through this
+  // one lookup so they can never disagree about which build is actually
+  // selected.
+  function currentBraceSpecBuildId(root) {
+    return normalizeBraceSpecBuild(getSelect(root, ".ap-brace-spec-build", "re-333"));
+  }
   function currentBuildConfig(root) {
-    const buildId = normalizeBraceSpecBuild(getSelect(root, ".ap-brace-spec-build", "re-333"));
-    return BRACE_SPEC_BUILDS[buildId] || BRACE_SPEC_BUILDS["re-333"];
+    return BRACE_SPEC_BUILDS[currentBraceSpecBuildId(root)] || BRACE_SPEC_BUILDS["re-333"];
   }
   function isSurgeBuild(root) {
     return !!currentBuildConfig(root).isSurge;
+  }
+  // 222's own gearing more easily clears the Bleed rune's stat threshold
+  // without Mana Food's help (see MANAFOOD_TIP_222_SUFFIX below), so 222
+  // is the one Surge build whose Mana Food is treated as Main-Stat-only,
+  // same as RE - see manaFoodBleedApplies, the actual gate this feeds.
+  function is222Build(root) {
+    return currentBraceSpecBuildId(root) === "surge-222";
   }
 
   // Fallback default for the Family chips (RE / Surge) in the two-tier
@@ -3625,12 +3633,13 @@
   // own tooltip) - modeling it as a flat 100%-uptime add the way
   // SUPPORT_AV_MOVE_SPEED is would overstate it, so this is instead
   // treated as a genuine partial-uptime source, time-weighted the same
-  // way Maelstrom is (see raidCaptainMoveSpeed/raidCaptainSurgeRageMoveSpeed
-  // below - both expand Maelstrom x Paladin into their joint on/off
-  // combinations and cap EACH combination before averaging, not the other
-  // way around, for the same concavity reason Maelstrom's own comment
-  // explains: capping an already-summed EV overstates the real value
-  // whenever the baseline sits near the 140% cap).
+  // way Maelstrom (and Rage Rune) are - see raidCaptainMoveSpeed and
+  // expectedCappedMoveSpeed below, which expand every active source into
+  // its joint on/off combinations and cap EACH combination before
+  // averaging, not the other way around, for the same concavity reason
+  // Maelstrom's own comment explains: capping an already-summed EV
+  // overstates the real value whenever the baseline sits near the 140%
+  // cap).
   const SUPPORT_PALADIN_MOVE_SPEED = 24.6;
   // Fixed assumption baked into the checkbox itself, not a reader-facing
   // slider like Maelstrom Uptime % - Paladin's Move Speed comes from a
@@ -3638,34 +3647,14 @@
   // one representative number rather than something worth exposing as
   // its own input.
   const SUPPORT_PALADIN_MOVE_SPEED_UPTIME = 35;
-  // Rage Rune on Surprise Attack (Surge only): 16% chance per cast of +16%
-  // Move Speed AND +16% Attack Speed for 6s (the one proc grants both at
-  // once). Surprise Attack is cast once every rotation guaranteed, plus a
-  // 2nd time on roughly half of rotations. Toggled on by default since the
-  // rune itself is assumed taken.
-  //
-  // raidCaptainSurgeRageMoveSpeed (below) is where this actually gets
-  // used for Raid Captain's Move Speed -> Dmg conversion - see its own
-  // comment for the full Maelstrom-overlap model. surgeEffectiveAttackSpeed
-  // further down still uses the simpler flat expected-value add
-  // (chance * value); that reading is purely informational (nothing there
-  // feeds any DPS number on the page), so it isn't worth the same
-  // overlap-model treatment.
-  const RAGE_RUNE_PROC_CHANCE = 0.16;
+  // Rage Rune on Surprise Attack (Surge only): grants +16% Move Speed AND
+  // +16% Attack Speed for 6s on proc. Modeled as a flat, independent
+  // uptime source - same treatment as Paladin's Move Speed above - rather
+  // than trying to correlate its proc timing with Maelstrom's own uptime;
+  // 25% is a simple, representative average uptime across a rotation.
+  // Toggled on by default since the rune itself is assumed taken.
   const RAGE_RUNE_SPEED_BONUS = 16;
-  const RAGE_RUNE_SECOND_CAST_CHANCE = 0.5;
-  // The 1st (guaranteed) Surprise Attack cast lands ~0.5-1s after
-  // Maelstrom, so on a proc its buff only extends 0.5-1s past Maelstrom's
-  // own window - real coverage of a boss-movement stall, but only for a
-  // stall that short. The 2nd cast (~50% chance to happen at all) lands
-  // right before the Surge finisher itself, so on a proc its fresh 6s
-  // buff comfortably outlasts any realistic stall - treated as a full
-  // rescue (credit 1.0) in raidCaptainSurgeRageMoveSpeed. This is the 1st
-  // cast's credit relative to that full-rescue baseline - a labeled
-  // placeholder, not derived from any real stall-length distribution
-  // (nothing on this page tracks one), open to retuning if a better read
-  // on typical stall length vs. that 0.5-1s overhang ever turns up.
-  const RAGE_RUNE_OVERHANG_CREDIT = 0.35;
+  const RAGE_RUNE_MOVE_SPEED_UPTIME = 25;
   const RAID_CAPTAIN_MOVE_SPEED_CAP = 140;
   // Mana Food's flat Dmg from unlocking the Bleed rune on Maelstrom - not
   // gated on Raid Captain or any other engraving (any loadout running
@@ -3677,147 +3666,51 @@
   // already uses.
   const MANA_FOOD_BLEED_DMG = 0.0075;
 
+  // Expected Move Speed for `base` plus a set of independent, on/off
+  // bonus sources, each capped at `cap`. Averages the CAPPED outcome of
+  // every joint on/off combination rather than capping an already-summed
+  // EV - min() is concave, so capping first then averaging systematically
+  // overstates the real value whenever the uncapped sum sits near/over
+  // the cap, which is the common case here since Raid Captain's baseline
+  // already sits close to the 140% cap on its own. This is the "proper,
+  // overcap-aware" formula every Move Speed source above should go
+  // through - Maelstrom, Rage Rune, and Paladin are each independent
+  // sources plugged into this the same way, rather than each needing its
+  // own bespoke overlap model.
+  function expectedCappedMoveSpeed(base, cap, sources) {
+    let total = 0;
+    for (let mask = 0; mask < 1 << sources.length; mask++) {
+      let value = base;
+      let prob = 1;
+      for (let i = 0; i < sources.length; i++) {
+        const on = (mask >> i) & 1;
+        prob *= on ? sources[i].uptime : 1 - sources[i].uptime;
+        if (on) value += sources[i].bonus;
+      }
+      total += prob * Math.min(value, cap);
+    }
+    return total;
+  }
+
   function raidCaptainMoveSpeed(engrInputs, yearning) {
     let restOfMs = RAID_CAPTAIN_BASE_MOVE_SPEED + (RAID_CAPTAIN_CLASS_MOVE_SPEED[engrInputs.spec] || 0);
     if (yearning) restOfMs += SUPPORT_SPEED_BONUS;
     if (engrInputs.supportAv && yearning) restOfMs += SUPPORT_AV_MOVE_SPEED;
     if (engrInputs.spec === "surge" && engrInputs.wine && !engrInputs.manaFood) restOfMs += RAID_CAPTAIN_WINE_MOVE_SPEED;
 
-    // Paladin's bonus/uptime, isolated out of restOfMs (unlike Artist/
-    // Valkyrie's flat add above) since it needs to be time-weighted
-    // separately below rather than summed in and capped once - see
-    // SUPPORT_PALADIN_MOVE_SPEED's own comment. 0-value/0-probability
-    // whenever the checkbox is off (or Passionate Dance itself is off, or
-    // Artist/Valkyrie is checked instead - mutually exclusive with
-    // Paladin, see normalizeSupportMoveSpeedExclusivity) so both branches'
-    // math below stays correct without a separate on/off fork.
-    const paladinBonus = engrInputs.supportPaladin && yearning ? SUPPORT_PALADIN_MOVE_SPEED : 0;
-    const paladinUptime = paladinBonus > 0 ? SUPPORT_PALADIN_MOVE_SPEED_UPTIME / 100 : 0;
-
-    if (engrInputs.spec !== "surge" || !engrInputs.rageRune) {
-      // RE has no Maelstrom/Rage Rune overlap to model (Rage Rune is
-      // Surge-only); Surge without Rage Rune taken has nothing stochastic
-      // to average over either. Still has to time-weight the CAPPED
-      // up/down values rather than cap an already-averaged sum, same
-      // concavity reason as raidCaptainSurgeRageMoveSpeed below - min() is
-      // concave, so min(restOfMs + bonus*uptime%, cap) systematically
-      // overstates the real value whenever restOfMs+bonus sits near/over
-      // the cap (the common case). Getting this wrong here was the actual
-      // bug behind "checking Rage Rune makes the number go down" - it
-      // wasn't Rage Rune's math that was wrong, it was this baseline being
-      // inflated relative to it, so toggling Rage Rune on jumped to the
-      // (lower, correct) branch-capped number and looked like a
-      // regression.
-      //
-      // Maelstrom and Paladin are modeled as independent uptime sources -
-      // no known correlation between a Paladin's skill usage and
-      // Maelstrom's cast timing, unlike Rage Rune's known correlation with
-      // it (see raidCaptainSurgeRageMoveSpeed below) - so this expands
-      // into the 4 joint on/off combinations and time-weights the CAPPED
-      // outcome of each, same concavity reasoning as the single-source
-      // case this replaces.
-      const u = engrInputs.maelstromUptime / 100;
-      const cap = RAID_CAPTAIN_MOVE_SPEED_CAP;
-      const ms =
-        u * paladinUptime * Math.min(restOfMs + MAELSTROM_SPEED_BONUS + paladinBonus, cap) +
-        u * (1 - paladinUptime) * Math.min(restOfMs + MAELSTROM_SPEED_BONUS, cap) +
-        (1 - u) * paladinUptime * Math.min(restOfMs + paladinBonus, cap) +
-        (1 - u) * (1 - paladinUptime) * Math.min(restOfMs, cap);
-      return ms;
+    // Maelstrom, Rage Rune, and Paladin are all modeled as independent
+    // uptime sources - no known correlation between any of their timings
+    // - so each just gets added to the list when it applies and
+    // expectedCappedMoveSpeed expands the full joint on/off combination
+    // space itself.
+    const sources = [{ bonus: MAELSTROM_SPEED_BONUS, uptime: engrInputs.maelstromUptime / 100 }];
+    if (engrInputs.spec === "surge" && engrInputs.rageRune) {
+      sources.push({ bonus: RAGE_RUNE_SPEED_BONUS, uptime: RAGE_RUNE_MOVE_SPEED_UPTIME / 100 });
     }
-    return raidCaptainSurgeRageMoveSpeed(restOfMs, engrInputs, paladinBonus, paladinUptime);
-  }
-
-  // Surge + Rage Rune: models the overlap between Maelstrom's own uptime
-  // and Rage Rune's procs instead of just adding both as flat, independent
-  // EV terms (see project chat log for the full derivation this
-  // implements).
-  //
-  // Maelstrom's own downtime (100 - maelstromUptime) is assumed to land
-  // entirely inside the back-loaded "share" portion of the rotation (the
-  // Surge namesake skill's own finisher - BRACE_SPEC_BUILDS's `share`,
-  // reused here as engrInputs.surgeShare) rather than spread evenly across
-  // the whole fight: Maelstrom (cast ~1s into a normally ~6s rotation,
-  // itself lasting 6s) only fails to cover the finisher when a
-  // boss-movement stall pushes the rotation past that window - it
-  // essentially never fails to cover the early/mid part of an
-  // undisrupted rotation. Once Maelstrom's downtime would exceed the
-  // tail's own share of the rotation, the excess spills into the normal
-  // segment too (e.g. at 0% Maelstrom Uptime there's no Maelstrom
-  // anywhere, not just missing from the tail).
-  //
-  // Within each segment, this takes the probability-weighted average of
-  // the CAPPED outcomes (proc vs. no proc) rather than capping an
-  // already-averaged sum the way the old flat formula did - min() is
-  // concave, so capping first then averaging systematically overstates
-  // the real expected value whenever the baseline sits close to the 140%
-  // cap, which is most of the time given Maelstrom's typical uptime. This
-  // is what actually produces the "severe diminishing returns" a Rage
-  // Rune proc has while Maelstrom's already up, without needing to model
-  // that as its own separate effect.
-  //
-  // The 1st Surprise Attack cast (guaranteed every rotation) only ever
-  // gets credited against the NORMAL segment's own Maelstrom state (see
-  // RAGE_RUNE_OVERHANG_CREDIT's own comment for why its tail-rescue value
-  // is folded into pRescue at a fraction of the 2nd cast's, rather than
-  // counted as its own independent segment).
-  //
-  // paladinBonus/paladinUptime (from raidCaptainMoveSpeed above) fold in
-  // as a 3rd, independent on/off dimension inside blend() below - Paladin
-  // has no known correlation with either Maelstrom's cast timing or Rage
-  // Rune's proc timing, so unlike the Maelstrom x Rage Rune overlap this
-  // whole function exists to model, Paladin just gets a plain joint-
-  // probability expansion (same shape as raidCaptainMoveSpeed's own
-  // non-Rage-Rune branch) layered on top.
-  function raidCaptainSurgeRageMoveSpeed(restOfMs, engrInputs, paladinBonus, paladinUptime) {
-    paladinBonus = paladinBonus || 0;
-    paladinUptime = paladinUptime || 0;
-    const cap = RAID_CAPTAIN_MOVE_SPEED_CAP;
-    const withMael = restOfMs + MAELSTROM_SPEED_BONUS;
-    const noMael = restOfMs;
-    const bonus = RAGE_RUNE_SPEED_BONUS;
-    const p1 = RAGE_RUNE_PROC_CHANCE; // 1st cast, guaranteed
-    const p2 = RAGE_RUNE_SECOND_CAST_CHANCE * RAGE_RUNE_PROC_CHANCE; // 2nd cast, ~50% chance to happen at all
-    // Combined chance the tail's Maelstrom gap gets rescued by SOME Rage
-    // proc - the 2nd cast counts fully (a fresh 6s buff outlasts any
-    // realistic stall), the 1st cast counts at its overhang credit only
-    // (its buff's 0.5-1s overhang past Maelstrom covers just a short
-    // stall, not the whole gap).
-    const pRescue = p2 + (1 - p2) * p1 * RAGE_RUNE_OVERHANG_CREDIT;
-
-    const share = Math.max(0, Math.min(1, engrInputs.surgeShare || 0));
-    const downtime = 1 - engrInputs.maelstromUptime / 100;
-
-    // Fraction of each segment where Maelstrom is actually up.
-    let qTail, qNormal;
-    if (downtime <= share) {
-      qTail = share > 0 ? 1 - downtime / share : 1;
-      qNormal = 1;
-    } else {
-      qTail = 0;
-      const excess = downtime - share;
-      qNormal = share < 1 ? Math.max(0, 1 - excess / (1 - share)) : 0;
+    if (engrInputs.supportPaladin && yearning) {
+      sources.push({ bonus: SUPPORT_PALADIN_MOVE_SPEED, uptime: SUPPORT_PALADIN_MOVE_SPEED_UPTIME / 100 });
     }
-
-    // Probability-weighted average of the capped (proc, no-proc) x
-    // (Paladin up, Paladin down) outcomes for one segment, given whether
-    // Maelstrom is up in it - each of the 4 joint combinations gets
-    // capped on its own before being weighted in, same concavity
-    // reasoning as everywhere else on this page that averages a capped
-    // stat.
-    function blend(rageChance, maelstromUp) {
-      const base = maelstromUp ? withMael : noMael;
-      return (
-        rageChance * paladinUptime * Math.min(base + bonus + paladinBonus, cap) +
-        rageChance * (1 - paladinUptime) * Math.min(base + bonus, cap) +
-        (1 - rageChance) * paladinUptime * Math.min(base + paladinBonus, cap) +
-        (1 - rageChance) * (1 - paladinUptime) * Math.min(base, cap)
-      );
-    }
-
-    const normal = qNormal * blend(p1, true) + (1 - qNormal) * blend(p1, false);
-    const tail = qTail * blend(pRescue, true) + (1 - qTail) * blend(pRescue, false);
-    return (1 - share) * normal + share * tail;
+    return expectedCappedMoveSpeed(restOfMs, RAID_CAPTAIN_MOVE_SPEED_CAP, sources);
   }
 
   function raidCaptainMoveSpeedFraction(engrInputs, yearning) {
@@ -3863,18 +3756,37 @@
     return statRatio * (1 + (includeBleed ? MANA_FOOD_BLEED_DMG : 0)) - 1;
   }
 
-  // Mana Food's own isolated contribution-table row. On Surge this feeds
-  // both the Main Stat AP ratio and the Bleed-rune-on-Maelstrom Dmg (see
-  // manaFoodGain). On RE it's Main-Stat-only (no Bleed rune term) AND,
-  // per engravingCandidateMultiplier's own comment, deliberately excluded
-  // from every DPS total on the page - RE readers only get this row as an
-  // informational "here's what that Main Stat is worth in isolation"
-  // number, never folded into Setup A/B, the best-combo search, or
-  // anything else. 0 whenever the Mana Food checkbox itself is off,
-  // regardless of spec.
+  // Whether Mana Food currently grants the Bleed-rune-on-Maelstrom Dmg
+  // term - true for Surge builds other than 222 (see is222Build's own
+  // comment for why 222 is carved out: its gearing already tends to
+  // clear the Bleed rune's stat threshold without Mana Food, so treating
+  // Mana Food as adding that Dmg there would double-count a bonus 222
+  // likely already has regardless of the checkbox). False for RE, same
+  // as before - RE has no Bleed-rune-on-Maelstrom interaction at all.
+  function manaFoodBleedApplies(engrInputs, inputs) {
+    return engrInputs.spec === "surge" && inputs.braceSpecBuild !== "surge-222";
+  }
+  // Short label for the food itself, used everywhere a "which food did
+  // you eat" string gets built - "Mana Food" alone (no "+ Bleed") for RE
+  // and for 222, matching manaFoodBleedApplies exactly so the label never
+  // implies a Dmg term the calculation doesn't actually add.
+  function manaFoodLabel(engrInputs, inputs) {
+    return manaFoodBleedApplies(engrInputs, inputs) ? "Mana Food + Bleed" : "Mana Food";
+  }
+
+  // Mana Food's own isolated contribution-table row. On Surge builds
+  // other than 222 this feeds both the Main Stat AP ratio and the
+  // Bleed-rune-on-Maelstrom Dmg (see manaFoodGain). On RE, and on Surge
+  // 222 (see manaFoodBleedApplies), it's Main-Stat-only (no Bleed rune
+  // term) AND, per engravingCandidateMultiplier's own comment, RE's copy
+  // is deliberately excluded from every DPS total on the page - RE
+  // readers only get this row as an informational "here's what that Main
+  // Stat is worth in isolation" number, never folded into Setup A/B, the
+  // best-combo search, or anything else. 0 whenever the Mana Food
+  // checkbox itself is off, regardless of spec.
   function manaFoodContributionGain(engrInputs, inputs) {
     if (!engrInputs.manaFood) return 0;
-    return manaFoodGain(inputs, engrInputs.manaFoodAmount, engrInputs.spec === "surge");
+    return manaFoodGain(inputs, engrInputs.manaFoodAmount, manaFoodBleedApplies(engrInputs, inputs));
   }
 
   // Which of Wine/Mana Food is currently better to eat, and by how much -
@@ -3891,7 +3803,7 @@
     const wineFrac = raidCaptainMoveSpeedFraction(Object.assign({}, engrInputs, { wine: true, manaFood: false }), inputs.yearning);
     const foodFrac = raidCaptainMoveSpeedFraction(Object.assign({}, engrInputs, { wine: false, manaFood: true }), inputs.yearning);
     const wineMult = 1 + rcBase * wineFrac;
-    const foodMult = (1 + rcBase * foodFrac) * (1 + manaFoodGain(inputs, engrInputs.manaFoodAmount, true));
+    const foodMult = (1 + rcBase * foodFrac) * (1 + manaFoodGain(inputs, engrInputs.manaFoodAmount, manaFoodBleedApplies(engrInputs, inputs)));
     return foodMult / wineMult - 1;
   }
 
@@ -3916,7 +3828,7 @@
     let atk = BASE_ATTACK_SPEED + SURGE_IDENTITY_ATTACK_SPEED;
     atk += MAELSTROM_SPEED_BONUS * (engrInputs.maelstromUptime / 100);
     if (yearning) atk += SUPPORT_SPEED_BONUS;
-    if (engrInputs.rageRune) atk += RAGE_RUNE_PROC_CHANCE * RAGE_RUNE_SPEED_BONUS;
+    if (engrInputs.rageRune) atk += (RAGE_RUNE_MOVE_SPEED_UPTIME / 100) * RAGE_RUNE_SPEED_BONUS;
     // Ealyn's Blessing's own checkbox is gone (see EALYN_ATTACK_SPEED's
     // comment) so engrInputs no longer carries an ealynsBlessing flag -
     // EALYN_ATTACK_SPEED is left unapplied here for the same reason.
@@ -4377,13 +4289,6 @@
       // is no longer its own control here, it just echoes RE vs Surge from
       // whichever 6-way build is currently selected up top.
       spec: isSurgeBuild(root) ? "surge" : "re",
-      // The selected build's own Spec-scaling `share` (BRACE_SPEC_BUILDS) -
-      // reused here as "what fraction of your damage is the back-loaded
-      // Surge finisher" for raidCaptainSurgeRageMoveSpeed's Maelstrom/Rage
-      // Rune overlap model. Only meaningful on Surge; harmless to read
-      // unconditionally (RE's own share value just goes unused, same as
-      // rageRune/maelstromUptime below already do on RE).
-      surgeShare: currentBuildConfig(root).share,
       grudgeLevel: getSelect(root, ".ap-engr-grudge-level", "4 Nodes"),
       ambushLevel: getSelect(root, ".ap-engr-ambush-level", "4 Nodes"),
       adrenalineLevel: getSelect(root, ".ap-engr-adrenaline-level", "4 Nodes"),
@@ -4586,7 +4491,7 @@
     function bestOf(label, side) {
       return [
         scenario(label + " + Vernese Wine", side, true, false),
-        scenario(label + " + Mana Food + Bleed", side, false, true),
+        scenario(label + " + " + manaFoodLabel(base, inputs), side, false, true),
       ].sort((x, y) => y.index - x.index)[0];
     }
     const aBest = bestOf("Setup A", svsA);
@@ -4906,10 +4811,11 @@
     const foodWins = foodScenario.index >= wineScenario.index;
     const winnerScenario = foodWins ? foodScenario : wineScenario;
     const otherScenario = foodWins ? wineScenario : foodScenario;
+    const foodLabel = manaFoodLabel(engrInputs, inputs);
     return {
       comboLabel: winnerScenario.comboLabel,
-      foodLabel: foodWins ? "Mana Food + Bleed" : "Vernese Wine",
-      otherFoodLabel: foodWins ? "Vernese Wine" : "Mana Food + Bleed",
+      foodLabel: foodWins ? foodLabel : "Vernese Wine",
+      otherFoodLabel: foodWins ? "Vernese Wine" : foodLabel,
       pctVsOther: winnerScenario.index / otherScenario.index - 1,
     };
   }
@@ -5530,6 +5436,12 @@
   // renderArkGridComparison's own bespoke-shape renderer just above.
   function renderEngravingComparison(root, result, engrInputs, overallBest) {
     const isSurge = engrInputs.spec === "surge";
+    // Whether Mana Food's Bleed-rune-on-Maelstrom Dmg term actually
+    // applies here - same gate as manaFoodBleedApplies, just read off the
+    // DOM's own build selector since this render function only gets
+    // engrInputs (spec, no build id) rather than the full inputs object.
+    // False for RE AND for Surge 222 (see is222Build's own comment).
+    const manaFoodHasBleed = isSurge && !is222Build(root);
     const rageRuneRow = root.querySelector(".ap-engr-rage-rune-row");
     if (rageRuneRow) rageRuneRow.style.display = isSurge ? "" : "none";
     const wineRow = root.querySelector(".ap-engr-wine-row");
@@ -5539,11 +5451,11 @@
     // checkbox/amount select now (see manaFoodContributionGain's own
     // comment for what it actually does on RE: Main-Stat-only, excluded
     // from calculations, purely informational). Row itself always shows;
-    // only the label text below changes per spec.
+    // only the label text below changes per spec/build.
     if (manaFoodRow) manaFoodRow.style.display = "";
     const manaFoodLabelEl = root.querySelector(".ap-engr-manafood-label");
     if (manaFoodLabelEl) {
-      manaFoodLabelEl.textContent = isSurge
+      manaFoodLabelEl.textContent = manaFoodHasBleed
         ? "Mana Food (+Maelstrom Bleed)"
         : "Mana Food (Main Stat only)";
     }
@@ -5590,8 +5502,8 @@
     // (exactly 100% Move Speed) to the 140% cap - rather than the raw
     // Move Speed % itself. result.moveSpeed is already the correct
     // time-weighted expected value across capped/uncapped states (see
-    // raidCaptainMoveSpeed/raidCaptainSurgeRageMoveSpeed above - this
-    // block doesn't change that math at all), but labeling it as a
+    // raidCaptainMoveSpeed/expectedCappedMoveSpeed above - this block
+    // doesn't change that math at all), but labeling it as a
     // literal live "Move Speed" stat misled readers sitting near the cap
     // most of the time into reading e.g. "139.xx% (140% cap)" as a bug
     // ("why isn't this 140?") rather than the correct EV it was. Same
@@ -5615,8 +5527,9 @@
       } else {
         foodNoteEl.style.display = "";
         const pct = result.wineVsManaFood * 100;
-        const winner = pct >= 0 ? "Mana Food + Bleed" : "Vernese Wine";
-        const loser = pct >= 0 ? "Vernese Wine" : "Mana Food + Bleed";
+        const manaFoodWord = manaFoodHasBleed ? "Mana Food + Bleed" : "Mana Food";
+        const winner = pct >= 0 ? manaFoodWord : "Vernese Wine";
+        const loser = pct >= 0 ? "Vernese Wine" : manaFoodWord;
         // Worded as a complete-setup comparison (not "Raid Captain gained
         // X%") because that's what raidCaptainWineVsManaFood actually
         // computes - it multiplies RC's own food-dependent Move Speed
@@ -5641,17 +5554,20 @@
     // consumable rows - folded into the checkbox label's tooltip instead
     // so a reader not on 222 doesn't pay for a row that's never relevant
     // to them. Appended (not swapped in) since the label's base text -
-    // the Main Stat double-counting caveat - applies to both specs; only
-    // the 222 aside is Surge-only info, not a spec-conditional rewrite of
-    // the base text itself (contrast SPEC_NOTE_TEXT_RE/SURGE above, which
-    // really are two different messages for the same trigger). Lives on
-    // the checkbox label itself (not a dedicated icon) - see
-    // ap-brace-tooltip.js's own comment on why a persistent element like
-    // this one needs its title kept in sync on every recompute rather
-    // than just set once.
+    // the Main Stat double-counting caveat - applies to every spec/build;
+    // only the 222 aside is build-specific info, not a spec-conditional
+    // rewrite of the base text itself (contrast SPEC_NOTE_TEXT_RE/SURGE
+    // above, which really are two different messages for the same
+    // trigger). Gated on is222Build specifically (not isSurge) - it's the
+    // actual reason 222's own Mana Food is now Main-Stat-only above, so
+    // 111/333 Surge no longer need to carry an aside that was never about
+    // them. Lives on the checkbox label itself (not a dedicated icon) -
+    // see ap-brace-tooltip.js's own comment on why a persistent element
+    // like this one needs its title kept in sync on every recompute
+    // rather than just set once.
     const manaFoodCheckboxLabelEl = root.querySelector(".ap-engr-manafood-row .ap-engr-checkbox-label");
     if (manaFoodCheckboxLabelEl) {
-      manaFoodCheckboxLabelEl.title = MANAFOOD_TIP_BASE_TEXT + (isSurge ? MANAFOOD_TIP_222_SUFFIX : "");
+      manaFoodCheckboxLabelEl.title = MANAFOOD_TIP_BASE_TEXT + (is222Build(root) ? MANAFOOD_TIP_222_SUFFIX : "");
     }
 
     const rowsContainer = root.querySelector(".ap-engr-contrib-rows");
