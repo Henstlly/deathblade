@@ -979,21 +979,58 @@
   };
 
   // Top Combinations: per-root UI-only state for previewing a non-best
-  // cell's stats in the Best Setup card. Deliberately NOT persisted (not
-  // in readInputs' localStorage round-trip, not part of export/import) -
-  // this is a reader's "let me look at something other than the true
-  // best" toggle, not a build choice, so it resets to "auto" (rank 1) on
-  // reload same as any other transient UI state. Doesn't affect any
-  // calculation - see renderGrid's own comment.
+  // cell's stats in the Best Setup card (previewRank), and for PINNING
+  // one of the 2nd/3rd-best cells as the combo every bestComboFor()
+  // search on the page should resolve to instead of re-searching all 9
+  // (pinnedCombo - see bestComboFor's own comment). Both are deliberately
+  // NOT persisted (not in readInputs' localStorage round-trip, not part
+  // of export/import) - a reader's "let me look at/base everything on
+  // something other than the true best" choice, not a build choice, so
+  // both reset to "auto" (rank 1, unpinned) on reload same as any other
+  // transient UI state. previewRank alone never affects any calculation
+  // (see renderGrid's own comment); pinnedCombo does, deliberately, for
+  // every panel below the grid - that's the whole point of pinning.
+  // pinnedCombo is stored as { splitKey, pair } (matching EVOLUTION_
+  // SPLITS' own .key and COMBINED_KEYSTONES strings) rather than a rank
+  // number, since which rank a given combo occupies can change as the
+  // reader edits other inputs - identity has to survive a re-sort.
   const apCalcSelection = new WeakMap();
   function getApCalcSelection(root) {
     let state = apCalcSelection.get(root);
     if (!state) {
-      state = { previewRank: 1 };
+      state = { previewRank: 1, pinnedCombo: null };
       apCalcSelection.set(root, state);
     }
     return state;
   }
+
+  // Resolves a stored { splitKey, pair } pin back into the real
+  // { split, pair } shape bestComboFor's search loop uses (split is one
+  // of the actual EVOLUTION_SPLITS objects, looked up by its .key -
+  // pinnedCombo itself only stores the key, not the object, so this is
+  // the one place that ever has to know EVOLUTION_SPLITS' shape for it).
+  // Returns null for a null/unresolvable pin (e.g. a stale key) rather
+  // than throwing, so a bad pin just quietly falls back to normal
+  // re-search instead of breaking the calculator.
+  function resolvePinnedCombo(pinnedCombo) {
+    if (!pinnedCombo) return null;
+    const split = EVOLUTION_SPLITS.find((s) => s.key === pinnedCombo.splitKey);
+    if (!split) return null;
+    return { split, pair: pinnedCombo.pair };
+  }
+
+  // Active pin for bestComboFor's search below, for the duration of one
+  // update(root) call only. Module-level scratch rather than a
+  // bestComboFor(...) parameter so none of its ~30 existing call sites
+  // (scattered across every compute*Comparison function, several calls
+  // deep inside update()) need touching. Safe because update() is fully
+  // synchronous top to bottom (no awaits anywhere in its call chain) and
+  // .ap-calc roots are always processed one at a time by registerRenderer
+  // - so this can never be read for the wrong root or leak between two
+  // roots' updates. Set right before the compute*/render* chain in
+  // update(root) and cleared in a finally right after, so a mid-update
+  // throw can't leave a stale pin active for whatever runs next.
+  let activePinnedCombo = null;
 
   // Party & Positioning's synergy/support toggles (Crit Rate Synergy 1/2,
   // Crit Hit Damage Synergy 1/2, and the Passionate Dance support toggle) -
@@ -1884,6 +1921,28 @@
   // parameter existed.
   function bestComboFor(candidateInputs, sharedOverride) {
     const shared = sharedOverride || computeShared(candidateInputs);
+    // Top Combinations pin (see activePinnedCombo's own comment): when a
+    // reader has pinned a 2nd/3rd-best combo, every caller of
+    // bestComboFor - which is every "what's actually best for this
+    // candidate" search on the page - resolves to that fixed combo
+    // instead of re-searching all 9 cells. Deliberately still runs the
+    // candidate through the real combinedMultiplier for the pinned
+    // split/pair (not just echoing a stored number), so a pinned combo's
+    // reported gains stay numerically honest for whatever candidate is
+    // actually being evaluated. computeGridAndSummary's own 9-cell grid/
+    // ranking is NOT affected - it never calls bestComboFor (see its own
+    // comment) - so the Top Combinations list's underlying RANKING always
+    // reflects the true ranking, pin or no pin. (renderGrid can still
+    // force the pinned combo into the visible 3rd row - with its own
+    // true rank number shown instead of a fake "3rd Best" - if it's
+    // drifted below true 3rd place; see renderGrid's own comment. That's
+    // a display-only substitution and doesn't change what's computed
+    // here.)
+    if (activePinnedCombo) {
+      const { split, pair } = activePinnedCombo;
+      const mult = combinedMultiplier(candidateInputs, shared, split.keenSense, split.limitBreak, pair);
+      return { mult, pair, split };
+    }
     let best = null;
     EVOLUTION_SPLITS.forEach((split) => {
       COMBINED_KEYSTONES.forEach((pair) => {
@@ -5035,30 +5094,98 @@
     setDisplay("#ap-crit-hit-syn-2", inputs.critHitSyn2 ? 0.08 : 0);
   }
 
+  // "1st"/"2nd"/"3rd"/"4th"... - only used for a pinned combo that has
+  // drifted below the visible top 3 (see renderGrid's own comment on
+  // pinnedDisplayCell) and needs an honest true-rank label instead of a
+  // fake "3rd Best".
+  function ordinal(n) {
+    const rem100 = n % 100;
+    if (rem100 >= 11 && rem100 <= 13) return n + "th";
+    switch (n % 10) {
+      case 1: return n + "st";
+      case 2: return n + "nd";
+      case 3: return n + "rd";
+      default: return n + "th";
+    }
+  }
+
   function renderGrid(root, result) {
     // Top 3 combinations, ranked by % of the grid's best cell. Pure
     // rendering: pctOfBest was already computed in computeGridAndSummary,
-    // this only sorts and displays it - no math happens here.
+    // this only sorts and displays it - no math happens here. The
+    // RANKING itself is always the TRUE ranking, pin or no pin - it
+    // comes straight from result.cells, and computeGridAndSummary never
+    // calls bestComboFor (see that function's own comment), so it can't
+    // be circularly affected by a pin bestComboFor itself is honoring.
     //
     // Each row is also clickable: it just PREVIEWS that rank's own stats
     // in the Best Setup card below (title swaps to "2nd/3rd Best Setup")
     // - a display-only toggle, doesn't touch inputs or any calculation at
     // all. UI-only state (see apCalcSelection) - never saved/exported,
     // resets to "auto" (rank 1) on reload.
+    //
+    // The 2nd/3rd rows additionally carry a pin control (.ap-result-pin -
+    // see initApCalcRoot's own listener): pinning goes a step further
+    // than previewing - it also becomes the fixed combo every
+    // bestComboFor() search on the rest of the page resolves to (see
+    // activePinnedCombo). Identity is tracked by combo (split key +
+    // keystone pair, stashed on the row via data-combo-split/-pair every
+    // render below), not by rank, since a pinned combo's rank can itself
+    // shift as the reader edits other inputs.
+    //
+    // PINNED-BUT-DRIFTED-OUT-OF-TOP-3: if the pinned combo's true rank
+    // falls to 4th or below as the reader edits other inputs, it stays
+    // FORCED into the 3rd row slot (bumping the true 3rd place out of
+    // view) rather than silently vanishing - it's still the thing every
+    // panel below is computed against, so it stays visible with its own
+    // real, live numbers (pct/delta both still read straight off its own
+    // cell, same as any other row - nothing about those is faked). The
+    // row's rank badge shows its true overall rank (e.g. "5") instead of
+    // "3" in that case, and the Best Setup card title says "Pinned Setup
+    // (5th Best)" rather than falsely claiming 3rd. Unpinning reverts the
+    // row to whichever combo is truly 3rd again.
     const list = root.querySelector(".ap-calc-results");
     if (!list) return;
 
     const state = getApCalcSelection(root);
-    const ranked = result.cells.slice().sort((a, b) => b.pctOfBest - a.pctOfBest).slice(0, 3);
+    const pinnedCombo = state.pinnedCombo;
+    const allRanked = result.cells.slice().sort((a, b) => b.pctOfBest - a.pctOfBest);
+    const ranked = allRanked.slice(0, 3);
 
-    ranked.forEach((cell, i) => {
+    const sameCombo = (a, b) => !!a && !!b && a.split.key === b.split.key && a.keystone === b.keystone;
+
+    // The pinned cell, if any, looked up across ALL 9 cells (not just the
+    // top 3) and its TRUE rank among all 9 - needed regardless of
+    // whether it's currently inside the visible top 3, both to decide
+    // whether it needs to be force-displayed and to label it honestly
+    // when it does.
+    const pinnedCell = pinnedCombo
+      ? result.cells.find((c) => c.split.key === pinnedCombo.splitKey && c.keystone === pinnedCombo.pair) || null
+      : null;
+    const pinnedTrueRank = pinnedCell ? allRanked.findIndex((c) => sameCombo(c, pinnedCell)) + 1 : null;
+
+    // What actually populates the 3 visible rows: the true top 3, unless
+    // the pinned combo isn't among them - then it takes over the 3rd
+    // (lowest) slot instead of the true 3rd place. Rank 1 is never
+    // touched (it's always the true best, and has no pin control to
+    // begin with - see resources.md).
+    const displayRows = ranked.slice();
+    const pinnedForcedIn = !!pinnedCell && !ranked.some((c) => sameCombo(c, pinnedCell));
+    if (pinnedForcedIn) displayRows[2] = pinnedCell;
+
+    displayRows.forEach((cell, i) => {
+      if (!cell) return;
       const rank = i + 1;
       const rowEl = list.querySelector('.ap-calc-result-row[data-rank="' + rank + '"]');
       if (!rowEl) return;
 
+      const rankEl = rowEl.querySelector(".ap-result-rank");
       const comboEl = rowEl.querySelector(".ap-result-combo");
       const pctEl = rowEl.querySelector(".ap-result-pct");
       const deltaEl = rowEl.querySelector(".ap-result-delta");
+
+      const forcedHere = rank === 3 && pinnedForcedIn;
+      if (rankEl) rankEl.textContent = forcedHere ? String(pinnedTrueRank) : String(rank);
 
       if (comboEl) {
         comboEl.textContent = cell.split.label + " \u00B7 " + (KEYSTONE_LABELS[cell.keystone] || cell.keystone);
@@ -5069,24 +5196,74 @@
       }
       rowEl.classList.toggle("ap-calc-result-row-best", rank === 1);
       rowEl.classList.toggle("ap-calc-result-row-active", state.previewRank === rank);
+      rowEl.classList.toggle("ap-calc-result-row-forced", forcedHere);
+
+      // Refreshed every render so the pin click handler (which reads
+      // these back off the DOM at click time) always toggles whatever
+      // combo is CURRENTLY sitting in this row, not whatever was there
+      // when the listener was first attached. This is exactly why
+      // force-displaying the pinned combo in row 3 is safe: the row's
+      // own identity is refreshed to match it, so the row's pin button
+      // still toggles the right combo and the click-to-preview handler
+      // still previews the right stats.
+      rowEl.dataset.comboSplit = cell.split.key;
+      rowEl.dataset.comboPair = cell.keystone;
+
+      const pinEl = rowEl.querySelector(".ap-result-pin");
+      if (pinEl) {
+        const isPinned = !!(pinnedCombo && pinnedCombo.splitKey === cell.split.key && pinnedCombo.pair === cell.keystone);
+        pinEl.classList.toggle("ap-result-pin-active", isPinned);
+        pinEl.setAttribute("aria-pressed", isPinned ? "true" : "false");
+        rowEl.classList.toggle("ap-calc-result-row-pinned", isPinned);
+      } else {
+        rowEl.classList.remove("ap-calc-result-row-pinned");
+      }
     });
 
+    // Marks every row's click-to-preview as inert while a pin is active
+    // (see the preview() early-return in initApCalcRoot) - drops the
+    // pointer cursor/hover tint from non-pinned rows via CSS so they
+    // don't keep advertising an interaction that no longer does
+    // anything. The pinned row's own .ap-result-pin button is exempt
+    // (see the CSS) since unpinning is still live.
+    list.classList.toggle("ap-calc-results-pinned", !!pinnedCombo);
+
     // Which cell's stats populate the Best Setup card, and what its title
-    // reads: whichever rank the reader's currently previewing.
+    // reads: the pinned cell if one's active (pin always wins over a
+    // stale previewRank - see resolvePinnedCombo's own comment on why
+    // identity is combo-based), otherwise whichever rank the reader's
+    // currently previewing.
     const cardRank = Math.min(Math.max(state.previewRank || 1, 1), ranked.length || 1);
-    const cardCell = ranked[cardRank - 1] || ranked[0] || null;
+    const cardCell = pinnedCell || ranked[cardRank - 1] || ranked[0] || null;
 
     const cardEl = root.querySelector(".ap-stat-card-best");
     const titleEl = cardEl && cardEl.querySelector(".ap-stat-card-title");
     if (titleEl) {
-      const rankTitles = { 1: "Best Setup", 2: "2nd Best Setup", 3: "3rd Best Setup" };
-      titleEl.textContent = rankTitles[cardRank] || "Best Setup";
+      if (pinnedCell) {
+        const rankLabels = { 1: "Best", 2: "2nd Best", 3: "3rd Best" };
+        const rankLabel = rankLabels[pinnedTrueRank] || (pinnedTrueRank ? ordinal(pinnedTrueRank) + " Best" : null);
+        titleEl.textContent = rankLabel ? "Pinned Setup (" + rankLabel + ")" : "Pinned Setup";
+      } else {
+        const rankTitles = { 1: "Best Setup", 2: "2nd Best Setup", 3: "3rd Best Setup" };
+        titleEl.textContent = rankTitles[cardRank] || "Best Setup";
+      }
     }
     if (cardEl) {
       // Mirrors the Top Combinations row's lavender "previewed" tint onto
       // the card itself, so the two stay visually linked even if the
-      // previewed row has scrolled out of view.
-      cardEl.classList.toggle("ap-stat-card-previewed", cardRank !== 1);
+      // previewed row has scrolled out of view. Pinned gets its own
+      // coral treatment instead (see the CSS, same accent as the pin's
+      // own tack icon) since it's a stronger statement than "just
+      // looking" - it's actually driving every other panel on the page.
+      // Pin always wins over plain preview if both were somehow set
+      // (shouldn't normally happen - previewRank follows the pin, see
+      // initApCalcRoot). This card title/tint is the only on-page
+      // indicator that something's pinned once the pin drifts off the
+      // visible rank-2/3 rows (see pinnedCell's own comment above) -
+      // deliberately no separate note/Unpin control beyond the tack icon
+      // itself and this card, kept intentionally minimal.
+      cardEl.classList.toggle("ap-stat-card-pinned", !!pinnedCell);
+      cardEl.classList.toggle("ap-stat-card-previewed", !pinnedCell && cardRank !== 1);
     }
 
     // Verification panel
@@ -6154,30 +6331,45 @@
     enforceStoneSlotExclusivity(root, "ap-esvs-a");
     enforceStoneSlotExclusivity(root, "ap-esvs-b");
     enforceEngravingSvsSlotExclusivity(root, isSurgeBuild(root));
-    const inputs = readInputs(root);
-    const result = computeGridAndSummary(inputs);
-    renderGrid(root, result);
-    updateInputDisplays(root, inputs);
-    renderBraceletComparison(root, computeBraceletComparison(inputs));
-    renderBraceletVsBracelet(root, inputs, computeBraceletVsBracelet(inputs));
-    renderAccessoryComparison(root, computeAccessoryComparison(inputs));
-    renderAccessoryVsAccessory(root, computeAccessoryVsAccessory(inputs));
-    renderArkGridComparison(root, computeArkGridComparison(inputs));
-    const engrInputs = readEngravingInputs(root);
-    renderEngravingComparison(
-      root,
-      computeEngravingComparison(inputs, engrInputs),
-      engrInputs,
-      computeOverallBestEngravingSetup(inputs, engrInputs)
-    );
-    const svsA = readEngravingSvsSide(root, "a");
-    const svsB = readEngravingSvsSide(root, "b");
-    renderEngravingSetupComparison(
-      root,
-      computeEngravingSetupComparison(inputs, engrInputs, svsA, svsB),
-      computeOverallBestEngravingSetupAB(inputs, engrInputs, svsA, svsB),
-      engrInputs.spec === "surge"
-    );
+
+    // Top Combinations pin: resolve this root's stored { splitKey, pair }
+    // (if any) and make it the active pin for bestComboFor - see
+    // activePinnedCombo's own comment above for why this is a module-
+    // level set/clear around the compute/render chain rather than a
+    // parameter threaded through it. The finally guarantees it's cleared
+    // even if a compute* call below throws, so a mid-update error here
+    // can never leave a stale pin bleeding into some later, unrelated
+    // update() call (this root's next one, or another .ap-calc root's).
+    const selection = getApCalcSelection(root);
+    activePinnedCombo = resolvePinnedCombo(selection.pinnedCombo);
+    try {
+      const inputs = readInputs(root);
+      const result = computeGridAndSummary(inputs);
+      renderGrid(root, result);
+      updateInputDisplays(root, inputs);
+      renderBraceletComparison(root, computeBraceletComparison(inputs));
+      renderBraceletVsBracelet(root, inputs, computeBraceletVsBracelet(inputs));
+      renderAccessoryComparison(root, computeAccessoryComparison(inputs));
+      renderAccessoryVsAccessory(root, computeAccessoryVsAccessory(inputs));
+      renderArkGridComparison(root, computeArkGridComparison(inputs));
+      const engrInputs = readEngravingInputs(root);
+      renderEngravingComparison(
+        root,
+        computeEngravingComparison(inputs, engrInputs),
+        engrInputs,
+        computeOverallBestEngravingSetup(inputs, engrInputs)
+      );
+      const svsA = readEngravingSvsSide(root, "a");
+      const svsB = readEngravingSvsSide(root, "b");
+      renderEngravingSetupComparison(
+        root,
+        computeEngravingSetupComparison(inputs, engrInputs, svsA, svsB),
+        computeOverallBestEngravingSetupAB(inputs, engrInputs, svsA, svsB),
+        engrInputs.spec === "surge"
+      );
+    } finally {
+      activePinnedCombo = null;
+    }
   }
 
   // Chaos Core: Flashy Attack, Chaos Core: Stable Attack, and Chaos
@@ -6775,10 +6967,20 @@
       // resetInputs/switchPreset above) rather than going through
       // scheduleUpdate's rafSchedule - there's no rapid-fire typing to
       // debounce here, just a click.
+      // Disabled while a pin is active: renderGrid's cardCell always
+      // resolves to pinnedCell over ranked[cardRank - 1] whenever a pin
+      // exists, so changing previewRank while pinned has zero visible
+      // effect on the Best Setup card - it would only relabel some other
+      // row -active (lavender), which then fights the pinned row's
+      // coral for no reason (see the CSS comment on
+      // .ap-calc-result-row-active's :not(-pinned) exclusion). Unpinning
+      // (the dedicated .ap-result-pin button, stopPropagation'd below)
+      // is unaffected by this check.
       root.querySelectorAll(".ap-calc-result-row").forEach((rowEl) => {
         const rank = parseInt(rowEl.dataset.rank, 10);
         const preview = () => {
           const state = getApCalcSelection(root);
+          if (state.pinnedCombo) return;
           state.previewRank = rank;
           update(root);
         };
@@ -6788,6 +6990,53 @@
             ev.preventDefault();
             preview();
           }
+        });
+      });
+
+      // Top Combinations pin (2nd/3rd rows only - see resources.md, rank
+      // 1 already IS the default base so there's nothing for it to pin
+      // to). A real <button> nested inside the row's own clickable div,
+      // so stopPropagation is required or activating it would also fire
+      // the preview listener just above for the row itself - harmless
+      // either way (pinning sets previewRank to match, see below), but
+      // stopping it keeps the two actions' effects easy to reason about
+      // independently. Reads the row's current combo off
+      // data-combo-split/-pair (refreshed every renderGrid call) rather
+      // than capturing it once here, since which combo sits in this row
+      // can change between renders.
+      root.querySelectorAll(".ap-result-pin").forEach((pinEl) => {
+        const rowEl = pinEl.closest(".ap-calc-result-row");
+        if (!rowEl) return;
+        // The row's own keydown listener (Enter/Space -> preview, added
+        // just above) also fires on a keydown that originates on this
+        // nested button and bubbles up - stopped here so a keyboard
+        // Enter/Space on the pin button doesn't ALSO trigger the row's
+        // preview handler racing against this button's own click handler
+        // below (confirmed by hand: without this, keyboard activation
+        // could leave previewRank set but pinnedCombo not, depending on
+        // event ordering - mouse clicks were never affected, only
+        // keyboard). Default behavior (the button synthesizing its own
+        // click on Enter/Space) is left alone - only bubbling is stopped.
+        pinEl.addEventListener("keydown", (ev) => {
+          ev.stopPropagation();
+        });
+        pinEl.addEventListener("click", (ev) => {
+          ev.stopPropagation();
+          const splitKey = rowEl.dataset.comboSplit;
+          const pair = rowEl.dataset.comboPair;
+          if (!splitKey || !pair) return;
+          const state = getApCalcSelection(root);
+          const alreadyPinned =
+            state.pinnedCombo && state.pinnedCombo.splitKey === splitKey && state.pinnedCombo.pair === pair;
+          if (alreadyPinned) {
+            state.pinnedCombo = null;
+            state.previewRank = 1;
+          } else {
+            state.pinnedCombo = { splitKey, pair };
+            const rank = parseInt(rowEl.dataset.rank, 10);
+            if (rank) state.previewRank = rank;
+          }
+          update(root);
         });
       });
 

@@ -4156,6 +4156,7 @@ h3 { color: var(--dbc-teal); }
   margin-bottom: 0.6em;
 }
 .md-typeset .ap-calc-result-row {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 0.7em;
@@ -4178,6 +4179,20 @@ h3 { color: var(--dbc-teal); }
 .md-typeset .ap-calc-result-row:active {
   background-color: rgba(255, 255, 255, 0.05);
 }
+/* While a pin is active, every OTHER row's click-to-preview is a no-op
+   (see initApCalcRoot's preview() early-return) - drop the pointer
+   cursor and hover/focus tint so they stop advertising an interaction
+   that no longer does anything. The pinned row itself keeps cursor:
+   pointer via the plain rule above (its .ap-result-pin button is still
+   live for unpinning), this only mutes its NEIGHBORS. */
+.md-typeset .ap-calc-results-pinned .ap-calc-result-row:not(.ap-calc-result-row-pinned) {
+  cursor: default;
+}
+.md-typeset .ap-calc-results-pinned .ap-calc-result-row:not(.ap-calc-result-row-pinned):hover,
+.md-typeset .ap-calc-results-pinned .ap-calc-result-row:not(.ap-calc-result-row-pinned):focus-visible,
+.md-typeset .ap-calc-results-pinned .ap-calc-result-row:not(.ap-calc-result-row-pinned):active {
+  background-color: transparent;
+}
 .md-typeset .ap-calc-result-row:focus-visible {
   outline: 1px solid rgba(var(--dbc-lavender-rgb), 0.6);
   outline-offset: -1px;
@@ -4193,8 +4208,16 @@ h3 { color: var(--dbc-teal); }
    populating the Best Setup card below. Deliberately a fainter lavender
    tint rather than reusing -best's teal: teal still means "this IS the
    true best" (rank 1 keeps it even while another row is being
-   previewed), this just marks "you're currently looking at this one". */
-.md-typeset .ap-calc-result-row-active:not(.ap-calc-result-row-best) {
+   previewed), this just marks "you're currently looking at this one".
+   :not(.ap-calc-result-row-pinned) is required, not optional: a pinned
+   row is virtually always also -active (pinning sets previewRank to
+   match, see initApCalcRoot), and two class selectors here outrank
+   -pinned's one class selector below regardless of source order - so
+   without this exclusion, lavender silently wins over coral on every
+   pinned row despite -pinned being defined later "to take priority" (see
+   its own comment). This exclusion is what actually gives -pinned
+   priority; the later source position alone was never enough. */
+.md-typeset .ap-calc-result-row-active:not(.ap-calc-result-row-best):not(.ap-calc-result-row-pinned) {
   border-color: rgba(var(--dbc-lavender-rgb), 0.6);
   background-color: rgba(var(--dbc-lavender-rgb), 0.12);
 }
@@ -4221,6 +4244,15 @@ h3 { color: var(--dbc-teal); }
   font-weight: 600;
   color: var(--md-default-fg-color);
   min-width: 0;
+  /* At the narrowest supported widths this can be squeezed tight enough
+     that a single word ("Pulverize") no longer fits its own line;
+     without this it'll break mid-word ("Pulveriz"/"e") rather than
+     overflow, which reads as broken. Wrapping between words (already
+     the common case - "Critical + Pulverize" already spans 2-3 lines
+     at these widths) stays untouched; only mid-word breaking is ruled
+     out. */
+  overflow-wrap: normal;
+  word-break: normal;
 }
 .md-typeset .ap-calc-result-row-best .ap-result-combo {
   color: var(--dbc-teal);
@@ -4249,6 +4281,91 @@ h3 { color: var(--dbc-teal); }
   .md-typeset .ap-result-delta {
     display: none;
   }
+}
+
+/* Pin control (2nd/3rd rows only) - see bestComboFor/update's own
+   comments in the JS for what pinning actually does. A small thumbtack,
+   overlaid on the row's own top-right corner via position:absolute
+   rather than sitting inline with rank/combo/delta/pct - it never
+   competes with them for flex space this way, so every row's % lands in
+   the same column whether or not that row even has a pin control (see
+   resources.md's own comment). The backing circle matches the page
+   background (--md-default-bg-color - same convention as the other
+   corner-knockout badges in this file, e.g. avatar borders above) so it
+   reads as a tack actually stuck into the card's corner rather than a
+   layered rectangle. Coral (--dbc-red) reuses the same "warn" accent as
+   .ap-brace-warn-icon's WARN pill elsewhere in the calculator, rather
+   than inventing a new one-off color, and is a deliberately different
+   hue from -best's teal and -active's lavender so pinned reads as its
+   own distinct 3rd state at a glance. */
+.md-typeset .ap-result-pin {
+  position: absolute;
+  top: -5px;
+  right: -7px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25em;
+  height: 1.25em;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--md-default-bg-color);
+  color: var(--md-default-fg-color--light);
+  opacity: 0.5;
+  cursor: pointer;
+  transition: opacity 0.12s ease, color 0.12s ease;
+}
+.md-typeset .ap-result-pin svg {
+  width: 0.85em;
+  height: 0.85em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transform: rotate(18deg);
+}
+.md-typeset .ap-calc-result-row:hover .ap-result-pin,
+.md-typeset .ap-result-pin:hover,
+.md-typeset .ap-result-pin:focus-visible {
+  opacity: 0.85;
+}
+.md-typeset .ap-result-pin:focus-visible {
+  outline: 1px solid rgba(var(--dbc-red-rgb), 0.6);
+  outline-offset: 1px;
+}
+.md-typeset .ap-result-pin-active {
+  opacity: 1;
+  color: var(--dbc-red);
+}
+/* Pinned row - a stronger/warmer treatment than plain -active (preview
+   only, see above), since a pinned row is also driving every other
+   comparison panel on the page, not just what's shown in the Best Setup
+   card. Takes priority visually over -active because -active now
+   explicitly excludes :not(.ap-calc-result-row-pinned) - source order
+   alone does NOT do this (a plain .ap-calc-result-row-pinned selector is
+   lower specificity than -active's two-class selector and would lose to
+   it despite coming later - this was a real bug, fixed at -active's
+   selector, not here). -best still loses to -pinned the "soft" way
+   (source order, equal specificity), which is fine since a pinned row
+   is never simultaneously -best (rank 1 has no pin control). */
+.md-typeset .ap-calc-result-row-pinned {
+  border-color: rgba(var(--dbc-red-rgb), 0.55);
+  background-color: rgba(var(--dbc-red-rgb), 0.08);
+}
+/* Row 3 forced to show a pinned combo that's actually drifted below true
+   3rd place (see renderGrid's own comment on pinnedForcedIn) - the rank
+   badge itself already swaps from "3" to the combo's real overall rank
+   (e.g. "5"), this just tints that badge the same coral as the pin icon
+   so the "this number looks unusual" cue reads as "because it's pinned",
+   not as a bug. Deliberately just a color shift on the existing circle -
+   no new icon, no layout change, keeps the row visually identical to any
+   other row otherwise. */
+.md-typeset .ap-calc-result-row-forced .ap-result-rank {
+  color: var(--dbc-red);
+  background-color: rgba(var(--dbc-red-rgb), 0.16);
 }
 
 /* ---- Live "what this field is contributing" tags ---- */
@@ -4321,6 +4438,20 @@ h3 { color: var(--dbc-teal); }
 }
 .md-typeset .ap-stat-card-best.ap-stat-card-previewed .ap-stat-card-title {
   color: var(--dbc-lavender);
+}
+/* Pinned (see .ap-calc-result-row-pinned/renderGrid's own comment) -
+   same coral treatment as the pinned row's own tack/border, so the card
+   and the pin driving it read as visually linked. Takes priority over
+   -previewed above: renderGrid never sets both at once (pin always wins
+   when present), so this rule never has to fight -previewed's for
+   specificity in practice - listed after it here purely for reading
+   order next to it. */
+.md-typeset .ap-stat-card-best.ap-stat-card-pinned {
+  border-color: rgba(var(--dbc-red-rgb), 0.5);
+  background-color: rgba(var(--dbc-red-rgb), 0.06);
+}
+.md-typeset .ap-stat-card-best.ap-stat-card-pinned .ap-stat-card-title {
+  color: var(--dbc-red);
 }
 .md-typeset .ap-stat-card-row {
   display: flex;
