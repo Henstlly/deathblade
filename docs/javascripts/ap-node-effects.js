@@ -64,9 +64,11 @@
 //     stacks to reaching exactly 60 (values unchanged: +[70/95/120%])
 //   - "Locked In" renamed "Chaos Infusion": was a 12s on-hit buff
 //     +[2/4/6/8/10%], now a flat Back Attack conditional at the same %s
-//   - "Sword Spirit Compression" renamed "Chaotic Power": completely
-//     rewritten mechanic (see chaoticpower below), damage settled at
-//     +[6/23/40%] and Deathly Slash Damage penalty settled at -25%
+//   - "Sword Spirit Compression" renamed "Chaotic Power", then renamed
+//     again to "Chaos Strength" (id stays "chaoticpower" - see
+//     ap-node-names.js): completely rewritten mechanic (see chaoticpower
+//     below), damage settled at +[6/23/40%] and Deathly Slash Damage
+//     penalty settled at -25%
 //   - Path of the Blade: Crit Damage buff duration 5s -> 10s; the old
 //     "Breaking Moon Damage +[10/20/30%]" line isn't mentioned by the
 //     patch note at all, treated as dropped in favor of "Breaking Moon
@@ -74,6 +76,30 @@
 //   - Dance of Screams: old flat "Deathly Slash Damage +[4/15/25%]" line
 //     isn't mentioned by the patch note either, treated as superseded by
 //     the new normal/Death-Trance damage split below
+//
+// Re-transcribed against a fresh set of in-game tooltip screenshots
+// (2026-09-17) for six nodes whose EN client wording had drifted from
+// what was transcribed above - no numeric values changed on any of the
+// six, just phrasing:
+//   - Limit Break (Enlightenment): "On reaching 60 Surge stacks" -> "At 60
+//     Surge Enhancement stacks"
+//   - Orb Control: "Orb Gauge doesn't decrease" -> "Orb Meter is not
+//     consumed"; "Damage to foes during Death Trance" -> "Damage during
+//     Death Trance"
+//   - Chaos Infusion: "When hitting Deathblade Surge as a Back Attack,
+//     damage to foes +X%" -> "When Deathblade Surge lands as a Back
+//     Attack, Outgoing Damage +X%"
+//   - Chaotic Power / Chaos Strength: full rewrite to match the client's
+//     current wording ("Partially liberates restrained demonic energy to
+//     transform Deathblade Surge into a powerful attack condensed with
+//     Chaos Strength..."), see chaoticpower below
+//   - Path of the Blade: "Normal operation" -> "Normal Mode"; "Deathblade
+//     Surge's Crit Damage" -> "Deathblade Surge Crit Damage"; "This effect
+//     is removed after Deathblade Surge is used" -> "Effect is removed on
+//     using Deathblade Surge"
+//   - Dance of Screams: reformatted from one flat sentence into "Deathly
+//     Slash's Flurry attack count +N and Damage +X%. While in Death
+//     Trance, Damage +Y%."
 //
 // Must load after ap-node-names.js (shares its id namespace) and before
 // ark-passive-tooltip.js - see the extra_javascript order in mkdocs.yml.
@@ -266,28 +292,28 @@
     },
     orbcontrol: {
       levels: [
-        { level: 1, text: "While in Death Trance, Orb Gauge doesn't decrease. Damage to foes during Death Trance +1%." },
-        { level: 2, text: "While in Death Trance, Orb Gauge doesn't decrease. Damage to foes during Death Trance +2%." },
-        { level: 3, text: "While in Death Trance, Orb Gauge doesn't decrease. Damage to foes during Death Trance +3%." },
-        { level: 4, text: "While in Death Trance, Orb Gauge doesn't decrease. Damage to foes during Death Trance +4%." },
-        { level: 5, text: "While in Death Trance, Orb Gauge doesn't decrease. Damage to foes during Death Trance +5%." },
+        { level: 1, text: "While in Death Trance, Orb Meter is not consumed. Damage during Death Trance +1%." },
+        { level: 2, text: "While in Death Trance, Orb Meter is not consumed. Damage during Death Trance +2%." },
+        { level: 3, text: "While in Death Trance, Orb Meter is not consumed. Damage during Death Trance +3%." },
+        { level: 4, text: "While in Death Trance, Orb Meter is not consumed. Damage during Death Trance +4%." },
+        { level: 5, text: "While in Death Trance, Orb Meter is not consumed. Damage during Death Trance +5%." },
       ],
     },
     limitbreakenl: {
       levels: [
-        { level: 1, text: "On reaching 60 Surge stacks, Deathblade Surge's Orb Compression effect Damage +70%." },
-        { level: 2, text: "On reaching 60 Surge stacks, Deathblade Surge's Orb Compression effect Damage +95%." },
-        { level: 3, text: "On reaching 60 Surge stacks, Deathblade Surge's Orb Compression effect Damage +120%." },
+        { level: 1, text: "At 60 Surge Enhancement stacks, Deathblade Surge's Orb Compression effect Damage +70%." },
+        { level: 2, text: "At 60 Surge Enhancement stacks, Deathblade Surge's Orb Compression effect Damage +95%." },
+        { level: 3, text: "At 60 Surge Enhancement stacks, Deathblade Surge's Orb Compression effect Damage +120%." },
       ],
       note: "Requires Orb Compression Lv.3.",
     },
     chaosinfusion: {
       levels: [
-        { level: 1, text: "When hitting Deathblade Surge as a Back Attack, damage to foes +2%." },
-        { level: 2, text: "When hitting Deathblade Surge as a Back Attack, damage to foes +4%." },
-        { level: 3, text: "When hitting Deathblade Surge as a Back Attack, damage to foes +6%." },
-        { level: 4, text: "When hitting Deathblade Surge as a Back Attack, damage to foes +8%." },
-        { level: 5, text: "When hitting Deathblade Surge as a Back Attack, damage to foes +10%." },
+        { level: 1, text: "When Deathblade Surge lands as a Back Attack, Outgoing Damage +2%." },
+        { level: 2, text: "When Deathblade Surge lands as a Back Attack, Outgoing Damage +4%." },
+        { level: 3, text: "When Deathblade Surge lands as a Back Attack, Outgoing Damage +6%." },
+        { level: 4, text: "When Deathblade Surge lands as a Back Attack, Outgoing Damage +8%." },
+        { level: 5, text: "When Deathblade Surge lands as a Back Attack, Outgoing Damage +10%." },
       ],
     },
     chaoticpower: {
@@ -295,26 +321,32 @@
         {
           level: 1,
           text:
-            "Unleashes part of your demonic power to transform Deathblade Surge into a powerful attack, increasing attack " +
-            "range and damage by 6%. Surge Stacks accumulate up to 80 times. On Death Trance end, up to 60 Surge stacks " +
-            "are consumed; the Orb Gauge recovery effect and Surge damage effects remain as before. Breaking Moon " +
-            "cooldown +540s, but grants 60 Surge stacks on hit. Deathly Slash cooldown -40s, but damage -25%.",
+            "Partially liberates restrained demonic energy to transform Deathblade Surge into a powerful attack " +
+            "condensed with Chaos Strength, increasing Attack Range and Damage +6%. Surge Enhancement effect stacks " +
+            "up to 80 times. When Death Trance ends, up to 60 Surge Enhancement stacks are consumed, while the Orb " +
+            "Meter recovery effect and Surge Damage increase effect are maintained. Breaking Moon Cooldown +540s, " +
+            "but hits while in Death Trance gain 60 additional Surge Enhancement stacks. Deathly Slash Cooldown " +
+            "-40s, but Damage -25%.",
         },
         {
           level: 2,
           text:
-            "Unleashes part of your demonic power to transform Deathblade Surge into a powerful attack, increasing attack " +
-            "range and damage by 23%. Surge Stacks accumulate up to 80 times. On Death Trance end, up to 60 Surge stacks " +
-            "are consumed; the Orb Gauge recovery effect and Surge damage effects remain as before. Breaking Moon " +
-            "cooldown +540s, but grants 60 Surge stacks on hit. Deathly Slash cooldown -40s, but damage -25%.",
+            "Partially liberates restrained demonic energy to transform Deathblade Surge into a powerful attack " +
+            "condensed with Chaos Strength, increasing Attack Range and Damage +23%. Surge Enhancement effect stacks " +
+            "up to 80 times. When Death Trance ends, up to 60 Surge Enhancement stacks are consumed, while the Orb " +
+            "Meter recovery effect and Surge Damage increase effect are maintained. Breaking Moon Cooldown +540s, " +
+            "but hits while in Death Trance gain 60 additional Surge Enhancement stacks. Deathly Slash Cooldown " +
+            "-40s, but Damage -25%.",
         },
         {
           level: 3,
           text:
-            "Unleashes part of your demonic power to transform Deathblade Surge into a powerful attack, increasing attack " +
-            "range and damage by 40%. Surge Stacks accumulate up to 80 times. On Death Trance end, up to 60 Surge stacks " +
-            "are consumed; the Orb Gauge recovery effect and Surge damage effects remain as before. Breaking Moon " +
-            "cooldown +540s, but grants 60 Surge stacks on hit. Deathly Slash cooldown -40s, but damage -25%.",
+            "Partially liberates restrained demonic energy to transform Deathblade Surge into a powerful attack " +
+            "condensed with Chaos Strength, increasing Attack Range and Damage +40%. Surge Enhancement effect stacks " +
+            "up to 80 times. When Death Trance ends, up to 60 Surge Enhancement stacks are consumed, while the Orb " +
+            "Meter recovery effect and Surge Damage increase effect are maintained. Breaking Moon Cooldown +540s, " +
+            "but hits while in Death Trance gain 60 additional Surge Enhancement stacks. Deathly Slash Cooldown " +
+            "-40s, but Damage -25%.",
         },
       ],
       note: "Requires Limit Break (Enlightenment) Lv.3.",
@@ -367,20 +399,20 @@
         {
           level: 1,
           text:
-            "Breaking Moon changes to Normal operation. After using the skill, Deathblade Surge's Crit Damage +20% for 10s. " +
-            "This effect is removed after Deathblade Surge is used.",
+            "Breaking Moon changes to Normal Mode. After using the skill, Deathblade Surge Crit Damage +20% for 10s. " +
+            "Effect is removed on using Deathblade Surge.",
         },
         {
           level: 2,
           text:
-            "Breaking Moon changes to Normal operation. After using the skill, Deathblade Surge's Crit Damage +40% for 10s. " +
-            "This effect is removed after Deathblade Surge is used.",
+            "Breaking Moon changes to Normal Mode. After using the skill, Deathblade Surge Crit Damage +40% for 10s. " +
+            "Effect is removed on using Deathblade Surge.",
         },
         {
           level: 3,
           text:
-            "Breaking Moon changes to Normal operation. After using the skill, Deathblade Surge's Crit Damage +60% for 10s. " +
-            "This effect is removed after Deathblade Surge is used.",
+            "Breaking Moon changes to Normal Mode. After using the skill, Deathblade Surge Crit Damage +60% for 10s. " +
+            "Effect is removed on using Deathblade Surge.",
         },
       ],
       note: "Cannot be obtained together with Flash Slash, Dance of Nightmares, or Dance of Screams.",
@@ -431,9 +463,18 @@
     },
     danceofscreams: {
       levels: [
-        { level: 1, text: "Number of Deathly Slash Flurry attacks +2, damage +20%, or +16% during Death Trance." },
-        { level: 2, text: "Number of Deathly Slash Flurry attacks +3, damage +30%, or +38% during Death Trance." },
-        { level: 3, text: "Number of Deathly Slash Flurry attacks +4, damage +40%, or +57% during Death Trance." },
+        {
+          level: 1,
+          text: "Deathly Slash's Flurry attack count +2 and Damage +20%. While in Death Trance, Damage +16%.",
+        },
+        {
+          level: 2,
+          text: "Deathly Slash's Flurry attack count +3 and Damage +30%. While in Death Trance, Damage +38%.",
+        },
+        {
+          level: 3,
+          text: "Deathly Slash's Flurry attack count +4 and Damage +40%. While in Death Trance, Damage +57%.",
+        },
       ],
       note: "Cannot be obtained together with Flash Slash, Path of the Blade, or Dance of Nightmares.",
     },

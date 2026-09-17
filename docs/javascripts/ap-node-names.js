@@ -93,7 +93,7 @@
     orbcontrol: { name: "Orb Control", icon: "ap-icons/orb-control.png", tier: 3, max: 5 },
     limitbreakenl: { name: "Limit Break", icon: "ap-icons/limit-break-enl.png", tier: 3, max: 3 },
     chaosinfusion: { name: "Chaos Infusion", icon: "ap-icons/chaos-infusion.png", tier: 4, max: 5 },
-    chaoticpower: { name: "Chaotic Power", icon: "ap-icons/chaotic-power.png", tier: 4, max: 3 },
+    chaoticpower: { name: "Chaos Strength", icon: "ap-icons/chaotic-power.png", tier: 4, max: 3 },
 
     // Leap
     transcendentpower: { name: "Transcendent Power", icon: "ap-icons/transcendent-power.png", tier: 1, max: 5 },
