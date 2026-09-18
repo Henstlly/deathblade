@@ -1953,6 +1953,26 @@
     return best;
   }
 
+  // Finds the pinned combo's OWN cell (with its real effCrit/.stats, not
+  // just mult/pair/split like bestComboFor returns) inside an already-
+  // computed grid, for the few spots that need a cell's full stat
+  // breakdown rather than just its multiplier - currently only KBW's
+  // stone-level preview sweep below. computeGridAndSummary itself
+  // deliberately never calls bestComboFor (see that function's own
+  // comment - the Top Combinations RANKING has to stay pin-independent),
+  // so any caller that grabs a grid's `.best`/`.bestStats` directly - the
+  // way this function's own isolatedBest/isolatedBestStats used to -
+  // silently reads the TRUE best cell even while a different combo is
+  // pinned. Falls back to fallbackCell (normally the grid's own `.best`)
+  // when nothing's pinned, the pin doesn't resolve, or - defensively -
+  // the pinned combo somehow isn't one of this specific grid's 9 cells.
+  function pinnedCellFrom(grid, fallbackCell) {
+    if (!activePinnedCombo || !grid || !grid.cells) return fallbackCell;
+    const { split, pair } = activePinnedCombo;
+    const match = grid.cells.find((c) => c.split.key === split.key && c.keystone === pair);
+    return match || fallbackCell;
+  }
+
   function computeBraceletComparison(inputs) {
     const gridResult = computeGridAndSummary(inputs);
     const best = gridResult.best;
@@ -4637,8 +4657,19 @@
     // still correctly uses, since only KBW's closed form is affected).
     const isolatedInputs = engravingIsolatedGridInputs(inputs, engrInputs);
     const isolatedGrid = computeGridAndSummary(isolatedInputs);
-    const isolatedBest = isolatedGrid.best || best;
-    const isolatedBestStats = isolatedGrid.bestStats || gridResult.bestStats;
+    // Pin-aware (see pinnedCellFrom's own comment) - isolatedBest/
+    // isolatedBestStats feed the stone-level preview sweep below
+    // (kbwOnCrit, marginalCritDmgGainPct's effCrit arg), which needs to
+    // reflect whatever combo is actually pinned, the same as KBW's own
+    // headline DPS Contribution row (kbwContributionGain -> bestComboFor)
+    // already correctly does. Previously read isolatedGrid.best directly,
+    // which - since computeGridAndSummary never calls bestComboFor -
+    // silently used the TRUE best cell even while a different combo was
+    // pinned, a real inconsistency within this same row (confirmed live:
+    // pinning a non-best combo left the headline % correctly following
+    // the pin while these 4 columns kept tracking the true best instead).
+    const isolatedBest = pinnedCellFrom(isolatedGrid, isolatedGrid.best) || best;
+    const isolatedBestStats = (isolatedBest && isolatedBest.stats) || gridResult.bestStats;
     const isolatedShared = computeShared(isolatedInputs);
 
     // Raid Captain competes for its slot on both specs now - RE used to
