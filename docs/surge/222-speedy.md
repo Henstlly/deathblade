@@ -179,7 +179,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 
 - You can bring Head Hunt down to Lv 1 for lower mana use.
 - Earth Cleaver can be used instead of Head Hunt if you prefer.
-- You can replace Dark Axel for Spincutter if you find it more useful.
+- You can replace Dark Axel for Spincutter if you find it more useful (Mordum, small bosses).
 - You can use Wide Attack <span class="skill-mention" data-glossary-id="tripod">tripod</span> on Surprise Attack if your uptime with Turning Slash is good.
 
 </details>

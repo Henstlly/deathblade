@@ -187,9 +187,8 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 - You can use the Weak Point Detection <span class="skill-mention" data-glossary-id="tripod">tripod</span> on Blade Dance instead.
     - Requires Lv 10 CD gem or raid downtime for it not to become a bottleneck.
 - Earth Explosion tripod on Earth Cleaver is up to personal preference.
-    - Increased cast speed, but greatly lowers mobility and damage.
-- Thick Sword Energy tripod increases Wind Cut range but builds fewer stacks.
-- Dark Axel (1-1-2 tripods) can be used instead of Spincutter if you prefer it.
+    - Increased cast speed, but greatly lowers its mobility and damage.
+- Dark Axel (1-1-2) can be used instead of Spincutter, but offers no recovery.
 
 </details>
 
