@@ -13,7 +13,7 @@
 
 **Best For:**{: .best-for } Players who enjoy building up to one massive, satisfying hit.
 
-**Tradeoff:**{: .tradeoff } All your eggs are in one basket (Surge).
+**Tradeoff:**{: .tradeoff } All your eggs are in one basket (Surge) + Maelstrom management.
 
 - Powerful burst windows with the Breaking Moon combo.
 - No need to hold <span class="skill-mention" data-glossary-id="counter">Counter</span>, it charges up to two stacks.
@@ -290,8 +290,8 @@ Alternate main cycle meant to try-hard engraving efficiency in a practical **rai
 </div>
 </div>
 
-1. Just recast Maelstrom as needed, but some optimal cast spots are suggested.
-2. Use your judgment. Not every skill needs the Maelstrom buff, so prioritize Surge.
+1. Just recast Maelstrom as needed, but some *optimal* cast spots are suggested.
+2. Use **your** judgment. Not every skill needs the Maelstrom buff, so prioritize Surge.
 3. Consider skipping Maelstrom to conserve a stack if you received a <span class="skill-mention" data-rune-name="Rage">Rage</span> buff.
 </details>
 
