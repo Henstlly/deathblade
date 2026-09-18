@@ -272,7 +272,7 @@ Use the Breaking Moon cycle whenever it's available, then repeat the main cycle 
 
 1. The final Surprise Attack can often be skipped with surplus stacks and expected raid downtime.
 2. Consider delaying Maelstrom by 1 to 3 skills when uptime drops to ensure it covers Surge (<span class="skill-mention" data-skill-id="raidcaptain">Raid Captain</span>).
-3. <span class="skill-mention" data-skill-id="bladeassault">Blade Assault</span> hits low and takes too long. Save it for <span class="skill-mention" data-glossary-id="pushimmunity">push immunity</span> or Hyper Awakening, not damage.
+3. <span class="skill-mention" data-skill-id="bladeassault">Blade Assault</span> hits low and takes too long. Use it to greed with <span class="skill-mention" data-glossary-id="pushimmunity">push immunity</span> or save for Hyper Awakening.
 
 <div class="setup-panel" data-accent="lavender" markdown>
 <div class="setup-notes" markdown>

@@ -313,7 +313,7 @@ It helps to think of everything within <span class="skill-inline" data-skill-id=
 3. It's better to cast a ~59 stack Surge if the alternative is waiting more than 1.5 seconds.
 4. Delaying Deathly Slash + Surge by more than 1.75 seconds to ensure a back attack is a DPS loss.
 5. Delaying *only* Surge by more than 1 second to ensure a back attack is also a DPS loss.
-6. <span class="skill-mention" data-skill-id="bladeassault">Blade Assault</span> hits low and takes too long. Save it for <span class="skill-mention" data-glossary-id="pushimmunity">push immunity</span> or Hyper Awakening, not damage.
+6. <span class="skill-mention" data-skill-id="bladeassault">Blade Assault</span> hits low and takes too long. Use it to greed with <span class="skill-mention" data-glossary-id="pushimmunity">push immunity</span> or save for Hyper Awakening.
 
 *From zero orbs:*
 { .lead }
