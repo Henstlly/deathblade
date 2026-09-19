@@ -167,7 +167,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 </details>
 
 <details class="setup-note" data-kind="note" open markdown>
-<summary><span class="setup-note-tag">Note</span>Skill & Tripods<span class="setup-note-arrow"></span></summary>
+<summary><span class="setup-note-tag">Note</span>Options & Tripods<span class="setup-note-arrow"></span></summary>
 
 - You can use Swift Fingers <span class="skill-mention" data-glossary-id="tripod">tripod</span> on Blitz Rush for increased DPS and QoL.
     - It's a DPC loss unless you can make use of the increased CPM/comfort.

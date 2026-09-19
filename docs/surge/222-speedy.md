@@ -175,7 +175,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 </details>
 
 <details class="setup-note" data-kind="note" open markdown>
-<summary><span class="setup-note-tag">Note</span>Skill & Tripods<span class="setup-note-arrow"></span></summary>
+<summary><span class="setup-note-tag">Note</span>Options & Tripods<span class="setup-note-arrow"></span></summary>
 
 - You can bring Head Hunt down to Lv 1 for lower mana use.
 - You can use Wide Attack <span class="skill-mention" data-glossary-id="tripod">tripod</span> on Surprise Attack for **noticeably** increased QoL.

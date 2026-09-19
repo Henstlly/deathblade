@@ -182,7 +182,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 </details>
 
 <details class="setup-note" data-kind="note" open markdown>
-<summary><span class="setup-note-tag">Note</span>Skill & Tripods<span class="setup-note-arrow"></span></summary>
+<summary><span class="setup-note-tag">Note</span>Options & Tripods<span class="setup-note-arrow"></span></summary>
 
 - You can use the Weak Point Detection <span class="skill-mention" data-glossary-id="tripod">tripod</span> on Blade Dance.
     - Requires Lv 10 CD gem and/or raid downtime for it not to become a bottleneck.
