@@ -4154,6 +4154,50 @@ h3 { color: var(--dbc-teal); }
   color: var(--dbc-lavender);
   font-weight: 700;
   margin-bottom: 0.6em;
+  /* Title text on the left, the OT1 badge (below) on the right. */
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.2em 0.6em;
+}
+/* Shown while Optimized Training 1 is checked (see EVOLUTION_SPLITS_OT1
+   in ark-passive-calculator.js): plain red text on the right of the Top
+   Combinations header, with the DPS the trade costs appended by renderGrid
+   (.ap-ot1-cost). Was a filled pill at first; text keeps the header quiet
+   while still reading as a flag. Inherits the title's uppercase/size. */
+.md-typeset .ap-ot1-indicator {
+  color: var(--dbc-red);
+  text-align: right;
+  /* Never breaks mid-text; on a narrow card the flex-wrap above drops the
+     whole thing to its own line instead. */
+  white-space: nowrap;
+  margin-left: auto;
+  cursor: help;
+}
+.md-typeset .ap-ot1-indicator[hidden] {
+  display: none;
+}
+/* Optimized Training 1's readout + checkbox, wrapped so the pair takes the
+   same width a number input does (5.5em at .85em font-size). Without this
+   the row's WARN pill sat left of Flash Orb's, since the pill's position
+   is set by whatever width the controls to its right happen to have. */
+.md-typeset .ap-ot1-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.6em;
+  /* Shrinks like the number input it's standing in for (default
+     flex-shrink), so the two stay the same width on a squeezed phone row. */
+  flex: 0 1 auto;
+  min-width: 0;
+  width: 4.675em;
+  /* Flex shrink is weighted by inner (content-box) size, and the number
+     input has 0.5em*0.85 padding per side + 1px borders inside its own
+     width. Reserving the same total as left padding gives this wrapper the
+     same inner size, so both shrink by the same amount on a narrow row. */
+  box-sizing: border-box;
+  padding-left: calc(0.85em + 2px);
 }
 .md-typeset .ap-calc-result-row {
   position: relative;

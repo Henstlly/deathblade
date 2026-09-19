@@ -419,6 +419,22 @@
       <span class="ap-value-display" data-for="ap-flash-orb-uptime"></span>
       <input type="number" id="ap-flash-orb-uptime" class="ap-flash-orb-uptime" min="0" max="100" step="1" value="0">
     </div>
+    <!-- Optimized Training Lv 1 shares the Keen Sense/Limit Break pool of 3
+         keystone levels, so checking this leaves only 2 for them (see
+         EVOLUTION_SPLITS_OT1 in ark-passive-calculator.js) and adds a fixed
+         +5% Evo Dmg. Its cooldown reduction is deliberately not modeled.
+         Same muted row + WARN pill as Flash Orb Uptime above. The Top
+         Combinations header below shows .ap-ot1-indicator while this is on. -->
+    <div class="ap-calc-field-row ap-calc-field-row-muted">
+      <label class="ap-calc-field-label" for="ap-ot1" title="Takes 1 of the 3 combined Keen Sense/Limit Break levels, and adds a fixed +5% Evo Dmg. Its Cooldown Reduction isn't modeled.">Optimized Training 1</label>
+      <span class="ap-brace-warn-icon ap-ot1-warn" title="Only check this if you'd run Optimized Training 1 for its cooldown reduction. That reduction isn't calculated here, so this just locks in the split and the +5% Evo Dmg.">WARN</span>
+      <!-- Readout + checkbox share a wrapper sized to a number input's
+           width so this row's WARN pill lines up with Flash Orb's. -->
+      <span class="ap-ot1-controls">
+        <span class="ap-value-display" data-for="ap-ot1"></span>
+        <input type="checkbox" id="ap-ot1" class="ap-ot1">
+      </span>
+    </div>
     <div class="ap-calc-field-row">
       <label class="ap-calc-field-label" for="ap-back-attack-rate" title="Enter the 'Back Attack Rate' % from Combat Analyzer's Overview tab. Only applies to the share of your DPS that's a Back Attack.">Back Attack Rate %</label>
       <input type="number" id="ap-back-attack-rate" class="ap-back-attack-rate" min="0" max="100" step="1" value="85">
@@ -446,7 +462,10 @@
        comments in the JS. Rank 1 has no pin control since it's already
        the default base with nothing to pin to. -->
   <div class="ap-calc-results">
-    <div class="ap-calc-results-title">Top Combinations</div>
+    <div class="ap-calc-results-title">
+      <span>Top Combinations</span>
+      <span class="ap-ot1-indicator" hidden title="Optimized Training 1 is on: only 2 levels of Keen Sense/Limit Break are available, and +5% Evo Dmg is included in every combo below. The DPS figure is your best setup here vs. your best setup without it. Its cooldown reduction isn't counted.">OT1<span class="ap-ot1-cost"></span></span>
+    </div>
     <div class="ap-calc-result-row" data-rank="1" tabindex="0" role="button" aria-label="Preview this combo's stats in the Best Setup card">
       <span class="ap-result-rank">1</span>
       <span class="ap-result-combo">—</span>

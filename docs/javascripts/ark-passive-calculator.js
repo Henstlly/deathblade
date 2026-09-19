@@ -967,6 +967,24 @@
     { key: "lb2ks1", limitBreak: 2, keenSense: 1, label: "LB2/KS1" },
     { key: "lb1ks2", limitBreak: 1, keenSense: 2, label: "LB1/KS2" },
   ];
+  // Optimized Training Lv 1 (the .ap-ot1 checkbox) takes one of the same 3
+  // keystone levels Limit Break/Keen Sense share, so with it on only 2 are
+  // left to split between them. Only its fixed +5% Evo Dmg is modeled - its
+  // cooldown reduction deliberately isn't (see OPTIMIZED_TRAINING_EVO_DMG).
+  // Keys are distinct from EVOLUTION_SPLITS' own so a Top Combinations pin
+  // made in one mode can never be mistaken for a combo in the other (see
+  // update()'s pin check).
+  const EVOLUTION_SPLITS_OT1 = [
+    { key: "ot1-lb2ks0", limitBreak: 2, keenSense: 0, label: "OT1/LB2" },
+    { key: "ot1-lb1ks1", limitBreak: 1, keenSense: 1, label: "OT1/LB1/KS1" },
+    { key: "ot1-lb0ks2", limitBreak: 0, keenSense: 2, label: "OT1/KS2" },
+  ];
+  const OPTIMIZED_TRAINING_EVO_DMG = 0.05;
+  // The one place that decides which split set is in play - every loop
+  // that used to read EVOLUTION_SPLITS directly goes through this instead.
+  function splitsFor(ot1Active) {
+    return ot1Active ? EVOLUTION_SPLITS_OT1 : EVOLUTION_SPLITS;
+  }
   const LIMIT_BREAK_EVO_DMG = [0, 0.1, 0.2, 0.3];
   const KEEN_SENSE_EVO_DMG = [0, 0.05, 0.1];
   const KEEN_SENSE_CRIT_RATE = [0, 0.04, 0.08];
@@ -1012,9 +1030,9 @@
   // Returns null for a null/unresolvable pin (e.g. a stale key) rather
   // than throwing, so a bad pin just quietly falls back to normal
   // re-search instead of breaking the calculator.
-  function resolvePinnedCombo(pinnedCombo) {
+  function resolvePinnedCombo(pinnedCombo, ot1Active) {
     if (!pinnedCombo) return null;
-    const split = EVOLUTION_SPLITS.find((s) => s.key === pinnedCombo.splitKey);
+    const split = splitsFor(ot1Active).find((s) => s.key === pinnedCombo.splitKey);
     if (!split) return null;
     return { split, pair: pinnedCombo.pair };
   }
@@ -1182,6 +1200,8 @@
       flashOrbUptime: Math.max(0, Math.min(100, getNumber(root, ".ap-flash-orb-uptime", 0))),
 
       yearning: getCheckbox(root, ".ap-yearning", true),
+      // Optimized Training Lv 1 - see EVOLUTION_SPLITS_OT1. Defaults off.
+      optimizedTraining: getCheckbox(root, ".ap-ot1", false),
       evoKarmaRank: parseInt(getSelect(root, ".ap-evo-karma", "6"), 10) || 6,
 
       // Card Demon Dmg % used to be a direct input (.ap-brace-demon-dmg) -
@@ -1418,6 +1438,7 @@
 
     const yearningEvo = inputs.yearning ? 0.14 : 0;
     const evoKarmaEvo = EVO_KARMA_MAP[inputs.evoKarmaRank] || 0;
+    const optimizedTrainingEvo = inputs.optimizedTraining ? OPTIMIZED_TRAINING_EVO_DMG : 0;
 
     return {
       critDmgTotal,
@@ -1429,6 +1450,7 @@
       addDmgMaster,
       yearningEvo,
       evoKarmaEvo,
+      optimizedTrainingEvo,
     };
   }
 
@@ -1512,6 +1534,7 @@
     return (
       shared.yearningEvo +
       shared.evoKarmaEvo +
+      shared.optimizedTrainingEvo +
       (KEEN_SENSE_EVO_DMG[keenSenseLv] || 0) +
       (LIMIT_BREAK_EVO_DMG[limitBreakLv] || 0) +
       STANDING_STRIKER_EVO_DMG
@@ -1748,12 +1771,26 @@
     return stats;
   }
 
+  // What Optimized Training 1 costs in the model: the best setup with it
+  // on vs. the best setup with it off, same everything else, as a % change
+  // (negative = OT1 loses DPS). Uses each side's TRUE best cell, never a
+  // pinned one - computeGridAndSummary itself ignores pins. Only called
+  // from update() while .ap-ot1 is checked (it runs a second full grid, so
+  // it isn't folded into computeGridAndSummary, which the comparison
+  // panels call many times). Cooldown reduction isn't modeled, so this is
+  // strictly the Evo Dmg/keystone-level trade.
+  function computeOt1CostPct(inputs, result) {
+    const without = computeGridAndSummary(Object.assign({}, inputs, { optimizedTraining: false }));
+    if (!without.best || !result.best || without.best.mult <= 0) return null;
+    return (result.best.mult / without.best.mult - 1) * 100;
+  }
+
   function computeGridAndSummary(inputs) {
     const shared = computeShared(inputs);
     const cells = [];
     let best = null;
 
-    EVOLUTION_SPLITS.forEach((split) => {
+    splitsFor(inputs.optimizedTraining).forEach((split) => {
       COMBINED_KEYSTONES.forEach((pair) => {
         const mult = combinedMultiplier(inputs, shared, split.keenSense, split.limitBreak, pair);
         let effCrit, rawCrit;
@@ -1807,7 +1844,7 @@
       critRateRaw: critRateTotal(inputs, 0) * 100,
       critDmg: shared.critDmgTotal,
       onCritDmg: shared.onCritDmgBase * 100,
-      evoDmg: (shared.yearningEvo + shared.evoKarmaEvo + STANDING_STRIKER_EVO_DMG) * 100,
+      evoDmg: (shared.yearningEvo + shared.evoKarmaEvo + shared.optimizedTrainingEvo + STANDING_STRIKER_EVO_DMG) * 100,
       addDmg: shared.addDmgBase * 100,
       // Breaking Moon's average per-cast Crit Dmg add itself (see
       // breakingMoonContribution) - a flat value from shared, so Base and
@@ -1819,7 +1856,7 @@
 
     const bestStats = best ? best.stats : null;
 
-    return { cells, best, baseStats, bestStats };
+    return { cells, best, baseStats, bestStats, ot1: !!inputs.optimizedTraining };
   }
 
   // ----- Bracelet Line Comparison -----
@@ -1944,7 +1981,7 @@
       return { mult, pair, split };
     }
     let best = null;
-    EVOLUTION_SPLITS.forEach((split) => {
+    splitsFor(candidateInputs.optimizedTraining).forEach((split) => {
       COMBINED_KEYSTONES.forEach((pair) => {
         const mult = combinedMultiplier(candidateInputs, shared, split.keenSense, split.limitBreak, pair);
         if (!best || mult > best.mult) best = { mult, pair, split };
@@ -5026,6 +5063,7 @@
     setDisplay("#ap-evo-karma", EVO_KARMA_MAP[inputs.evoKarmaRank] || 0);
 
     setDisplay("#ap-yearning", inputs.yearning ? 0.14 : 0);
+    setDisplay("#ap-ot1", inputs.optimizedTraining ? OPTIMIZED_TRAINING_EVO_DMG : 0);
 
     // Rings/Bracelet pairs (Crit Rate, Crit Dmg, Additional Dmg) and the
     // Crit Hit Dmg checkboxes have no live value-display: their option
@@ -5177,6 +5215,23 @@
     // row to whichever combo is truly 3rd again.
     const list = root.querySelector(".ap-calc-results");
     if (!list) return;
+
+    // Optimized Training 1 badge in the Top Combinations header - shown
+    // whenever the 2-level OT1 split set is what these rows were ranked
+    // from (see EVOLUTION_SPLITS_OT1).
+    // Also shows what that costs: best-with-OT1 vs best-without, as a %
+    // DPS change (see computeOt1CostPct).
+    const ot1Badge = list.querySelector(".ap-ot1-indicator");
+    if (ot1Badge) {
+      ot1Badge.hidden = !result.ot1;
+      const costEl = ot1Badge.querySelector(".ap-ot1-cost");
+      if (costEl) {
+        const c = result.ot1CostPct;
+        costEl.textContent = (c == null || !isFinite(c))
+          ? ""
+          : " (" + (c > 0 ? "+" : "") + c.toFixed(2) + "% DPS)";
+      }
+    }
 
     const state = getApCalcSelection(root);
     const pinnedCombo = state.pinnedCombo;
@@ -6372,10 +6427,20 @@
     // can never leave a stale pin bleeding into some later, unrelated
     // update() call (this root's next one, or another .ap-calc root's).
     const selection = getApCalcSelection(root);
-    activePinnedCombo = resolvePinnedCombo(selection.pinnedCombo);
+    activePinnedCombo = resolvePinnedCombo(selection.pinnedCombo, getCheckbox(root, ".ap-ot1", false));
+    // A pin made under the other split set (Optimized Training just got
+    // toggled) has no matching combo anymore. Drop it outright instead of
+    // leaving a dead pin behind: renderGrid reads selection.pinnedCombo
+    // directly, and a non-null-but-unresolvable pin would disable the
+    // rows' click-to-preview with nothing actually pinned.
+    if (selection.pinnedCombo && !activePinnedCombo) {
+      selection.pinnedCombo = null;
+      selection.previewRank = 1;
+    }
     try {
       const inputs = readInputs(root);
       const result = computeGridAndSummary(inputs);
+      result.ot1CostPct = inputs.optimizedTraining ? computeOt1CostPct(inputs, result) : null;
       renderGrid(root, result);
       updateInputDisplays(root, inputs);
       renderBraceletComparison(root, computeBraceletComparison(inputs));
@@ -7784,6 +7849,8 @@
     computeAccessoryComparison,
     computeEngravingSetupComparison,
     EVOLUTION_SPLITS,
+    EVOLUTION_SPLITS_OT1,
+    splitsFor,
     COMBINED_KEYSTONES,
   };
 })();
