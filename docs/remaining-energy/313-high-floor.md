@@ -1,7 +1,7 @@
 # 313 (High Floor) 💜
 
 <div class="build-card-row" markdown>
-<div class="build-card" data-updated="2026-09-15" markdown>
+<div class="build-card" data-updated="2026-09-19" markdown>
 
 <!-- Difficulty/Trixion/Playstyle stats above, AND the pentagon badge below,
      both read from javascripts/build-data.js (window.DB_BUILD_DATA) - there is
@@ -196,24 +196,15 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 
 </details>
 
-<details class="setup-note" data-kind="note" markdown>
-<summary><span class="setup-note-tag">Note</span>Optional<span class="setup-note-arrow"></span></summary>
+<details class="setup-note" data-kind="note" open markdown>
+<summary><span class="setup-note-tag">Note</span>Skill & Tripods<span class="setup-note-arrow"></span></summary>
 
-- You can bring Head Hunt down to Lv 1 and Void Strike up to Lv 14 for +0.5% DPS and lower mana use.
-    - However, Lv 7 is more practical and makes recovery much easier and faster. ★
-    - At Lv 7, Magick Control <span class="skill-mention" data-glossary-id="tripod">tripod</span> can help solve mana issues if you don't need the CDR.
-    - Lv 4 Head Hunt (Quick Prep) with Void Strike Lv 13 is a decent overall compromise.
-
-</details>
-
-<details class="setup-note" data-kind="danger" open markdown>
-<summary><span class="setup-note-tag">Warn</span>09/16/26 Balance Patch<span class="setup-note-arrow"></span></summary>
-
-- Swift Fingers **may** become the default 1st row tripod for Blitz Rush.
-    - Minor DPC loss, but CPM and playability increases may make up for it.
-    - Void Strike is raised to Lv 13 and Blitz Rush is lowered to Lv 12.
-    - Gem priority of Void Strike and Blitz Rush is swapped.
-- Needs testing before making a recommendation, 313 is so fast that it might not benefit.
+- You can use Magick Control <span class="skill-mention" data-glossary-id="tripod">tripod</span> on Head Hunt for lower mana usage.
+- You can use Swift Fingers tripod on Blitz Rush for increased DPS and QoL.
+    - It's a DPC loss unless you can make use of the increased CPM/comfort.
+    - It's not compatible with very low Specialization or +CD% bracelet line.
+    - Because of the above reasons, it's **recommended** but not set by default.
+    - Set Void Strike to Lv 13 and Blitz Rush to Lv 12 if you decide to use this tripod.
 
 </details>
 

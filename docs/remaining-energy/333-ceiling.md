@@ -216,13 +216,13 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 
 </details>
 
-<details class="setup-note" data-kind="note" markdown>
-<summary><span class="setup-note-tag">Note</span>Optional<span class="setup-note-arrow"></span></summary>
+<details class="setup-note" data-kind="note" open markdown>
+<summary><span class="setup-note-tag">Note</span>Skill & Tripods<span class="setup-note-arrow"></span></summary>
 
+- Orb Control tripod on Fatal Wave is **not viable** and you shouldn't use it.
 - You can use Quick Prep <span class="skill-mention" data-glossary-id="tripod">tripod</span> on Head Hunt if you have no mana issues.
-- You can bring Head Hunt down to Lv 1-4 for lower mana use and micro-mobility.
-    - However, Lv 7 is more practical and makes recovery much easier and faster. ★
-- Orb Control tripod on Fatal Wave is **not viable** and you shouldn't use it for any reason.
+- You can bring Head Hunt down to Lv 1 for lower mana use and added mobility.
+    - However, Lv 7 is more practical and makes recovery much easier and faster.
 
 </details>
 

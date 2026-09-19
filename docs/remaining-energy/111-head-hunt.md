@@ -1,7 +1,7 @@
 # 111 (Head Hunt) 🔪
 
 <div class="build-card-row" markdown>
-<div class="build-card" data-updated="2026-09-15" markdown>
+<div class="build-card" data-updated="2026-09-19" markdown>
 
 <!-- Difficulty/Trixion/Playstyle stats above, AND the pentagon badge below,
      both read from javascripts/build-data.js (window.DB_BUILD_DATA) - there is
@@ -166,23 +166,14 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 
 </details>
 
-<details class="setup-note" data-kind="note" markdown>
-<summary><span class="setup-note-tag">Note</span>Optional<span class="setup-note-arrow"></span></summary>
+<details class="setup-note" data-kind="note" open markdown>
+<summary><span class="setup-note-tag">Note</span>Skill & Tripods<span class="setup-note-arrow"></span></summary>
 
-- You can swap Head Hunt's <span class="skill-mention" data-glossary-id="tripod">tripod</span> to Quick Prep and gain an extra gem slot.
-    - Change your Head Hunt CD gem to Twin Shadows CD. Enjoy slightly easier recovery!
-    - This setup may run into mana issues, use a <span class="skill-mention" data-rune-name="Focus" data-rune-tier="legendary">Focus</span> rune on Head Hunt if necessary.
-
-</details>
-
-<details class="setup-note" data-kind="danger" open markdown>
-<summary><span class="setup-note-tag">Warn</span>09/16/26 Balance Patch<span class="setup-note-arrow"></span></summary>
-
-- Swift Fingers **may** become the default 1st row tripod for Blitz Rush.
-    - Minor DPC loss, but CPM and playability increases may make up for it.
-    - Void Strike is raised to Lv 13 and Blitz Rush is lowered to Lv 12.
-    - Gem priority of Void Strike and Blitz Rush is swapped.
-- Needs testing before making a recommendation, 111 is so fast that it might not benefit.
+- You can use Swift Fingers <span class="skill-mention" data-glossary-id="tripod">tripod</span> on Blitz Rush for increased DPS and QoL.
+    - It's a DPC loss unless you can make use of the increased CPM/comfort.
+    - It's not compatible with very low Specialization or +CD% bracelet line.
+    - Because of the above reasons, it's **recommended** but not set by default.
+    - Set Void Strike to Lv 13 and Blitz Rush to Lv 12 if you decide to use this tripod.
 
 </details>
 

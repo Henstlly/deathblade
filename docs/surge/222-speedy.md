@@ -1,7 +1,7 @@
 # 222 (Speedy) 🐆
 
 <div class="build-card-row" markdown>
-<div class="build-card" data-updated="2026-09-16" markdown>
+<div class="build-card" data-updated="2026-09-19" markdown>
 
 <!-- Difficulty/Trixion/Playstyle stats above, AND the pentagon badge below,
      both read from javascripts/build-data.js (window.DB_BUILD_DATA) - there is
@@ -54,7 +54,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 === "222 Speedy"
 
     ```
-    0B3F87CE15C9FC0E93AA3F55462E42B3B69716F25C28C2009177C8A54B0D572C68290D5EC1658BBA7FC03FAD032FAD01F305026AC42034DC97A6C597AB3C6903
+    529EFCAD5AADC38E0F6BA8A7F7781C136E88697BFAF5999811D8898564A010617FD14F6822C637C0A2B745A010DF50CE26CBEA0A8F493EAF49317C90E2806F53
     ```
 
 ## Ark Setup
@@ -152,7 +152,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
   {"id": "darkaxel", "level": 10, "tripods": [1, 1, 2], "rune": {"tier": "epic", "name": "Galewind"}},
   {"id": "headhunt", "level": 4, "tripods": [1], "rune": {"tier": "legendary", "name": "Vision"}},
   {"id": "turningslash", "level": 14, "tripods": [1, 3, 1], "rune": {"tier": "legendary", "name": "Poison"}},
-  {"id": "maelstrom", "level": 13, "tripods": [3, 1, 2], "rune": {"tier": "legendary", "name": "Focus"}},
+  {"id": "maelstrom", "level": 13, "tripods": [3, 1, 2], "rune": {"tier": "legendary", "name": "Bleed"}},
   {"id": "deathtrance", "subtitle": "Identity"},
   {"id": "deathlyslash", "subtitle": "Technique"},
   {"id": "bladeassault", "subtitle": "Awakening"},
@@ -167,21 +167,21 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 <summary><span class="setup-note-tag">Tip</span>Runes<span class="setup-note-arrow"></span></summary>
 
 - Use <span class="skill-mention" data-rune-name="Purify">Purify</span> on Head Hunt if needed.
-- Use <span class="skill-mention" data-rune-name="Bleed" data-rune-tier="legendary">Legendary Bleed</span> on Maelstrom if you don't experience mana issues or use mana food.
+- Use <span class="skill-mention" data-rune-name="Focus" data-rune-tier="legendary">Focus</span> on Maelstrom if you experience mana issues.
 - Use <span class="skill-mention" data-rune-name="Vision" data-rune-tier="legendary">Legendary Vision</span> on Surprise Attack if you find it more useful than <span class="skill-mention" data-rune-name="Rage" data-rune-tier="legendary">Rage</span>.
     - Increases chance of getting an extra stack on Surprise Attack precast.
     - Give Head Hunt the next best <span class="skill-mention" data-rune-name="Galewind">Galewind</span> or <span class="skill-mention" data-rune-name="Vision">Vision</span> rune that's available.
 
 </details>
 
-<details class="setup-note" data-kind="note" markdown>
-<summary><span class="setup-note-tag">Note</span>Optional<span class="setup-note-arrow"></span></summary>
+<details class="setup-note" data-kind="note" open markdown>
+<summary><span class="setup-note-tag">Note</span>Skill & Tripods<span class="setup-note-arrow"></span></summary>
 
 - You can bring Head Hunt down to Lv 1 for lower mana use.
-- Earth Cleaver can be used instead of Head Hunt if you prefer.
-- You can replace Dark Axel for Spincutter if you find it more useful (Mordum, small bosses).
-- You can use Wide Attack <span class="skill-mention" data-glossary-id="tripod">tripod</span> on Surprise Attack if your uptime with Turning Slash is good.
-
+- You can use Wide Attack <span class="skill-mention" data-glossary-id="tripod">tripod</span> on Surprise Attack for **noticeably** increased QoL.
+    - With Wide Attack, you **must** cast Turning Slash early on openers to apply synergy.
+- Earth Cleaver can be used instead of Head Hunt if you prefer its mobility or utility.
+- You can replace Dark Axel for Spincutter if you find it more useful (Mordum G3/Extreme).
 </details>
 
 </div>
@@ -226,7 +226,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 <details class="setup-note" data-kind="note" open markdown>
 <summary><span class="setup-note-tag">Note</span>Gem Requirements<span class="setup-note-arrow"></span></summary>
 
-- To reach its ceiling, this build requires higher level cooldown gems than the others.
+- To reach its ceiling, this build requires higher investment in cooldown gems than the others.
     - <span class="skill-mention" data-skill-id="massincrease">Mass Increase</span> and/or <span class="skill-mention" data-ap-id="optimizedtraining" data-level="1">Optimized Training 1</span> help smooth things out at low investment levels.
     - +CD% <span class="skill-mention" data-glossary-id="bracelet">bracelet</span> increases gem level requirements by 1, low <span class="skill-mention" data-glossary-id="specializationstat">Specialization</span> is not recommended.
     - Once Blade Dance and Maelstrom CD are at Lv 9, Wind Cut CD priority increases significantly.
@@ -260,12 +260,12 @@ Use the Opener cycle and either loop it forever (easy) or continue on to the adv
 <div class="cycle-card-header"><span class="cycle-num cycle-num-1">1</span><span class="cycle-title">Opener/Overstack Cycle - 68 Stacks</span></div>
 <div class="rotation-line" markdown>
 <script type="application/json">
-["windcut", "deathtrance", { "id": "surpriseattack", "swapNext": true }, "maelstrom", "windcut", "upperslash", "turningslash", "bladedance", "deathlyslash", "surpriseattack", "surge"]
+["windcut", "deathtrance", "surpriseattack", "maelstrom", "windcut", "upperslash", "turningslash", "bladedance", "deathlyslash", "surpriseattack", "surge"]
 </script>
 </div>
 </div>
 
-1. Surprise Attack and Maelstrom's first casts are interchangeable, adjust if needed.
+1. This opener chains into the cycles below, but it's fine by itself if you prefer simplicity over uptime and ceiling DPS.  
 
 <div class="setup-panel" data-accent="lavender" markdown>
 <div class="setup-notes" markdown>
@@ -273,7 +273,7 @@ Use the Opener cycle and either loop it forever (easy) or continue on to the adv
 <details class="setup-note" data-kind="tip" open markdown>
 <summary><span class="setup-note-tag">Tip</span>Leopard Mode (Optional)<span class="setup-note-arrow"></span></summary>
 
-Alternate between these two cycles as needed for ceiling DPS:
+After the opener, alternate between these two cycles as needed for ceiling DPS if your CD gems can keep up:
 
 <div class="cycle-card" markdown>
 <div class="cycle-card-header"><span class="cycle-num cycle-num-2">2</span><span class="cycle-title">Surprise Skip Cycle - 61 Stacks</span></div>
@@ -296,11 +296,11 @@ Alternate between these two cycles as needed for ceiling DPS:
 1. Cycle **2** offers safety by leaving Surprise Attack as a recovery option; Cycle **3** offers higher CPM.
 2. Rotating **2>3>2>3** is ideal, but based on boss patterns, variations like **2>3>3>2** or **2>2>3>3** are valid.
       - Cycle **3** is preferred during risky boss patterns because Wind Cut lacks Paralysis Immunity.
-      - Recover with Wind Cut or Surprise Attack, and decide your next cycle based on which one's available.
+      - Recover with Wind Cut or Surprise Attack, and decide your next cycle based on the available one.
 3. You can skip a Surprise Attack finisher whenever you're at 49+ stacks before Deathly Slash.
       - Same for 40+ stacks before Blade Dance, 30+ stacks before Upper Slash, and so on.
-      - If you have 7+ stacks before you activate Death Trance, you can also skip the finisher.
-      - At 12-14+ stacks before Death Trance, you can skip it as well as the Wind Cut precast.
+      - If you have 7+ stacks before you activate Death Trance, you can skip both WC precast and SA finisher.
+      - At 14+ stacks before Death Trance, you can skip both the WC precast and SA finisher for two cycles in a row.
 
 It helps to think of everything within <span class="skill-inline" data-skill-id="deathtrance"><span class="skill-inline-name">Death Trance</span></span> and <span class="skill-inline" data-skill-id="deathlyslash"><span class="skill-inline-name">Deathly Slash</span></span> as 53 stacks, and the Wind Cut Precast or Surprise Attack finisher as flexible options that give you the 7+ stacks needed to complete a 60+ stack Surge.
 </details>

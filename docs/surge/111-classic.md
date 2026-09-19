@@ -181,11 +181,12 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 
 </details>
 
-<details class="setup-note" data-kind="note" markdown>
-<summary><span class="setup-note-tag">Note</span>Optional<span class="setup-note-arrow"></span></summary>
+<details class="setup-note" data-kind="note" open markdown>
+<summary><span class="setup-note-tag">Note</span>Skill & Tripods<span class="setup-note-arrow"></span></summary>
 
-- You can use the Weak Point Detection <span class="skill-mention" data-glossary-id="tripod">tripod</span> on Blade Dance instead.
-    - Requires Lv 10 CD gem or raid downtime for it not to become a bottleneck.
+- You can use the Weak Point Detection <span class="skill-mention" data-glossary-id="tripod">tripod</span> on Blade Dance.
+    - Requires Lv 10 CD gem and/or raid downtime for it not to become a bottleneck.
+    - You must swap Wind Cut CD gem to Blade Dance CD, it's a marginal DPS increase.
 - Earth Explosion tripod on Earth Cleaver is up to personal preference.
     - Increased cast speed, but greatly lowers its mobility and damage.
 - Dark Axel (1-1-2) can be used instead of Spincutter, but offers no recovery.
@@ -293,6 +294,8 @@ Alternate main cycle meant to try-hard engraving efficiency in a practical **rai
 1. Just recast Maelstrom as needed, but some *optimal* cast spots are suggested.
 2. Use **your** judgment. Not every skill needs the Maelstrom buff, so prioritize Surge.
 3. Consider skipping Maelstrom to conserve a stack if you received a <span class="skill-mention" data-rune-name="Rage">Rage</span> buff.
+
+*Note: This is a concept adopted from the KR video guide for practical usage, I have not verified its effectiveness.*
 </details>
 
 </div>

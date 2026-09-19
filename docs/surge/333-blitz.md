@@ -182,14 +182,14 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 
 </details>
 
-<details class="setup-note" data-kind="note" markdown>
-<summary><span class="setup-note-tag">Note</span>Optional<span class="setup-note-arrow"></span></summary>
+<details class="setup-note" data-kind="note" open markdown>
+<summary><span class="setup-note-tag">Note</span>Skill & Tripods<span class="setup-note-arrow"></span></summary>
 
-- You can use the Weak Point Detection <span class="skill-mention" data-glossary-id="tripod">tripod</span> on Blade Dance instead.
-    - Requires Lv 10 CD gem or raid downtime for it not to become a bottleneck.
+- You can use the Weak Point Detection <span class="skill-mention" data-glossary-id="tripod">tripod</span> on Blade Dance.
+    - Requires Lv 10 CD gem and/or raid downtime for it not to become a bottleneck.
+    - You must swap Wind Cut CD gem to Blade Dance CD, it's a marginal DPS increase.
 - Earth Explosion tripod on Earth Cleaver is up to personal preference.
     - Increased cast speed, but greatly lowers its mobility and damage.
-- Head Hunt can be used instead of Earth Cleaver at a DPS loss if you prefer.
 
 </details>
 
