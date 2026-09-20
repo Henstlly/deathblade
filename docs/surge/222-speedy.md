@@ -183,7 +183,8 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 - You can use Wide Attack <span class="skill-mention" data-glossary-id="tripod">tripod</span> on Surprise Attack for **noticeably** increased QoL.
     - With Wide Attack, you **must** cast Turning Slash early on openers to apply synergy.
 - Earth Cleaver can be used instead of Head Hunt if you prefer its mobility or utility.
-- You can replace Dark Axel with Spincutter if you find it more useful (Mordum G3/Extreme).
+- You can replace Dark Axel with Spincutter (3-3-1) if you find it more useful (Mordum Extreme).
+    - If you don't wish to learn the advanced skip cycles, it can make looping the overstack cycle easier.
 </details>
 
 </div>
@@ -253,7 +254,7 @@ There's an optimal skill order, but you have flexibility when facing downtime or
 
 Use Dark Axel to guarantee back attacks on Deathly Slash and Surge if needed.
 
-Use the Opener cycle and either loop it forever (easy) or continue on to the advanced cycles (ceiling).
+Use the Opener cycle and either loop it forever (easy) or continue on to the advanced skip cycles (ceiling).
 
 *From 3 orbs:*
 { .lead }
