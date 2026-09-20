@@ -1,7 +1,7 @@
 # 222 (Speedy) 🐆
 
 <div class="build-card-row" markdown>
-<div class="build-card" data-updated="2026-09-19" markdown>
+<div class="build-card" data-updated="2026-09-20" markdown>
 
 <!-- Difficulty/Trixion/Playstyle stats above, AND the pentagon badge below,
      both read from javascripts/build-data.js (window.DB_BUILD_DATA) - there is
@@ -265,7 +265,9 @@ Use the Opener cycle and either loop it forever (easy) or continue on to the adv
 </div>
 </div>
 
-1. This opener chains into the cycles below, but it's fine by itself if you prefer simplicity over uptime and ceiling DPS.  
+1. This opener chains into the cycles below, but it's fine by itself if you prefer simplicity over uptime and DPS.
+2. Surprise Attack always goes before Maelstrom on cycles with a Surprise Attack finisher so their CD lines up.
+    - When looping this rotation for simplicity, or casting Maelstrom first unconditionally you will face downtime.
 
 <div class="setup-panel" data-accent="lavender" markdown>
 <div class="setup-notes" markdown>
