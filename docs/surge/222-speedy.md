@@ -172,7 +172,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
     - Increases chance of getting an extra stack on Surprise Attack precast.
     - Give Head Hunt the next best <span class="skill-mention" data-rune-name="Galewind">Galewind</span> or <span class="skill-mention" data-rune-name="Vision">Vision</span> rune that's available.
 
-*Note: Do ****not**** equip <span class="skill-mention" data-rune-name="Galewind" data-rune-tier="legendary">Legendary Galewind</span> on Blade Dance instead of Upper Slash. KR tested frame-by-frame and proved that it does not benefit at all from a rarity above Epic. Other guides are using an outdated setup and rotation.*
+*Note: Do ****not**** equip <span class="skill-mention" data-rune-name="Galewind" data-rune-tier="legendary">Legendary Galewind</span> on Blade Dance instead of Upper Slash. KR tested frame-by-frame and proved that it does not benefit at all from a rarity above Epic (or even above <span class="skill-mention" data-rune-name="Vision" data-rune-tier="legendary">Legendary Vision</span>).*
 
 </details>
 
