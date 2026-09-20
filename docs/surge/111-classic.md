@@ -295,11 +295,11 @@ Alternate main cycle meant to try-hard engraving efficiency in a practical **rai
 </div>
 </div>
 
-1. Just recast Maelstrom as needed, but some *optimal* cast spots are suggested.
+1. Just recast Maelstrom as needed, but some optimal coverage is suggested.
 2. Use **your** judgment. Not every skill needs the Maelstrom buff, so prioritize Surge.
 3. Consider skipping Maelstrom to conserve a stack if you received a <span class="skill-mention" data-rune-name="Rage">Rage</span> buff.
 
-*Note: This is a concept shown in the KR video guide for practical usage; I have not verified its effectiveness.*
+*Note: This is a concept shown in the KR video guide for practical usage; Its effectiveness is NOT verified.*
 </details>
 
 </div>
