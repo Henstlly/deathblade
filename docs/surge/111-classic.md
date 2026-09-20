@@ -263,7 +263,7 @@ Use the Breaking Moon cycle whenever it's available, then repeat the main cycle 
     - You can skip Wind Cut in the direct follow-up cycle, just continue from Surprise Attack into Earth Cleaver.
 3. Do NOT worry about Raid Captain efficiency, Keen Blunt Weapon is just as inefficient or worse!
     - Breaking Moon's Critical Damage bonus to the next Surge (your biggest hit) is Additive to Keen Blunt Weapon.
-    - Raid Captain fully buffs this Surge and makes use of Rage in a follow-up cycle if Maelstrom is skipped.
+    - Raid Captain fully buffs the empowered Surge and makes use of Rage in a follow-up cycle if Maelstrom is skipped.
 
 <div class="cycle-card" markdown>
 <div class="cycle-card-header"><span class="cycle-num cycle-num-2">2</span><span class="cycle-title">Main Repeating Cycle</span></div>
