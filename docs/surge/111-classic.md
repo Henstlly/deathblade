@@ -186,10 +186,10 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 
 - You can use the Weak Point Detection <span class="skill-mention" data-glossary-id="tripod">tripod</span> on Blade Dance.
     - Requires Lv 10 CD gem and/or raid downtime for it not to become a bottleneck.
-    - You must swap Wind Cut CD gem to Blade Dance CD, it's a marginal DPS increase.
+    - You must swap Wind Cut CD gem to Blade Dance CD, and it's a marginal DPS increase.
 - Earth Explosion tripod on Earth Cleaver is up to personal preference.
     - Increased cast speed, but greatly lowers its mobility and damage.
-- Dark Axel (1-1-2) can be used instead of Spincutter, but offers no recovery.
+- Dark Axel (1-1-2) can be used instead of Spincutter, but offers **no** recovery.
 
 </details>
 
@@ -260,8 +260,8 @@ Use the Breaking Moon cycle whenever it's available, then repeat the main cycle 
 1. If you have a leftover Rage/Maelstrom buff or no Maelstrom stacks: cast Surprise Attack instead.
 2. The Maelstrom cast here can desync from the main cycle, use your own judgment for the follow-up.
     - You can skip Maelstrom in a follow-up cycle, or defer skipping it to a cycle in which you obtained a <span class="skill-mention" data-rune-name="Rage">Rage</span> buff.
-    - You can skip Wind Cut in the direct follow-up cycle, just continue from Surprise Attack into Earth Cleaver.
-3. Do NOT worry about Raid Captain efficiency, Keen Blunt Weapon is just as inefficient or worse!
+    - You can skip Wind Cut in the direct follow-up cycle, and just continue from Surprise Attack into Earth Cleaver.
+3. Do NOT worry about Raid Captain efficiency; Keen Blunt Weapon is just as inefficient or worse!
     - Breaking Moon's Critical Damage bonus to the next Surge (your biggest hit) is Additive to Keen Blunt Weapon.
     - Raid Captain fully buffs the empowered Surge and makes use of Rage in a follow-up cycle if Maelstrom is skipped.
 
@@ -299,7 +299,7 @@ Alternate main cycle meant to try-hard engraving efficiency in a practical **rai
 2. Use **your** judgment. Not every skill needs the Maelstrom buff, so prioritize Surge.
 3. Consider skipping Maelstrom to conserve a stack if you received a <span class="skill-mention" data-rune-name="Rage">Rage</span> buff.
 
-*Note: This is a concept adopted from the KR video guide for practical usage, I have not verified its effectiveness.*
+*Note: This is a concept shown in the KR video guide for practical usage, I have not verified its effectiveness.*
 </details>
 
 </div>

@@ -181,7 +181,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 - You can use Wide Attack <span class="skill-mention" data-glossary-id="tripod">tripod</span> on Surprise Attack for **noticeably** increased QoL.
     - With Wide Attack, you **must** cast Turning Slash early on openers to apply synergy.
 - Earth Cleaver can be used instead of Head Hunt if you prefer its mobility or utility.
-- You can replace Dark Axel for Spincutter if you find it more useful (Mordum G3/Extreme).
+- You can replace Dark Axel with Spincutter if you find it more useful (Mordum G3/Extreme).
 </details>
 
 </div>
@@ -266,8 +266,8 @@ Use the Opener cycle and either loop it forever (easy) or continue on to the adv
 </div>
 
 1. This opener chains into the cycles below, but it's fine by itself if you prefer simplicity over uptime and DPS.
-2. Surprise Attack always goes before Maelstrom on cycles with a Surprise Attack finisher so their CD lines up.
-    - When looping this rotation for simplicity, or casting Maelstrom first unconditionally you will face downtime.
+2. Surprise Attack always goes before Maelstrom on cycles with a Surprise Attack finisher so their CDs line up.
+    - When looping this rotation for simplicity, or casting Maelstrom first unconditionally, you will face downtime.
 
 <div class="setup-panel" data-accent="lavender" markdown>
 <div class="setup-notes" markdown>
@@ -301,8 +301,8 @@ After the opener, alternate between these two cycles as needed for ceiling DPS i
       - Recover with Wind Cut or Surprise Attack, and decide your next cycle based on the available one.
 3. You can skip a Surprise Attack finisher whenever you're at 49+ stacks before Deathly Slash.
       - Same for 40+ stacks before Blade Dance, 30+ stacks before Upper Slash, and so on.
-      - If you have 7+ stacks before you activate Death Trance, you can skip both WC precast and SA finisher.
-      - At 14+ stacks before Death Trance, you can skip both the WC precast and SA finisher for two cycles in a row.
+      - If you have 8+ stacks before you activate Death Trance, you can skip both WC precast and SA finisher.
+      - At 15+ stacks before Death Trance, you can skip both the WC precast and SA finisher for two cycles in a row.
 
 It helps to think of everything within <span class="skill-inline" data-skill-id="deathtrance"><span class="skill-inline-name">Death Trance</span></span> and <span class="skill-inline" data-skill-id="deathlyslash"><span class="skill-inline-name">Deathly Slash</span></span> as 53 stacks, and the Wind Cut Precast or Surprise Attack finisher as flexible options that give you the 7+ stacks needed to complete a 60+ stack Surge.
 </details>

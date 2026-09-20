@@ -202,7 +202,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 - You can use Magick Control <span class="skill-mention" data-glossary-id="tripod">tripod</span> on Head Hunt for lower mana usage.
 - You can use Swift Fingers tripod on Blitz Rush for increased DPS and QoL.
     - It's a DPC loss unless you can make use of the increased CPM/comfort.
-    - It's not compatible with very low Specialization or +CD% bracelet line.
+    - It's not compatible with very low Specialization or a +CD% bracelet line.
     - Because of the above reasons, it's **recommended** but not set by default.
     - Set Void Strike to Lv 13 and Blitz Rush to Lv 12 if you decide to use this tripod.
 
@@ -257,24 +257,34 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 
     Use an **Opener**, then alternate between these two cycles as needed:
 
-    <div class="cycle-card" markdown>
+    <div class="cycle-card">
+
     <div class="cycle-card-header"><span class="cycle-num cycle-num-1">1</span><span class="cycle-title">Void Strike + Deathly Slash</span></div>
-    <div class="rotation-line" markdown>
+
+    <div class="rotation-line">
+
     <script type="application/json">
     ["maelstrom", "voidstrike", "twinshadows", "deathlyslash", "turningslash", "fatalwave", "surge"]
     </script>
-    </div>
+
     </div>
 
-    <div class="cycle-card" markdown>
+    </div>
+
+    <div class="cycle-card">
+
     <div class="cycle-card-header"><span class="cycle-num cycle-num-2">2</span><span class="cycle-title">Soul Absorber + Blitz Rush</span></div>
-    <div class="rotation-line" markdown>
+
+    <div class="rotation-line">
+
     <script type="application/json">
     ["soulabsorber", "blitzrush", "twinshadows",
      { "id": "maelstrom", "situational": true },
      "turningslash", "fatalwave", "surge"]
     </script>
+
     </div>
+
     </div>
 
     Aim to fit up to Cycle **2**'s Twin Shadows under Cycle **1**'s Maelstrom to reach 3 orbs without recasting or using recovery options. If you only landed up to Soul Absorber, an extra Head Hunt cast is usually enough.
@@ -288,13 +298,15 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
     *From 3 orbs (<span class="food-req-item">![](../assets/shared/icon-stimulant.png){: .skill-icon } Stimulant</span>):*
     { .lead }
 
-    <div class="rotation-line" markdown>
+    <div class="rotation-line">
+
     <script type="application/json">
     [{ "id": "headhunt", "swapNext": true }, "twinshadows", "maelstrom", "turningslash", "deathlyslash", "surge",
      { "cycleRef": 2, "title": "Soul Absorber + Blitz Rush Cycle" },
      { "cycleRef": 1, "title": "Void Strike + Deathly Slash Cycle" },
      { "suffix": "etc." }]
     </script>
+
     </div>
 
     1. If available, <span class="skill-inline" data-skill-id="bladeassault"><span class="skill-inline-name">Blade Assault</span></span> is interchangeable with Cycle **2**.
@@ -309,9 +321,11 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 === "Recovery"
 
     <div class="setup-panel" data-accent="lavender">
+
     <div class="setup-notes">
 
     <details class="setup-note" data-kind="tip" open>
+
     <summary><span class="setup-note-tag">Tip</span>Recovery Video<span class="setup-note-arrow"></span></summary>
 
     Watch this 2-minute [333 recovery video](https://www.youtube.com/watch?v=4478vFVX4VA) and read the segment titles.
@@ -319,6 +333,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
     </details>
 
     </div>
+
     </div>
 
     1. 313 plays similarly, just Turning Slash → Fatal Wave instead of <span class="skill-mention" data-glossary-id="ftfcombo">FTF</span>.
