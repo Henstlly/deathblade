@@ -317,6 +317,8 @@ It helps to think of everything within <span class="skill-inline" data-skill-id=
 5. Delaying *only* Surge by more than 1 second to ensure a back attack is also a DPS loss.
 6. <span class="skill-mention" data-skill-id="bladeassault">Blade Assault</span> hits low and takes too long. Use it to greed with <span class="skill-mention" data-glossary-id="pushimmunity">push immunity</span> or save for Hyper Awakening.
 
+*Note: The timing to enter Death Trance in cycles without a precast is right as Surge hits. It's unforgiving but it can be improved with a macro that fires the Identity key 2-3x very quickly without any downsides, increasing CPM/QoL.*
+
 *From zero orbs:*
 { .lead }
 
