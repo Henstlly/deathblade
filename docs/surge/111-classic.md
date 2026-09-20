@@ -1,7 +1,7 @@
 # 111 (Classic) 🦁
 
 <div class="build-card-row" markdown>
-<div class="build-card" data-updated="2026-09-17" markdown>
+<div class="build-card" data-updated="2026-09-20" markdown>
 
 <!-- Difficulty/Trixion/Playstyle stats above, AND the pentagon badge below,
      both read from javascripts/build-data.js (window.DB_BUILD_DATA) - there is
@@ -252,14 +252,18 @@ Use the Breaking Moon cycle whenever it's available, then repeat the main cycle 
 <div class="cycle-card-header"><span class="cycle-num cycle-num-1">1</span><span class="cycle-title">Breaking Moon Cycle</span></div>
 <div class="rotation-line" markdown>
 <script type="application/json">
-[{ "icons": ["turningslash", "surpriseattack"], "situational": "synergy" }, "windcut", "deathtrance", { "icons": ["maelstrom", "surpriseattack"] }, "breakingmoon", "surge"]
+[{ "icons": ["turningslash", "surpriseattack"], "situational": "synergy/adrenaline" }, "windcut", "deathtrance", { "icons": ["maelstrom", "surpriseattack"] }, "breakingmoon", "surge"]
 </script>
 </div>
 </div>
 
 1. If you have a leftover Rage/Maelstrom buff or no Maelstrom stacks: cast Surprise Attack instead.
 2. The Maelstrom cast here can desync from the main cycle, use your own judgment for the follow-up.
-3. Do NOT worry about Raid Captain efficiency, Keen Blunt Weapon is just as inefficient for this cycle.
+    - You can skip Maelstrom in a follow-up cycle, or defer skipping it to a cycle in which you obtained a <span class="skill-mention" data-rune-name="Rage">Rage</span> buff.
+    - You can skip Wind Cut in the direct follow-up cycle, just continue from Surprise Attack into Earth Cleaver.
+3. Do NOT worry about Raid Captain efficiency, Keen Blunt Weapon is just as inefficient or worse!
+    - Breaking Moon's Critical Damage bonus to the next Surge (your biggest hit) is Additive to Keen Blunt Weapon.
+    - Raid Captain fully buffs this Surge and makes use of Rage for a weaker follow-up cycle if Maelstrom is skipped.
 
 <div class="cycle-card" markdown>
 <div class="cycle-card-header"><span class="cycle-num cycle-num-2">2</span><span class="cycle-title">Main Repeating Cycle</span></div>
