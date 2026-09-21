@@ -322,7 +322,7 @@ It helps to think of everything within <span class="skill-inline" data-skill-id=
 4. Delaying Deathly Slash + Surge by more than 1.75 seconds to ensure a back attack is a DPS loss.
 5. Delaying *only* Surge by more than 1 second to ensure a back attack is also a DPS loss.
 6. <span class="skill-mention" data-skill-id="bladeassault">Blade Assault</span> scales much worse on Surge than on Remaining Energy and takes too long to cast.
-      - It's still useful for Atropine openers, or it can be saved to greed with <span class="skill-mention" data-glossary-id="pushimmunity">push immunity</span>/Hyper Awakening.
+      - It's still useful for <span class="skill-mention" data-skill-id="atropine">Atropine</span> openers, or it can be saved to greed with <span class="skill-mention" data-glossary-id="pushimmunity">push immunity</span>/Hyper Awakening.
 
 *Note: The timing to enter Death Trance in cycles without a precast is right as Surge hits. It's unforgiving but it can be improved with a macro that fires the Identity key 2-3x very quickly without any downsides, increasing CPM/QoL.*
 
@@ -331,6 +331,12 @@ It helps to think of everything within <span class="skill-inline" data-skill-id=
 
 1. Use a <span class="food-req-item">![](../assets/shared/icon-stimulant.png){: .skill-icon } Stimulant</span> (recommended) or proceed to #2.
 2. Generate one orb, build at least 40 stacks, then Surge to refill all 3 orbs.
+
+*Atropine usage:*
+{ .lead }
+
+1. Use <span class="skill-mention" data-skill-id="atropine">Atropine</span> right before Deathly Slash, and fit two Deathly Slash + Surge pairs in a 10 second window.
+2. Execute your fastest cycles while adapting to your stack count and boss patterns.
 
 ## DPS Spread
 

@@ -243,7 +243,7 @@ Breaking Moon grants 60 stacks on hit and empowers your next Surge with +60% Cri
 
 Spincutter is your mobility skill and backup stack builder. Use it to guarantee a back attack on Surge.
 
-Use the Breaking Moon cycle and its follow-up when available, then repeat the main cycle otherwise.
+Use the Breaking Moon cycle and its follow-up when available, then repeat the regular cycle otherwise.
 
 *From 3 orbs:*
 { .lead }
@@ -257,7 +257,7 @@ Use the Breaking Moon cycle and its follow-up when available, then repeat the ma
 </div>
 </div>
 
-1. If you have a leftover Rage/Maelstrom buff with a duration of 3 seconds or longer, skip Maelstrom.
+1. If you have a leftover <span class="skill-mention" data-rune-name="Rage" data-rune-tier="legendary">Rage</span>/Maelstrom buff with a duration of 3 seconds or longer, skip Maelstrom.
 2. Using Turning Slash as your synergy skill cast for openers will guarantee 80 stacks after this cycle.
 
 <div class="cycle-card" markdown>
@@ -270,16 +270,17 @@ Use the Breaking Moon cycle and its follow-up when available, then repeat the ma
 </div>
 
 1. Only cast Maelstrom here if you skipped it in the Breaking Moon cycle due to a pre-existing buff.
+    - You can also just go straight into a regular cycle instead of this follow-up if you skipped Maelstrom. 
 2. It's recommended to use both Surprise Attack casts if you have no excess stacks, otherwise skip one.
     - If you applied synergy with Turning Slash during the Breaking Moon cycle as an opener, you should be fine!
 3. Do NOT worry about Raid Captain efficiency; Keen Blunt Weapon is just as inefficient or worse!
     - Breaking Moon's Critical Damage bonus to the next Surge (your biggest hit) is Additive to Keen Blunt Weapon.
-    - Raid Captain fully buffs the empowered Surge and has a chance to make use of Rage to achieve full coverage.
-    - For reference, 90% of Surge builds use Raid Captain in KR; the real choice is Keen Blunt Weapon vs Mass Increase.
+    - Raid Captain fully buffs the empowered Surge and can make use of <span class="skill-mention" data-rune-name="Rage" data-rune-tier="legendary">Rage</span>/<span class="skill-mention" data-skill-id="atropine">Atropine</span> to achieve full coverage.
+    - 90% of Surge players use Raid Captain in KR; the real choice is between Keen Blunt Weapon and Mass Increase.
 4. It seems more complicated than it really is, watch [this video](https://www.youtube.com/watch?v=4bwhDT--0fo) to see how a full rotation plays out!
 
 <div class="cycle-card" markdown>
-<div class="cycle-card-header"><span class="cycle-num cycle-num-2">2</span><span class="cycle-title">Main Repeating Cycle</span></div>
+<div class="cycle-card-header"><span class="cycle-num cycle-num-2">2</span><span class="cycle-title">Regular Cycle</span></div>
 <div class="rotation-line" markdown>
 <script type="application/json">
 ["windcut", "deathtrance", "maelstrom", "surpriseattack", "windcut", "earthcleaver", "turningslash", "bladedance", "blitzrush", "surpriseattack", "surge"]
@@ -290,13 +291,20 @@ Use the Breaking Moon cycle and its follow-up when available, then repeat the ma
 1. The final Surprise Attack can often be skipped with surplus stacks and expected raid downtime.
 2. Consider delaying Maelstrom by 1 to 3 skills when uptime drops to ensure it covers Surge (<span class="skill-mention" data-skill-id="raidcaptain">Raid Captain</span>).
 3. <span class="skill-mention" data-skill-id="bladeassault">Blade Assault</span> scales much worse on Surge than on Remaining Energy and takes too long to cast.
-      - It's still useful for Atropine openers, or it can be saved to greed with <span class="skill-mention" data-glossary-id="pushimmunity">push immunity</span>/Hyper Awakening.
+      - It's still useful for <span class="skill-mention" data-skill-id="atropine">Atropine</span> openers, or it can be saved to greed with <span class="skill-mention" data-glossary-id="pushimmunity">push immunity</span>/Hyper Awakening.
 
 *From zero orbs:*
 { .lead }
 
 1. Use a <span class="food-req-item">![](../assets/shared/icon-stimulant.png){: .skill-icon } Stimulant</span> (recommended) or proceed to #2.
 2. Generate one orb, build at least 40 stacks, then Surge to refill all 3 orbs.
+
+*Atropine usage:*
+{ .lead }
+
+1. Fit three Surges into a 10 second window. Use <span class="skill-mention" data-skill-id="atropine">Atropine</span> right before the first Surge hits.
+2. The second or third Surge must be part of a Breaking Moon cycle or you won't make it.
+3. Stacks and the environment vary, so a fixed rotation would just be a shackle.
 
 ## DPS Spread
 

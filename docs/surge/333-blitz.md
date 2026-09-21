@@ -259,7 +259,7 @@ Apply damage <span class="skill-mention" data-glossary-id="synergy">synergy</spa
 1. The final Surprise Attack can often be skipped with surplus stacks and expected raid downtime.
 2. Consider delaying Maelstrom by 1 to 3 skills when uptime drops to ensure it covers Surge (<span class="skill-mention" data-skill-id="raidcaptain">Raid Captain</span>).
 3. <span class="skill-mention" data-skill-id="bladeassault">Blade Assault</span> scales much worse on Surge than on Remaining Energy and takes too long to cast.
-      - It's still useful for Atropine openers, or it can be saved to greed with <span class="skill-mention" data-glossary-id="pushimmunity">push immunity</span>/Hyper Awakening.
+      - It's still useful for <span class="skill-mention" data-skill-id="atropine">Atropine</span> openers, or it can be saved to greed with <span class="skill-mention" data-glossary-id="pushimmunity">push immunity</span>/Hyper Awakening.
 
 <div class="setup-panel" data-accent="lavender" markdown>
 <div class="setup-notes" markdown>
