@@ -279,7 +279,7 @@ Use the Opener cycle and either loop it forever (easy) or continue on to the adv
 <details class="setup-note" data-kind="tip" open markdown>
 <summary><span class="setup-note-tag">Tip</span>Leopard Mode (Optional)<span class="setup-note-arrow"></span></summary>
 
-After the opener, alternate between these two cycles as needed for ceiling DPS if your CD gems can keep up:
+After the opener, alternate between these two cycles as needed for ceiling DPS:
 
 <div class="cycle-card" markdown>
 <div class="cycle-card-header"><span class="cycle-num cycle-num-2">2</span><span class="cycle-title">Surprise Skip Cycle - 61 Stacks</span></div>
