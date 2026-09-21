@@ -289,33 +289,6 @@ Use the Breaking Moon cycle and it's follow-up when available, then repeat the m
 3. <span class="skill-mention" data-skill-id="bladeassault">Blade Assault</span> scales much worse on Surge than on Remaining Energy and takes too long to cast.
       - It's still useful for Atropine openers, or it can be saved to greed with <span class="skill-mention" data-glossary-id="pushimmunity">push immunity</span>/Hyper Awakening.
 
-<div class="setup-panel" data-accent="lavender" markdown>
-<div class="setup-notes" markdown>
-
-<details class="setup-note" data-kind="example" markdown>
-<summary><span class="setup-note-tag">Alt</span>Lion Mode (Optional/Unverified)<span class="setup-note-arrow"></span></summary>
-
-Alternate main cycle meant to try-hard engraving efficiency in a practical **raid setting** with downtime:
-
-<div class="cycle-card" markdown>
-<div class="cycle-card-header"><span class="cycle-num cycle-num-2">2</span><span class="cycle-title">Main Repeating Cycle</span></div>
-<div class="rotation-line" markdown>
-<script type="application/json">
-[{ "id": "maelstrom", "situational": true }, "windcut", "deathtrance", "surpriseattack", "windcut", "earthcleaver", "turningslash", { "id": "maelstrom", "situational": true }, "bladedance", "blitzrush", "surpriseattack", { "id": "spincutter", "situational": "reposition" }, "surge"]
-</script>
-</div>
-</div>
-
-1. Just recast Maelstrom as needed, but some optimal coverage is suggested.
-2. Use **your** judgment. Not every skill needs the Maelstrom buff, so prioritize Surge.
-3. Consider skipping Maelstrom to conserve a stack if you received a <span class="skill-mention" data-rune-name="Rage">Rage</span> buff.
-
-*Note: This is a concept shown in the KR video guide; Its effectiveness is NOT yet verified and may be removed.*
-</details>
-
-</div>
-</div>
-
 *From zero orbs:*
 { .lead }
 
