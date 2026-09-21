@@ -53,6 +53,9 @@
 //         whole has no single tooltip (nothing to attach it to - see
 //         buildStep below), but each icon still gets its own hover/
 //         focus/tap tooltip individually, same as a normal step's icon.
+//     { "icons": ["maelstrom", "surpriseattack"], "join": "and/or" }
+//       - optional "join" replaces the default "or" between the icons
+//         (here: "either, or both" instead of "pick one").
 //     { "cycleRef": 2, "title": "Soul Absorber + Blitz Rush Cycle" }
 //       - a pseudo-step pointing at a Cycle card above instead of a
 //         real skill (no icon). Renders the same cycle-num/cycle-title
@@ -97,7 +100,9 @@
       span.appendChild(el("span", "cycle-title", step.title || ""));
     } else if (step.icons && step.icons.length) {
       step.icons.forEach(function (id, i) {
-        if (i > 0) span.appendChild(document.createTextNode(" or "));
+        // Optional per-step "join" text between the icons - defaults to
+        // "or" so every existing icons step renders exactly as before.
+        if (i > 0) span.appendChild(document.createTextNode(" " + (step.join || "or") + " "));
         var icon = buildIcon(id);
         // The outer .skill chip deliberately gets no data-skill-id here
         // (see this function's own header comment - a multi-icon "pick
