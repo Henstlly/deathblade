@@ -252,32 +252,26 @@ Use the Breaking Moon cycle and its follow-up when available, then repeat the re
 <div class="cycle-card-header"><span class="cycle-num cycle-num-1">1A</span><span class="cycle-title">Breaking Moon Cycle</span></div>
 <div class="rotation-line" markdown>
 <script type="application/json">
-[{ "icons": ["turningslash", "surpriseattack"], "situational": "syn/adrenaline" }, "windcut", "deathtrance", { "icons": ["maelstrom", "surpriseattack"], "join": "and/or" }, "breakingmoon", "surge"]
+[{ "skills": ["turningslash", "surpriseattack"], "situational": "adrenaline/synergy" }, "windcut", "deathtrance", "maelstrom", "surpriseattack", "breakingmoon", "surge"]
 </script>
 </div>
 </div>
-
-1. If you have a leftover <span class="skill-mention" data-rune-name="Rage" data-rune-tier="legendary">Rage</span>/Maelstrom buff with a duration of 3 seconds or longer, skip Maelstrom.
-2. Using Turning Slash as your synergy skill cast for openers will guarantee 80 stacks after this cycle.
 
 <div class="cycle-card" markdown>
 <div class="cycle-card-header"><span class="cycle-num cycle-num-1">1B</span><span class="cycle-title">Follow-Up Cycle</span></div>
 <div class="rotation-line" markdown>
 <script type="application/json">
-["windcut", "deathtrance", { "id": "maelstrom", "situational": true }, { "id": "surpriseattack", "situational": true }, "earthcleaver", "turningslash", "bladedance", "blitzrush", "surpriseattack", "surge"]
+["windcut", "deathtrance", { "id": "surpriseattack", "situational": true }, "earthcleaver", "turningslash", "bladedance", "blitzrush", "surpriseattack", "surge"]
 </script>
 </div>
 </div>
 
-1. Only cast Maelstrom here if you skipped it in the Breaking Moon cycle due to a pre-existing buff.
-    - You can also just go straight into a regular cycle instead of this follow-up if you skipped Maelstrom. 
-2. It's recommended to use both Surprise Attack casts if you have no excess stacks, otherwise skip one.
-    - If you applied synergy with Turning Slash during the Breaking Moon cycle as an opener, you should be fine!
-3. Do NOT worry about Raid Captain efficiency; Keen Blunt Weapon is just as inefficient or worse!
-    - Breaking Moon's Critical Damage bonus to the next Surge (your biggest hit) is Additive to Keen Blunt Weapon.
-    - Raid Captain fully buffs the empowered Surge and can make use of <span class="skill-mention" data-rune-name="Rage" data-rune-tier="legendary">Rage</span>/<span class="skill-mention" data-skill-id="atropine">Atropine</span> to achieve full coverage.
-    - 90% of Surge players use Raid Captain in KR; the real choice is between Keen Blunt Weapon and Mass Increase.
-4. It seems more complicated than it really is, watch [this video](https://www.youtube.com/watch?v=4bwhDT--0fo) to see how a full rotation plays out!
+1. Use both Surprise Attack casts if you haven't built excess stacks, otherwise skip one of them.
+    - If you used Turning Slash for adrenaline/synergy or repositioned with Spincutter, you have enough!
+2. Do NOT worry about Raid Captain efficiency; Keen Blunt Weapon is just as inefficient or worse!
+    - Breaking Moon's Critical Damage bonus to the next Surge (biggest hit) is additive to Keen Blunt Weapon.
+    - Raid Captain fully buffs the empowered Surge and can make use of <span class="skill-mention" data-rune-name="Rage" data-rune-tier="legendary">Rage</span>/<span class="skill-mention" data-skill-id="atropine">Atropine</span> for the follow-up.
+3. It seems more complicated than it really is, watch [this video](https://www.youtube.com/watch?v=4bwhDT--0fo) to see how a full rotation plays out!
 
 <div class="cycle-card" markdown>
 <div class="cycle-card-header"><span class="cycle-num cycle-num-2">2</span><span class="cycle-title">Regular Cycle</span></div>
@@ -288,8 +282,8 @@ Use the Breaking Moon cycle and its follow-up when available, then repeat the re
 </div>
 </div>
 
-1. The final Surprise Attack can often be skipped with surplus stacks and expected raid downtime.
-2. Consider delaying Maelstrom by 1 to 3 skills when uptime drops to ensure it covers Surge (<span class="skill-mention" data-skill-id="raidcaptain">Raid Captain</span>).
+1. The final Surprise Attack can *sometimes* be skipped with excess stacks and raid downtime.
+2. Consider delaying Maelstrom by 1 to 2 skills when uptime drops so it covers Surge (<span class="skill-mention" data-skill-id="raidcaptain">Raid Captain</span>).
 3. <span class="skill-mention" data-skill-id="bladeassault">Blade Assault</span> scales much worse on Surge than on Remaining Energy and takes too long to cast.
       - It's still useful for <span class="skill-mention" data-skill-id="atropine">Atropine</span> openers, or it can be saved to greed with <span class="skill-mention" data-glossary-id="pushimmunity">push immunity</span>/Hyper Awakening.
 
@@ -297,8 +291,8 @@ Use the Breaking Moon cycle and its follow-up when available, then repeat the re
 { .lead }
 
 1. Use a <span class="food-req-item">![](../assets/shared/icon-stimulant.png){: .skill-icon } Stimulant</span> (recommended) or proceed to #2.
+      - Rat Pack: Use Maelstrom's Orb Control tripod and Flash Blink awakening.
 2. Generate one orb, build at least 40 stacks, then Surge to refill all 3 orbs.
-3. Rat Pack: Use Maelstrom's Orb Control tripod and cast Flash Blink awakening. You will be judged.
 
 *Atropine usage:*
 { .lead }

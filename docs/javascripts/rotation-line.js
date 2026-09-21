@@ -18,7 +18,7 @@
 // rotation-practice.js only wires up whatever .skill/.arrow elements
 // already exist in the DOM when it runs, so this has to build them first.
 //
-// Every plain (non-icons, non-cycleRef) step's .skill chip also gets a
+// Every plain (non-skills, non-cycleRef) step's .skill chip also gets a
 // data-skill-id attribute, which is all skill-tooltip.js needs to attach
 // its hover/focus/tap tooltip to it - no markup changes needed here if
 // that file's own logic ever changes.
@@ -46,15 +46,14 @@
 //       - situational with custom tag text instead of "situational".
 //         "**word**" inside the tag text bolds that word, same as
 //         before.
-//     { "icons": ["turningslash", "surpriseattack"], "situational": true,
-//       "situational": "synergy/adrenaline" }
-//       - two icons joined by "or" or, with no name text - for a step
-//         that's really "pick whichever of these is up". The step as a
-//         whole has no single tooltip (nothing to attach it to - see
-//         buildStep below), but each icon still gets its own hover/
-//         focus/tap tooltip individually, same as a normal step's icon.
-//     { "icons": ["maelstrom", "surpriseattack"], "join": "and/or" }
-//       - optional "join" replaces the default "or" between the icons
+//     { "skills": ["turningslash", "surpriseattack"], "situational": "adrenaline" }
+//       - one chip holding two skills joined by "or" - for a step that's
+//         really "pick whichever of these is up". Each skill keeps its
+//         own icon, name and hover/focus/tap tooltip; the chip as a whole
+//         has no single tooltip (nothing to attach it to). Situational
+//         tag and the rest of the chip styling work like any other step.
+//     { "skills": ["maelstrom", "surpriseattack"], "join": "and/or" }
+//       - optional "join" replaces the default "or" between the skills
 //         (here: "either, or both" instead of "pick one").
 //     { "cycleRef": 2, "title": "Soul Absorber + Blitz Rush Cycle" }
 //       - a pseudo-step pointing at a Cycle card above instead of a
@@ -98,24 +97,23 @@
     if (step.cycleRef != null) {
       span.appendChild(el("span", "cycle-num cycle-num-" + step.cycleRef, String(step.cycleRef)));
       span.appendChild(el("span", "cycle-title", step.title || ""));
-    } else if (step.icons && step.icons.length) {
-      step.icons.forEach(function (id, i) {
-        // Optional per-step "join" text between the icons - defaults to
-        // "or" so every existing icons step renders exactly as before.
-        if (i > 0) span.appendChild(document.createTextNode(" " + (step.join || "or") + " "));
-        var icon = buildIcon(id);
-        // The outer .skill chip deliberately gets no data-skill-id here
-        // (see this function's own header comment - a multi-icon "pick
-        // whichever" step isn't one skill a single tooltip could
-        // describe), but each individual icon IS unambiguously one real
-        // skill on its own - the name text was only dropped for space,
-        // not because the icon stopped meaning anything. Stamping the id
-        // on the <img> itself lets skill-tooltip.js wire a per-icon
-        // tooltip (see its attachRotationIcon) the same way it already
-        // does for a plain single-id step's whole chip, just scoped to
-        // this one icon instead of the whole "A or B" span.
-        icon.setAttribute("data-skill-id", id);
-        span.appendChild(icon);
+    } else if (step.skills && step.skills.length) {
+      span.classList.add("skill-multi");
+      step.skills.forEach(function (id, i) {
+        // Optional per-step "join" text between the skills - defaults to
+        // "or". Its own span (not a bare text node) so the chip's flex
+        // gap spaces it the same as everything else in the chip.
+        if (i > 0) span.appendChild(el("span", "skill-join", step.join || "or"));
+        // Each skill is its own .skill-part carrying the data-skill-id,
+        // so skill-tooltip.js wires a tooltip per skill (icon AND name
+        // are the hover area). The outer .skill chip deliberately gets no
+        // data-skill-id: it isn't one skill a single tooltip could
+        // describe.
+        var part = el("span", "skill-part");
+        part.setAttribute("data-skill-id", id);
+        part.appendChild(buildIcon(id));
+        part.appendChild(document.createTextNode(window.DB_SKILL_NAMES[id] || id));
+        span.appendChild(part);
       });
     } else {
       span.appendChild(buildIcon(step.id));
@@ -123,9 +121,9 @@
       span.appendChild(document.createTextNode(name));
       // Lets skill-tooltip.js attach a hover/focus/tap tooltip to this
       // chip without having to re-derive the id from anything - single,
-      // unambiguous skill per step here (unlike the icons/cycleRef
+      // unambiguous skill per step here (unlike the skills/cycleRef
       // branches above, which don't get this attribute at all: a "pick
-      // whichever" multi-icon step or a Cycle pointer isn't one skill a
+      // whichever" multi-skill step or a Cycle pointer isn't one skill a
       // tooltip could describe).
       span.setAttribute("data-skill-id", step.id);
     }
@@ -168,7 +166,7 @@
     var data = result.data;
 
     // A trailing `{ "suffix": "..." }` marker (an object with ONLY a
-    // "suffix" key - real steps always have id/icons/cycleRef) carries
+    // "suffix" key - real steps always have id/skills/cycleRef) carries
     // text after the last arrow instead of being a step. See EASY EDIT
     // GUIDE above for why this can't just be a top-level {steps, suffix}
     // object instead.
@@ -177,7 +175,7 @@
     var last = steps[steps.length - 1];
     if (
       last && typeof last === "object" && !Array.isArray(last) &&
-      "suffix" in last && !("id" in last) && !("icons" in last) && !("cycleRef" in last)
+      "suffix" in last && !("id" in last) && !("skills" in last) && !("cycleRef" in last)
     ) {
       suffix = last.suffix;
       steps.pop();

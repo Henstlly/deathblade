@@ -1407,6 +1407,24 @@ h3 { color: var(--dbc-teal); }
   color: #7a7488;
   margin-left: 0.05em;
 }
+/* Multi-skill chip ("A or B", see rotation-line.js's "skills" step): each
+   skill is an icon + name pair with the same icon-to-name gap a plain
+   single-skill chip gets from .skill's own flex gap. */
+.md-typeset .rotation-line .skill-part {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+}
+/* Two skills plus a tag can be wider than a phone screen; let the chip's
+   contents wrap onto a second line instead of overflowing or overlapping
+   (parts never shrink, so a skill's own name stays on one line). */
+.md-typeset .rotation-line .skill-multi {
+  flex-wrap: wrap;
+  row-gap: 0.1em;
+}
+.md-typeset .rotation-line .skill-multi > * {
+  flex-shrink: 0;
+}
 
 /* ---------- Cycle cards (group a Cycle's label + rotation-line into one step) ---------- */
 /* Structure:

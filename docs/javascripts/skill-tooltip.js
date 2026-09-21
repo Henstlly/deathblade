@@ -565,24 +565,6 @@
     wire(trigger, buildTip(id, data));
   }
 
-  // rotation-line.js's multi-icon "pick whichever" step (e.g. Turning
-  // Slash/Surprise Attack joined by "or", name text dropped for space) -
-  // the step's own .skill chip has no data-skill-id (ambiguous, see that
-  // file's own comment), but it stamps one directly on each <img> inside
-  // it, since an individual icon IS still unambiguously one real skill.
-  // Same wire()/buildTip() as attachRotationSkill above, just keyed off
-  // the icon itself as the trigger instead of the whole chip, so hovering
-  // one icon shows only that icon's own tooltip, not a guess at which of
-  // the two the step "really" means.
-  function attachRotationIcon(trigger) {
-    if (trigger.classList.contains("skill-tip-wired")) return;
-    var id = trigger.getAttribute("data-skill-id");
-    if (!id) return;
-    var data = lookupData(id, resolveFamily(trigger));
-    if (!data) return;
-    wire(trigger, buildTip(id, data));
-  }
-
   function attachSkillInline(trigger) {
     if (trigger.classList.contains("skill-tip-wired")) return;
 
@@ -732,7 +714,10 @@
   });
 
   window.SiteUtils.registerRenderer(".rotation-line .skill[data-skill-id]", attachRotationSkill);
-  window.SiteUtils.registerRenderer(".rotation-line .skill img[data-skill-id]", attachRotationIcon);
+  // rotation-line.js's multi-skill "A or B" chip: the chip itself has no
+  // data-skill-id, but each .skill-part (icon + name) inside it does, and
+  // is wired exactly like a plain single-skill chip.
+  window.SiteUtils.registerRenderer(".rotation-line .skill-part[data-skill-id]", attachRotationSkill);
   window.SiteUtils.registerRenderer(".skill-inline, .food-req-item, .engraving-chip[data-skill-id], .engraving-card-name[data-skill-id], .skill-mention[data-skill-id]", attachSkillInline);
   window.SiteUtils.registerRenderer(".food-option", attachFoodOption);
   window.SiteUtils.registerRenderer(".food-option-icon, img.skill-icon", attachBareIcon);
