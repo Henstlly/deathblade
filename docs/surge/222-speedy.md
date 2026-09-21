@@ -307,6 +307,7 @@ After the opener, alternate between these two cycles as needed for ceiling DPS:
       - Same for 40+ stacks before Blade Dance, 30+ stacks before Upper Slash, and so on.
       - If you have 8+ stacks before you activate Death Trance, you can skip both WC precast and SA finisher.
       - At 15+ stacks before Death Trance, you can skip both the WC precast and SA finisher for two cycles in a row.
+4. It sounds more complicated than it really is, watch [this video](https://www.youtube.com/watch?v=V1UQhE37Yjs) to see how a full rotation plays out!
 
 It helps to think of everything within <span class="skill-inline" data-skill-id="deathtrance"><span class="skill-inline-name">Death Trance</span></span> and <span class="skill-inline" data-skill-id="deathlyslash"><span class="skill-inline-name">Deathly Slash</span></span> as 53 stacks, and the Wind Cut Precast or Surprise Attack finisher as flexible options that give you the 7+ stacks needed to complete a 60+ stack Surge.
 </details>

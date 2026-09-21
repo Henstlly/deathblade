@@ -261,10 +261,10 @@ Use the Breaking Moon cycle whenever it's available, then repeat the main cycle 
 2. The Maelstrom cast here can desync from the main cycle, use your own judgment for the follow-up.
     - You can skip Maelstrom in a follow-up cycle, or defer skipping it to a cycle in which you obtained a <span class="skill-mention" data-rune-name="Rage">Rage</span> buff.
     - You can skip Surprise Attack/Wind Cut in the direct follow-up cycle, and just continue from Earth Cleaver.
-    - It sounds more complicated than it really is, simply watch [this video](https://www.youtube.com/watch?v=4bwhDT--0fo) to see how a full rotation plays out!
 3. Do NOT worry about Raid Captain efficiency; Keen Blunt Weapon is just as inefficient or worse!
     - Breaking Moon's Critical Damage bonus to the next Surge (your biggest hit) is Additive to Keen Blunt Weapon.
     - Raid Captain fully buffs the empowered Surge and makes use of Rage in a follow-up cycle if Maelstrom is skipped.
+4. It seems more complicated than it really is, watch [this video](https://www.youtube.com/watch?v=4bwhDT--0fo) to see how a full rotation plays out!
 
 <div class="cycle-card" markdown>
 <div class="cycle-card-header"><span class="cycle-num cycle-num-2">2</span><span class="cycle-title">Main Repeating Cycle</span></div>
