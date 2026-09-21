@@ -258,6 +258,7 @@ Use the Breaking Moon cycle and its follow-up when available, then repeat the ma
 </div>
 
 1. If you have a leftover Rage/Maelstrom buff with a duration of 3 seconds or longer, skip Maelstrom.
+2. Using Turning Slash as your synergy skill cast for openers will guarantee 80 stacks after this cycle.
 
 <div class="cycle-card" markdown>
 <div class="cycle-card-header"><span class="cycle-num cycle-num-1">1B</span><span class="cycle-title">Follow-Up Cycle</span></div>
@@ -269,11 +270,12 @@ Use the Breaking Moon cycle and its follow-up when available, then repeat the ma
 </div>
 
 1. Only cast Maelstrom here if you skipped it in the Breaking Moon cycle due to a pre-existing buff.
-2. Depending on attack speed/latency, your Wind Cut precast may grant 7 stacks instead of 8.
-    - It's recommended to use both Surprise Attack casts to be safe if you have no excess stacks.
+2. It's recommended to use both Surprise Attack casts if you have no excess stacks, otherwise skip one.
+    - If you applied synergy with Turning Slash during the Breaking Moon cycle as an opener, you should be fine!
 3. Do NOT worry about Raid Captain efficiency; Keen Blunt Weapon is just as inefficient or worse!
     - Breaking Moon's Critical Damage bonus to the next Surge (your biggest hit) is Additive to Keen Blunt Weapon.
     - Raid Captain fully buffs the empowered Surge and has a chance to make use of Rage to achieve full coverage.
+    - For reference, 90% of Surge builds use Raid Captain in KR; the real choice is Keen Blunt Weapon vs Mass Increase.
 4. It seems more complicated than it really is, watch [this video](https://www.youtube.com/watch?v=4bwhDT--0fo) to see how a full rotation plays out!
 
 <div class="cycle-card" markdown>
