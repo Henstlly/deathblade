@@ -127,8 +127,8 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 <summary><span class="setup-note-tag">Tip</span>Ark Passive<span class="setup-note-arrow"></span></summary>
 
 - Use the [Ark Passive Calculator](../resources.md#ark-passive-calculator) to optimize Evolution nodes.
-- In some cases (low <span class="skill-mention" data-glossary-id="specializationstat">Specialization</span>, +CD% <span class="skill-mention" data-glossary-id="bracelet">bracelet</span>) <span class="skill-mention" data-ap-id="releasepotential" data-level="4">Release Potential 4</span> + <span class="skill-mention" data-ap-id="instantspell" data-level="2">Instant Spell 2</span> may be preferred.
-    - This setting increases mana consumption and may require the use of mana food instead of wine.
+- <span class="skill-mention" data-ap-id="releasepotential" data-level="3">Release Potential 3</span> is taken because downtime, raid phasing, or death can occasionally enable an extra use.
+    - The alternative is <span class="skill-mention" data-ap-id="transcendentpower" data-level="3">Transcendent Power 3</span>, which is only really useful for guardians or your fourth non-gold HW raid.
 
 </details>
 
