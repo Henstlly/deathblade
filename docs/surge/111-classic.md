@@ -267,11 +267,11 @@ Use the Breaking Moon cycle and its follow-up when available, then repeat the re
 </div>
 
 1. Use both Surprise Attack casts if you haven't built excess stacks, otherwise skip one of them.
-    - If you used Turning Slash for adrenaline/synergy or repositioned with Spincutter, you have enough!
+    - If you used Turning Slash for adrenaline/synergy or repositioned with Spincutter, you have enough.
 2. Do NOT worry about Raid Captain efficiency; Keen Blunt Weapon is just as inefficient or worse!
     - Breaking Moon's Critical Damage bonus to the next Surge (biggest hit) is additive to Keen Blunt Weapon.
     - Raid Captain fully buffs the empowered Surge and can make use of <span class="skill-mention" data-rune-name="Rage" data-rune-tier="legendary">Rage</span>/<span class="skill-mention" data-skill-id="atropine">Atropine</span> for the follow-up.
-3. It seems more complicated than it really is, watch [this video](https://www.youtube.com/watch?v=4bwhDT--0fo) to see how a full rotation plays out!
+3. It seems more complicated than it really is, watch [this video](https://www.youtube.com/watch?v=4bwhDT--0fo) to see how a full rotation plays out.
 
 <div class="cycle-card" markdown>
 <div class="cycle-card-header"><span class="cycle-num cycle-num-2">2</span><span class="cycle-title">Regular Cycle</span></div>
