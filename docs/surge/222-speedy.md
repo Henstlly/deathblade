@@ -331,6 +331,7 @@ It helps to think of everything within <span class="skill-inline" data-skill-id=
 
 1. Use a <span class="food-req-item">![](../assets/shared/icon-stimulant.png){: .skill-icon } Stimulant</span> (recommended) or proceed to #2.
 2. Generate one orb, build at least 40 stacks, then Surge to refill all 3 orbs.
+3. Rat Pack: use Maelstrom's Orb Control tripod and cast Flash Blink awakening. You will be judged.
 
 *Atropine usage:*
 { .lead }
