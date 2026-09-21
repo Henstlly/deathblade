@@ -263,17 +263,18 @@ Use the Breaking Moon cycle and it's follow-up when available, then repeat the m
 <div class="cycle-card-header"><span class="cycle-num cycle-num-1">1B</span><span class="cycle-title">Follow-Up Cycle</span></div>
 <div class="rotation-line" markdown>
 <script type="application/json">
-["windcut", "deathtrance", { "id": "maelstrom", "situational": true }, "earthcleaver", "turningslash", "bladedance", "blitzrush", "surpriseattack", "surge"]
+["windcut", "deathtrance", { "id": "maelstrom", "situational": true }, { "id": "surpriseattack", "situational": true }, "earthcleaver", "turningslash", "bladedance", "blitzrush", "surpriseattack", "surge"]
 </script>
 </div>
 </div>
 
 1. Only cast Maelstrom here if you skipped it in the Breaking Moon cycle due to a pre-existing buff.
-2. Do NOT worry about Raid Captain efficiency; Keen Blunt Weapon is just as inefficient or worse!
+2. Depending on attack speed/latency, your Wind Cut precast may grant 7 stacks instead of 8.
+    - It's recommended to use both Surprise Attack casts to be safe if you have no excess stacks.
+3. Do NOT worry about Raid Captain efficiency; Keen Blunt Weapon is just as inefficient or worse!
     - Breaking Moon's Critical Damage bonus to the next Surge (your biggest hit) is Additive to Keen Blunt Weapon.
     - Raid Captain fully buffs the empowered Surge and has a chance to make use of Rage to achieve full coverage.
-    - For reference, 90% of Surge builds use Raid Captain in KR, the real choice is Keen Blunt Weapon vs Mass Increase.
-3. It seems more complicated than it really is, watch [this video](https://www.youtube.com/watch?v=4bwhDT--0fo) to see how a full rotation plays out!
+4. It seems more complicated than it really is, watch [this video](https://www.youtube.com/watch?v=4bwhDT--0fo) to see how a full rotation plays out!
 
 <div class="cycle-card" markdown>
 <div class="cycle-card-header"><span class="cycle-num cycle-num-2">2</span><span class="cycle-title">Main Repeating Cycle</span></div>
