@@ -277,7 +277,7 @@ Apply damage <span class="skill-mention" data-glossary-id="synergy">synergy</spa
 
 1. Use a <span class="food-req-item">![](../assets/shared/icon-stimulant.png){: .skill-icon } Stimulant</span> (recommended) or proceed to #2.
 2. Generate one orb, build at least 40 stacks, then Surge to refill all 3 orbs.
-3. Rat Pack: use Maelstrom's Orb Control tripod and cast Flash Blink awakening. You will be judged.
+3. Rat Pack: Use Maelstrom's Orb Control tripod and cast Flash Blink awakening. You will be judged.
 
 ## DPS Spread
 
