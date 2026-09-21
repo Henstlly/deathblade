@@ -243,7 +243,7 @@ Breaking Moon grants 60 stacks on hit and empowers your next Surge with +60% Cri
 
 Spincutter is your mobility skill and backup stack builder. Use it to guarantee a back attack on Surge.
 
-Use the Breaking Moon cycle and it's follow-up when available, then repeat the main cycle otherwise.
+Use the Breaking Moon cycle and its follow-up when available, then repeat the main cycle otherwise.
 
 *From 3 orbs:*
 { .lead }
