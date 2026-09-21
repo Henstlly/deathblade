@@ -180,9 +180,10 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 <summary><span class="setup-note-tag">Note</span>Options & Tripods<span class="setup-note-arrow"></span></summary>
 
 - You can bring Head Hunt down to Lv 1 for lower mana use.
-    - Raising it past Lv 4 is not ideal as you lose a stack and skill points for little reason.
-- You can use Wide Attack <span class="skill-mention" data-glossary-id="tripod">tripod</span> on Surprise Attack for noticeably increased QoL.
+    - Raising it past Lv 4 is not ideal as you lose a stack and increase mana use for little reason.
+- You can use Wide Attack <span class="skill-mention" data-glossary-id="tripod">tripod</span> on Surprise Attack for noticeably increased quality of life.
     - With Wide Attack, you **must** cast Turning Slash early on openers to apply synergy.
+    - This is more viable than ever as Turning Slash's lingering hits now extend its uptime.
 - Earth Cleaver can be used instead of Head Hunt if you prefer its mobility or utility.
 - You can replace Dark Axel with Spincutter (3-3-1) if you find it more useful (Mordum Extreme).
     - If you don't wish to learn the advanced skip cycles, it can make looping the overstack cycle easier.
