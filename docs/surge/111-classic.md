@@ -284,7 +284,7 @@ Use the Breaking Moon cycle whenever it's available, then repeat the main cycle 
 <div class="setup-notes" markdown>
 
 <details class="setup-note" data-kind="example" markdown>
-<summary><span class="setup-note-tag">Alt</span>Lion Mode (Optional)<span class="setup-note-arrow"></span></summary>
+<summary><span class="setup-note-tag">Alt</span>Lion Mode (Optional/Unverified)<span class="setup-note-arrow"></span></summary>
 
 Alternate main cycle meant to try-hard engraving efficiency in a practical **raid setting** with downtime:
 
