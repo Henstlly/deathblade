@@ -413,6 +413,38 @@
       <span class="ap-value-display" data-for="ap-yearning"></span>
       <input type="checkbox" id="ap-yearning" class="ap-yearning" checked>
     </div>
+    <!-- Support's Crit Rate/Crit Dmg bracelet lines - flat party buffs off
+         Support's own bracelet, same "option text shows the exact %"
+         convention as the Rings/Bracelet pairs above (see
+         updateInputDisplays' comment), so no separate ap-value-display
+         span. Gated off .ap-yearning the same UI-only way as Flash Orb
+         Uptime/Strength Orb Uptime/Support AP Buff Uptime just below (see
+         enforceGearSupportUptimeGate) - only meaningful while a Support is
+         actually in the party. These lines also carry an "Ally Atk. Power
+         Enhancement +2/2.5/3%" component in Arsonistic's SupBrace sheet;
+         deliberately not modeled here (no separate AP input/mechanic added
+         for it) rather than bolting it onto SUPPORT_AP_BUFF_COEFFICIENT,
+         which is a differently-shaped sqrt(WP*MainStat)-scaled buff, not a
+         flat Attack Power % - folding a flat % into that coefficient would
+         misrepresent what it's calibrated against. -->
+    <div class="ap-calc-field-row">
+      <label class="ap-calc-field-label" for="ap-support-crit-rate-bracelet" title="Support's Crit Rate bracelet line - Low/Mid/High +1.8/2.1/2.5% Crit Rate for the party.">Support: Crit Rate Bracelet</label>
+      <select id="ap-support-crit-rate-bracelet" class="ap-support-crit-rate-bracelet">
+        <option value="None" selected>None</option>
+        <option value="Low">1.80%</option>
+        <option value="Mid">2.10%</option>
+        <option value="High">2.50%</option>
+      </select>
+    </div>
+    <div class="ap-calc-field-row">
+      <label class="ap-calc-field-label" for="ap-support-crit-dmg-bracelet" title="Support's Crit Dmg bracelet line - Low/Mid/High +3.6/4.2/4.8% Crit Dmg for the party.">Support: Crit Dmg Bracelet</label>
+      <select id="ap-support-crit-dmg-bracelet" class="ap-support-crit-dmg-bracelet">
+        <option value="None" selected>None</option>
+        <option value="Low">3.60%</option>
+        <option value="Mid">4.20%</option>
+        <option value="High">4.80%</option>
+      </select>
+    </div>
     <div class="ap-calc-field-row ap-calc-field-row-muted">
       <label class="ap-calc-field-label" for="ap-flash-orb-uptime" title="+15% Crit Rate, scaled by the Support's Drops of Ether engraving.">Flash Orb Uptime %</label>
       <span class="ap-brace-warn-icon ap-flash-orb-warn" title="Getting these orbs at all is pure RNG - they'll shift your best setup, but they're not worth planning around unless you like seeing white numbers most of the time.">WARN</span>

@@ -71,6 +71,22 @@
   const BRACELET_ADD_B_TABLE = NONE_LOW_MID_HIGH(0, 0.025, 0.03, 0.035);
   const NECKLACE_ADD_TABLE = NONE_LOW_MID_HIGH(0, 0.006, 0.016, 0.026);
   const SH_PET_TABLE = NONE_LOW_MID_HIGH(0, 0.004, 0.007, 0.01);
+  // Support's own Crit Rate/Crit Dmg bracelet lines (Arsonistic's SupBrace
+  // sheet, "On hit, party Crit Rate/Crit Dmg +.../8s, assumes 100% debuff
+  // uptime") - flat additive party buffs, same shape as the character's own
+  // RING_RATE_TABLE/RING_DMG_TABLE above, not a swingy uptime-scaled term
+  // like Flash Orb. Party & Positioning's ".ap-support-crit-rate-bracelet"/
+  // ".ap-support-crit-dmg-bracelet" selects; disabled in the UI off
+  // .ap-yearning (see enforceGearSupportUptimeGate) AND zeroed at the code
+  // level in readInputs whenever Support isn't checked, same as Flash
+  // Orb/Strength Orb - see readInputs' own comment on why the UI-disable
+  // alone isn't sufficient. Each SupBrace line also
+  // carries an "Ally Atk. Power Enhancement +2/2.5/3%" component -
+  // deliberately not modeled (see the HTML comment above these two selects
+  // in resources.md for why folding it into SUPPORT_AP_BUFF_COEFFICIENT
+  // would misrepresent what that coefficient is calibrated against).
+  const SUPPORT_CRIT_RATE_BRACELET_TABLE = NONE_LOW_MID_HIGH(0, 0.018, 0.021, 0.025);
+  const SUPPORT_CRIT_DMG_BRACELET_TABLE = NONE_LOW_MID_HIGH(0, 0.036, 0.042, 0.048);
 
   const ADRENALINE_TABLE = { "Not Used": 0, "0 Nodes": 0.14, "1 Nodes": 0.155, "2 Nodes": 0.17, "3 Nodes": 0.185, "4 Nodes": 0.2 };
   const KBW_TABLE = { "Not Used": 0, "0 Nodes": 0.44, "1 Nodes": 0.46, "2 Nodes": 0.48, "3 Nodes": 0.5, "4 Nodes": 0.52 };
@@ -1146,7 +1162,7 @@
   }
 
   function readInputs(root) {
-    return {
+    const inputs = {
       critStat: Math.max(0, Math.min(900, getNumber(root, ".ap-crit-stat", 658))),
       weaponQuality: Math.max(0, Math.min(100, getNumber(root, ".ap-weapon-quality", 100))),
       astrogemLv: Math.max(0, Math.min(120, getNumber(root, ".ap-astrogem-lv", 59))),
@@ -1189,14 +1205,23 @@
       critSyn2: getCheckbox(root, ".ap-crit-syn2", false),
       critHitSyn1: getCheckbox(root, ".ap-crit-hit-syn-1", false),
       critHitSyn2: getCheckbox(root, ".ap-crit-hit-syn-2", false),
+      // Support's Crit Rate/Crit Dmg bracelet lines - see
+      // SUPPORT_CRIT_RATE_BRACELET_TABLE/SUPPORT_CRIT_DMG_BRACELET_TABLE's
+      // own comment above. Read here unconditionally (whatever's sitting in
+      // the select); zeroed back to "None" below if Support isn't checked -
+      // see the code-level gate at the end of this function.
+      supportCritRateBracelet: getSelect(root, ".ap-support-crit-rate-bracelet", "None"),
+      supportCritDmgBracelet: getSelect(root, ".ap-support-crit-dmg-bracelet", "None"),
       backAttackRate: Math.max(0, Math.min(100, getNumber(root, ".ap-back-attack-rate", 85))),
       // Support's Flash Orb (Drops of Ether) - same "% of the fight it's
       // up" pattern as Adrenaline Uptime/Back Attack Rate above, see
       // FLASH_ORB_FULL_CRIT_RATE's own comment for the assumed
       // engraving/stone combo baked into the full-uptime value. Only
-      // meaningful while a Support is actually in the party - gated off
-      // .ap-yearning the same way Strength Orb Uptime already is (see
-      // enforceGearSupportUptimeGate). Defaults to 0 (not used).
+      // meaningful while a Support is actually in the party - UI-disabled
+      // off .ap-yearning the same way Strength Orb Uptime already is (see
+      // enforceGearSupportUptimeGate) AND zeroed at the code level below if
+      // unchecked (see the gate at the end of this function). Defaults to 0
+      // (not used).
       flashOrbUptime: Math.max(0, Math.min(100, getNumber(root, ".ap-flash-orb-uptime", 0))),
 
       yearning: getCheckbox(root, ".ap-yearning", true),
@@ -1342,9 +1367,12 @@
       // STRENGTH_ORB_FULL_AP's own comment for the assumed engraving/
       // stone combo baked into the full-uptime value. Only meaningful
       // while a Support is actually in the party - see
-      // enforceGearSupportUptimeGate, which gates this the same way it
-      // already gates Support AP Buff Uptime off .ap-yearning. Defaults
-      // to 0 (not used).
+      // enforceGearSupportUptimeGate, which UI-disables this the same way
+      // it already disables Support AP Buff Uptime off .ap-yearning, AND
+      // the code-level gate at the end of this function, which zeroes it
+      // if unchecked (unlike gearSupportUptime, this isn't already gated
+      // inside supportApBuff, since it feeds gearAttackPowerPercentTotal
+      // instead). Defaults to 0 (not used).
       gearStrengthOrbUptime: Math.max(0, Math.min(100, getNumber(root, ".ap-gear-strength-orb-uptime", 0))),
       // No longer its own checkbox - whether Support's AP buff applies at
       // all is decided entirely by the Party & Positioning group's
@@ -1365,6 +1393,33 @@
       // on that pair) - nothing to wire until one does.
       crushingCore: getSelect(root, ".ap-crushing-core", "None|0P"),
     };
+
+    // Code-level Support gate, in addition to enforceGearSupportUptimeGate's
+    // UI-only disable. Flash Orb Uptime, Strength Orb Uptime, and the two
+    // Support bracelet selects are all only claimable while a Support is
+    // actually in the party (.ap-yearning / gearSupport checked) - the same
+    // dependency supportApBuff already enforces at the code level via its
+    // own `if (!inputs.gearSupport) return 0;` guard. Without this, a value
+    // picked while Support was checked stays sitting in the (now merely UI-
+    // disabled) DOM control and every downstream consumer -
+    // gearAttackPowerPercentTotal, critRateTotal, computeShared's
+    // critDmgTotal, and anything else that reads these fields - would keep
+    // counting it even after Support is unchecked (real bug, caught by
+    // reader report: None+Support-off and High+Support-off produced
+    // different effective Crit Rate, when they must be identical since
+    // neither state has a Support). Normalizing once here, at the single
+    // point every formula reads inputs from, means no individual consumer
+    // needs its own repeated `if (!inputs.gearSupport)` check - and no
+    // future consumer can forget one. gearSupportUptime itself doesn't need
+    // the same treatment: supportApBuff already code-gates it directly.
+    if (!inputs.gearSupport) {
+      inputs.flashOrbUptime = 0;
+      inputs.gearStrengthOrbUptime = 0;
+      inputs.supportCritRateBracelet = "None";
+      inputs.supportCritDmgBracelet = "None";
+    }
+
+    return inputs;
   }
 
   function roundDown(x, n) {
@@ -1406,6 +1461,7 @@
       (KBW_STONE_TABLE[inputs.kbwStone] || 0) +
       STRIKE_CRIT_DMG +
       (ARK_SWIFT_CDMG_TABLE[inputs.swiftCore] || 0) +
+      (SUPPORT_CRIT_DMG_BRACELET_TABLE[inputs.supportCritDmgBracelet] || 0) +
       breakingMoon.add;
 
     // Base on-crit damage - each Crit Hit Damage Synergy toggle adds 8%
@@ -1527,7 +1583,8 @@
     // Support's Flash Orb (Drops of Ether) - see FLASH_ORB_FULL_CRIT_RATE's
     // own comment for the Ether-effectiveness assumption baked into it.
     const q = (inputs.flashOrbUptime / 100) * FLASH_ORB_FULL_CRIT_RATE;
-    return c + d + e + f + g + h + i + k + n + o + p + q + (ARK_CRUSHING_CRATE_TABLE[inputs.crushingCore] || 0);
+    const r = SUPPORT_CRIT_RATE_BRACELET_TABLE[inputs.supportCritRateBracelet] || 0;
+    return c + d + e + f + g + h + i + k + n + o + p + q + r + (ARK_CRUSHING_CRATE_TABLE[inputs.crushingCore] || 0);
   }
 
   function evoDmgTotal(keenSenseLv, limitBreakLv, shared) {
@@ -4989,11 +5046,12 @@
   // .ap-value-display in this row", so multiple controls can safely share
   // one field-row without one's display overwriting another's.
   //
-  // The Rings/Bracelet paired selects (Crit Rate, Crit Dmg, Additional Dmg)
-  // and the Crit Hit Dmg checkboxes don't use this mechanism at all - their
-  // option text/checkbox label already shows the exact percentage each
-  // choice is worth (see the HTML), so there's no separate value-display
-  // for those fields to keep in sync here.
+  // The Rings/Bracelet paired selects (Crit Rate, Crit Dmg, Additional Dmg),
+  // the Crit Hit Dmg checkboxes, and the Support Crit Rate/Crit Dmg
+  // Bracelet selects don't use this mechanism at all - their option
+  // text/checkbox label already shows the exact percentage each choice is
+  // worth (see the HTML), so there's no separate value-display for those
+  // fields to keep in sync here.
   function updateInputDisplays(root, inputs) {
     const setDisplay = (selector, value, format = "pct") => {
       const id = selector.replace(/^[#.]/, "");
@@ -6381,7 +6439,21 @@
   // to claim either while Passionate Dance itself is off, so both ride
   // the same gate as the others. Strength Orb and Flash Orb are both
   // Support's Drops of Ether engraving, same "no Support, no orb"
-  // dependency as the AP buff.
+  // dependency as the AP buff. The Crit Rate/Crit Dmg Bracelet selects are
+  // the same shape again - Support's own bracelet lines, not claimable
+  // without a Support in the party.
+  //
+  // This only disables the controls in the UI - it does NOT clear a value
+  // already sitting in a disabled control's DOM, so a tier/uptime picked
+  // while Support was checked would otherwise keep silently counting after
+  // Support is unchecked (a real bug: None+Support-off and High+Support-off
+  // produced different effective Crit Rate, when both should read as "no
+  // Support" identically). Support AP Buff Uptime is naturally immune since
+  // supportApBuff() has its own code-level `if (!inputs.gearSupport) return
+  // 0;` guard; Flash Orb Uptime, Strength Orb Uptime, and the two bracelet
+  // selects did NOT have an equivalent guard and needed one added - see
+  // readInputs' own code-level gate, which zeroes all four whenever
+  // Support isn't checked, on top of this UI-only disable.
   function enforceGearSupportUptimeGate(root) {
     const yearningEl = root.querySelector(".ap-yearning");
     if (!yearningEl) return;
@@ -6391,6 +6463,8 @@
       ".ap-flash-orb-uptime",
       ".ap-engr-support-av",
       ".ap-engr-support-paladin",
+      ".ap-support-crit-rate-bracelet",
+      ".ap-support-crit-dmg-bracelet",
     ].forEach((selector) => {
       const el = root.querySelector(selector);
       if (el) el.disabled = !yearningEl.checked;
