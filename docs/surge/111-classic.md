@@ -261,12 +261,12 @@ Use the Breaking Moon cycle and its follow-up when available, then repeat the re
 <div class="cycle-card-header"><span class="cycle-num cycle-num-1">1B</span><span class="cycle-title">Follow-Up Cycle</span></div>
 <div class="rotation-line" markdown>
 <script type="application/json">
-["windcut", "deathtrance", { "id": "surpriseattack", "situational": true }, "earthcleaver", "turningslash", "bladedance", "blitzrush", "surpriseattack", "surge"]
+["windcut", "deathtrance", { "id": "surpriseattack", "situational": "optional" }, "earthcleaver", "turningslash", "bladedance", "blitzrush", "surpriseattack", "surge"]
 </script>
 </div>
 </div>
 
-1. Use both Surprise Attack casts if you haven't built excess stacks, otherwise skip one of them.
+1. Use both Surprise Attack casts if you haven't yet built excess stacks, otherwise skip the first one.
     - If you used Turning Slash for adrenaline/synergy or repositioned with Spincutter, you have enough.
 2. Do NOT worry about Raid Captain efficiency; Keen Blunt Weapon is just as inefficient or worse!
     - Breaking Moon's Critical Damage bonus to the next Surge (biggest hit) is additive to Keen Blunt Weapon.
