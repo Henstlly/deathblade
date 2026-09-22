@@ -256,6 +256,7 @@ Only compare CPM between the **same encounter and build**, as boss uptime and me
   { "id": "blitzrush" },
   { "id": "headhunt" },
   { "id": "bladeassault" },
+  { "id": "flashblink" },
   { "id": "earthcleaver" },
   { "id": "spincutter" },
   { "id": "deathsentence" }

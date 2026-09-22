@@ -42,6 +42,7 @@
     deathlyslash: "Deathly Slash",
     surge: "Surge",
     bladeassault: "Blade Assault",
+    flashblink: "Flash Blink",
     blitzrush: "Blitz Rush",
     earthcleaver: "Earth Cleaver",
     headhunt: "Head Hunt",

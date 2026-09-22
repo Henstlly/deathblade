@@ -74,8 +74,8 @@ extra_javascript:
   - javascripts/extra.js?v=2
   - javascripts/build-data.js?v=4
   - javascripts/build-stats-badge.js?v=1
-  - javascripts/skill-data.js?v=8
-  - javascripts/skill-names.js?v=5
+  - javascripts/skill-data.js?v=10
+  - javascripts/skill-names.js?v=6
   - javascripts/rune-data.js?v=1
   - javascripts/skill-setup.js?v=8
   - javascripts/essentials-table.js?v=5

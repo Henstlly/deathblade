@@ -276,6 +276,7 @@ Only compare CPM between the **same encounter and build**, as boss uptime and me
   { "id": "spincutter" },
   { "id": "turningslash" },
   { "id": "bladeassault" },
+  { "id": "flashblink" },
   { "id": "deathlyslash" },
   { "id": "darkaxel" },
   { "id": "upperslash" },

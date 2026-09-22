@@ -98,6 +98,11 @@
         note: "Hold for damage and orb generation.",
         lines: ["20467 meter"],
       },
+      flashblink: {
+        tags: [["util", "AWAKENING"], ["util", "ORB GEN"], ["immune", "PUSH IMMUNE"], ["immune", "STATUS IMMUNE"]],
+        note: "Generates orbs quickly at the start of an encounter for players too cheap to use a Stimulant.",
+        lines: ["20472 meter"],
+      },
       earthcleaver: {
         tags: [["util", "COUNTER"], ["util", "MOBILITY"], ["util", "WEAK POINT"], ["warn", "NO PARA IMMUNE"]],
         note: "Slow and utility focused.",
@@ -177,6 +182,11 @@
         tags: [["util", "AWAKENING"], ["dmg", "DAMAGE"], ["immune", "PUSH IMMUNE"], ["immune", "STATUS IMMUNE"]],
         note: "Hold for damage and stack generation.",
         lines: ["20 stacks"],
+      },
+      flashblink: {
+        tags: [["util", "AWAKENING"], ["util", "ORB GEN"], ["immune", "PUSH IMMUNE"], ["immune", "STATUS IMMUNE"]],
+        note: "Generates orbs quickly at the start of an encounter for players too cheap to use a Stimulant.",
+        lines: ["20472 meter", "3 stacks"],
       },
       deathlyslash: {
         tags: [["dmg", "DAMAGE"], ["util", "STACKS"], ["util", "MOBILITY"]],
