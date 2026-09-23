@@ -177,7 +177,9 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 <summary><span class="setup-note-tag">Tip</span>Runes<span class="setup-note-arrow"></span></summary>
 
 - Use <span class="skill-mention" data-rune-name="Purify">Purify</span> on Spincutter if needed.
-- Use <span class="skill-mention" data-rune-name="Bleed" data-rune-tier="legendary">Legendary Bleed</span> on Maelstrom if you use mana food instead of wine.
+- <span class="skill-mention" data-rune-name="Focus" data-rune-tier="legendary">Focus</span> on Maelstrom + wine should be good enough for mana, since Breaking Moon cycles restore it.
+    - Use mana food instead of wine as a safety net if you don't trust your or your support's uptime (spec bards).
+- Separately, <span class="skill-mention" data-rune-name="Bleed" data-rune-tier="legendary">Legendary Bleed</span> on Maelstrom + mana food: higher ceiling/lower floor, even with Raid Captain.
 
 </details>
 
