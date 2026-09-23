@@ -213,7 +213,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
     "surge", "earthcleaver", "blitzrush", "bladedance", "turningslash", { "id": "windcut", "alts": [
       { "id": "spincutter", "note": "Use Spincutter CD gem instead if you prefer, Wind Cut has a very low damage share." },
       { "id": "earthcleaver", "note": "Use Earth Cleaver CD gem instead pre-Ark Grid as you won't have its second stack." },
-      { "id": "bladedance", "note": "Use Blade Dance CD gem instead if you set its tripod to Weak Point Detection." }
+      { "id": "bladedance", "note": "Use Blade Dance CD gem instead if you set its tripod to Weak Point Detection or wish to have it back up earlier as a safety net." }
     ] }
   ] },
   { "col": "cd", "items": [
