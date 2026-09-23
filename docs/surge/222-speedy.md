@@ -185,8 +185,10 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
     - With Wide Attack, you **must** cast Turning Slash early on openers to apply synergy.
     - This is more viable than ever as Turning Slash's lingering hits now extend its uptime.
 - Earth Cleaver can be used instead of Head Hunt if you prefer its mobility or utility.
+    - Set Maelstrom and Upper Slash to Lv 10, then raise Earth Cleaver (3-3-1) to Lv 10.
 - You can replace Dark Axel with Spincutter (3-3-1) if you find it more useful (Mordum Extreme).
-    - If you don't wish to learn the advanced skip cycles, it can make looping the overstack cycle easier.
+    - Generally a lower ceiling, higher floor option that doesn't synergize as well with the build.
+    - If you don't wish to learn the advanced skip cycles, it can make a single cycle easier to loop.
 </details>
 
 </div>
