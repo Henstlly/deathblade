@@ -1545,6 +1545,62 @@ h3 { color: var(--dbc-teal); }
   margin: 0;
 }
 
+/* ---------- Cycle groups (chain a cycle-card directly into its
+   follow-up, e.g. Surge 111's Breaking Moon Cycle -> Follow-Up Cycle)
+   ---------- */
+/* Structure:
+   <div class="cycle-group" markdown>
+   <div class="cycle-card" markdown>...1A as normal...</div>
+   <div class="cycle-connector"><span>then</span></div>
+   <div class="cycle-card" markdown>...1B as normal...</div>
+   </div>
+   The group owns the outer border/radius; member cards drop their own
+   (border: none/border-radius: 0/margin: 0 below) so the pair reads as
+   one flush unit with a single shared edge, not two boxes touching.
+   Each card keeps its own header/Practice toggle/rotation-line
+   untouched - this is a pure wrapper, no JS changes. Only use this for
+   a genuine two-step sequence (1B literally continues 1A); an
+   unrelated pair of cycles stays as separate standalone .cycle-card
+   blocks like Regular Cycle below. */
+.md-typeset .cycle-group {
+  border: 1px solid rgba(var(--dbc-purple-rgb), 0.32);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 0.8em 0 0.6em;
+}
+.md-typeset .cycle-group .cycle-card {
+  border: none;
+  border-radius: 0;
+  margin: 0;
+}
+/* The connector is a hairline divider with a small centered "then" tag,
+   reusing the rotation-practice-toggle's chip surface/border language
+   so it reads as part of the same component family rather than a new
+   one. Uses the group's own rose accent (both member cards are still
+   labeled cycle-num-1) since it's specifically the Breaking Moon pair's
+   connector, not a generic site-wide joiner. */
+.md-typeset .cycle-connector {
+  position: relative;
+  height: 0;
+  border-top: 1px solid rgba(var(--dbc-purple-rgb), 0.2);
+}
+.md-typeset .cycle-connector span {
+  position: absolute;
+  top: 0;
+  left: 1.1em;
+  transform: translate(0, -50%);
+  background-color: var(--dbc-chip-surface);
+  border: 1px solid rgba(var(--dbc-rose-rgb), 0.45);
+  color: var(--dbc-rose);
+  border-radius: 999px;
+  font-size: 0.68em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.15em 0.65em;
+  line-height: 1.5;
+}
+
 /* ---------- Rotation practice mode ---------- */
 /* Click-to-advance drill mode for .rotation-line (including the nested
    ones inside .cycle-card). Purely a JS/CSS layer on top of the existing

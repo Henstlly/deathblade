@@ -250,6 +250,8 @@ Use the Breaking Moon cycle and its follow-up when available, then repeat the re
 *From 3 orbs:*
 { .lead }
 
+<div class="cycle-group" markdown>
+
 <div class="cycle-card" markdown>
 <div class="cycle-card-header"><span class="cycle-num cycle-num-1">1A</span><span class="cycle-title">Breaking Moon Cycle</span></div>
 <div class="rotation-line" markdown>
@@ -259,6 +261,8 @@ Use the Breaking Moon cycle and its follow-up when available, then repeat the re
 </div>
 </div>
 
+<div class="cycle-connector"><span>then</span></div>
+
 <div class="cycle-card" markdown>
 <div class="cycle-card-header"><span class="cycle-num cycle-num-1">1B</span><span class="cycle-title">Follow-Up Cycle</span></div>
 <div class="rotation-line" markdown>
@@ -266,6 +270,8 @@ Use the Breaking Moon cycle and its follow-up when available, then repeat the re
 ["windcut", "deathtrance", { "id": "surpriseattack", "situational": "optional" }, "earthcleaver", "turningslash", "bladedance", "blitzrush", "surpriseattack", "surge"]
 </script>
 </div>
+</div>
+
 </div>
 
 1. Use both Surprise Attack casts if you haven't yet built excess stacks, otherwise skip the first one.
