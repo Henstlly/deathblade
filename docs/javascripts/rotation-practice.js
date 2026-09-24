@@ -21,59 +21,94 @@
 //     .cycle-card-header row instead (margin-left: auto), since that
 //     row already has room rather than floating a second badge
 //
-// Only one rotation-line is "active" (spacebar-listening) at a time -
-// starting practice on a new line automatically exits the previous one.
+// A .cycle-card-multi (a Cycle whose follow-up continues directly from
+// it, authored as two .rotation-line children with a .cycle-stage-label
+// each instead of two separate cycle-card-header/Practice pairs) gets ONE
+// shared toggle for the whole card instead: getSteps() below already
+// walks every .skill under whatever element it's given regardless of how
+// many .rotation-line children sit under it, so the only real new code is
+// wireMultiCard()/getLines() further down - enter/exit/advance/highlight
+// all work unchanged, just called with the card as the "unit" instead of
+// a single line.
+//
+// Only one drill unit (a rotation-line, or a whole cycle-card-multi) is
+// "active" (spacebar-listening) at a time - starting practice on a new
+// one automatically exits the previous one.
 
 (function () {
   var activeLine = null;
 
-  function getSteps(line) {
-    return line.querySelectorAll(".skill");
+  // A "unit" is whatever enterPractice/exitPractice/advance operate on -
+  // a single .rotation-line normally, or a .cycle-card-multi wrapping
+  // several. getLines() is only needed for adding/removing the
+  // .practice-mode class on the actual .rotation-line(s) so the existing
+  // dimming/border CSS (which targets .rotation-line.practice-mode) keeps
+  // working unchanged either way.
+  function getLines(unit) {
+    if (unit.classList.contains("cycle-card-multi")) {
+      return Array.prototype.slice.call(unit.querySelectorAll(".rotation-line"));
+    }
+    return [unit];
+  }
+
+  // querySelectorAll walks ALL descendants regardless of nesting depth,
+  // so this already returns the combined, in-DOM-order step list across
+  // every .rotation-line child when unit is a .cycle-card-multi - no
+  // special-casing needed here.
+  function getSteps(unit) {
+    return unit.querySelectorAll(".skill");
   }
 
   function toggleLabel(idx, total) {
     return (idx + 1) + " / " + total + " · Exit";
   }
 
-  function updateHighlight(line) {
-    var steps = getSteps(line);
-    var idx = parseInt(line.dataset.practiceIndex || "0", 10);
+  function updateHighlight(unit) {
+    var steps = getSteps(unit);
+    var idx = parseInt(unit.dataset.practiceIndex || "0", 10);
     steps.forEach(function (step, i) {
       step.classList.toggle("practice-current", i === idx);
     });
-    if (line._practiceToggle) {
-      line._practiceToggle.textContent = toggleLabel(idx, steps.length);
+    if (unit._practiceToggle) {
+      unit._practiceToggle.textContent = toggleLabel(idx, steps.length);
     }
   }
 
-  function enterPractice(line) {
-    if (activeLine && activeLine !== line) exitPractice(activeLine);
-    line.classList.add("practice-mode");
-    line.dataset.practiceIndex = "0";
-    activeLine = line;
-    updateHighlight(line);
+  function enterPractice(unit) {
+    if (activeLine && activeLine !== unit) exitPractice(activeLine);
+    unit.classList.add("practice-mode");
+    getLines(unit).forEach(function (l) { l.classList.add("practice-mode"); });
+    unit.dataset.practiceIndex = "0";
+    activeLine = unit;
+    updateHighlight(unit);
   }
 
-  function exitPractice(line) {
-    line.classList.remove("practice-mode");
-    getSteps(line).forEach(function (step) {
+  function exitPractice(unit) {
+    unit.classList.remove("practice-mode");
+    getLines(unit).forEach(function (l) { l.classList.remove("practice-mode"); });
+    getSteps(unit).forEach(function (step) {
       step.classList.remove("practice-current");
     });
-    if (line._practiceToggle) line._practiceToggle.textContent = "▶ Practice";
-    if (activeLine === line) activeLine = null;
+    if (unit._practiceToggle) unit._practiceToggle.textContent = "▶ Practice";
+    if (activeLine === unit) activeLine = null;
   }
 
-  function advance(line) {
-    var steps = getSteps(line);
+  function advance(unit) {
+    var steps = getSteps(unit);
     if (!steps.length) return;
-    var idx = parseInt(line.dataset.practiceIndex || "0", 10);
+    var idx = parseInt(unit.dataset.practiceIndex || "0", 10);
     idx = (idx + 1) % steps.length;
-    line.dataset.practiceIndex = String(idx);
-    updateHighlight(line);
+    unit.dataset.practiceIndex = String(idx);
+    updateHighlight(unit);
   }
 
   function wireRotationLine(line) {
     if (line._practiceToggle) return; // already wired
+    // A line inside a .cycle-card-multi is wired as part of the shared
+    // card-level toggle instead (see wireMultiCard below) - it must NOT
+    // also get its own individual toggle, or the pair would show two
+    // "Practice" buttons for what's really one combined drill.
+    if (line.closest(".cycle-card-multi")) return;
     var steps = getSteps(line);
     if (steps.length < 2) return;
 
@@ -114,6 +149,44 @@
     });
   }
 
+  // One shared toggle for a whole .cycle-card-multi (see the file-top
+  // comment). Structurally the same as wireRotationLine's toggle setup,
+  // just always joining the card's .cycle-card-header (a multi-stage card
+  // is never "standalone" the way a bare rotation-line can be) and
+  // listening for clicks on the whole card - the two stages are separate
+  // .rotation-line elements, but a click on either one (or the
+  // .cycle-stage-label between them) should advance the same combined
+  // drill rather than needing two independent listeners kept in sync.
+  function wireMultiCard(card) {
+    if (card._practiceToggle) return; // already wired
+    var steps = getSteps(card);
+    if (steps.length < 2) return;
+
+    var toggle = document.createElement("button");
+    toggle.type = "button";
+    toggle.className = "rotation-practice-toggle";
+    toggle.textContent = "▶ Practice";
+    toggle.setAttribute("aria-label", "Practice this rotation step by step");
+    card._practiceToggle = toggle;
+
+    var header = card.querySelector(".cycle-card-header");
+    if (header) header.appendChild(toggle);
+
+    toggle.addEventListener("click", function (e) {
+      e.stopPropagation();
+      if (card.classList.contains("practice-mode")) {
+        exitPractice(card);
+      } else {
+        enterPractice(card);
+      }
+    });
+
+    card.addEventListener("click", function () {
+      if (!card.classList.contains("practice-mode")) return;
+      advance(card);
+    });
+  }
+
   // Bound once at module scope, not per-render - this listener doesn't
   // depend on which .rotation-line container triggered a render, only on
   // whatever activeLine currently is, so there's nothing to gain from
@@ -147,4 +220,5 @@
   // renderContainer for the shared hard-load/instant-nav/mutation trigger
   // set - see site-utils.js's registerRenderer doc comment.
   window.SiteUtils.registerRenderer(".rotation-line", wireRotationLine);
+  window.SiteUtils.registerRenderer(".cycle-card-multi", wireMultiCard);
 })();

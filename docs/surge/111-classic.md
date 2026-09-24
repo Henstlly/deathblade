@@ -250,28 +250,20 @@ Use the Breaking Moon cycle and its follow-up when available, then repeat the re
 *From 3 orbs:*
 { .lead }
 
-<div class="cycle-group" markdown>
-
-<div class="cycle-card" markdown>
-<div class="cycle-card-header"><span class="cycle-num cycle-num-1">1A</span><span class="cycle-title">Breaking Moon Cycle</span></div>
+<div class="cycle-card cycle-card-multi" markdown>
+<div class="cycle-card-header"><span class="cycle-num cycle-num-1">1</span><span class="cycle-title">Breaking Moon + Follow-Up</span></div>
+<div class="cycle-stage-label">Cycle</div>
 <div class="rotation-line" markdown>
 <script type="application/json">
 [{ "skills": ["turningslash", "surpriseattack"], "situational": "adrenaline/synergy" }, "windcut", "deathtrance", "maelstrom", "surpriseattack", "breakingmoon", "surge"]
 </script>
 </div>
-</div>
-
-<div class="cycle-connector"><span>then</span></div>
-
-<div class="cycle-card" markdown>
-<div class="cycle-card-header"><span class="cycle-num cycle-num-1">1B</span><span class="cycle-title">Follow-Up Cycle</span></div>
+<div class="cycle-stage-label">Follow-up</div>
 <div class="rotation-line" markdown>
 <script type="application/json">
 ["windcut", "deathtrance", { "id": "surpriseattack", "situational": "optional" }, "earthcleaver", "turningslash", "bladedance", "blitzrush", "surpriseattack", "surge"]
 </script>
 </div>
-</div>
-
 </div>
 
 1. Use both Surprise Attack casts if you haven't yet built excess stacks, otherwise skip the first one.
