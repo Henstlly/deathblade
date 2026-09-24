@@ -322,7 +322,7 @@ Use the Opener cycle and either loop it forever (easy) or continue on to the adv
 <div class="setup-notes" markdown>
 
 <details class="setup-note" data-kind="tip" open markdown>
-<summary><span class="setup-note-tag">Tip</span>Leopard Mode (Optional)<span class="setup-note-arrow"></span></summary>
+<summary><span class="setup-note-tag">Tip</span>Leopard Mode (Recommended)<span class="setup-note-arrow"></span></summary>
 
 After the opener, alternate between these two cycles as needed for ceiling DPS:
 
