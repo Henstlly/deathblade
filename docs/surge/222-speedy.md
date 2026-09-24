@@ -214,7 +214,7 @@ The build's signature. It recreates RE's Surge using two skills: Dark Axel carri
 <div class="skill-compare-col" markdown>
 <span class="skill-compare-title"><span class="skill-inline" data-skill-id="spincutter"><span class="skill-inline-name">Spincutter</span></span> (3-3-1) · Alternative</span>
 
-Can replace Dark Axel if you find it more useful.
+Can replace Dark Axel if you find it more useful on bosses with a small hitbox or Mordum Extreme.
 
 **In the rotation:**
 
