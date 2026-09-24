@@ -9613,6 +9613,28 @@ body.page-333-blitz input[type="text"] {
 .md-typeset .setup-note > :last-child {
   margin-bottom: 0;
 }
+/* Text inside a .skill-compare-col (222-speedy's "Dark Axel vs Spincutter"
+   Alt card) matches the rest of the note's body text. The `> p` / `> ul`
+   rule above only matches DIRECT children of .setup-note, and these
+   paragraphs/lists sit one level deeper (.setup-note > .skill-compare-row >
+   .skill-compare-col > p), so they skipped it entirely and fell back to the
+   base .md-typeset size and color: 16px near-white vs the sibling notes'
+   15px lilac. Setting size/color/line-height once on the column (instead of
+   re-targeting its p/ul/li) lets everything inside inherit it, and the
+   sitewide `li li` dimming then lands on the same ~13.8px sub-bullet size
+   as every other note. The title is a heading, not body text, so it opts
+   back out (bright color, size restored to the pre-shrink 16px); the foot
+   has its own footnote rules and sits outside the column. */
+.md-typeset .setup-note .skill-compare-col {
+  font-size: 0.94em;
+  color: var(--dbc-lilac);
+  line-height: 1.5;
+}
+.md-typeset .setup-note .skill-compare-col .skill-compare-title {
+  color: var(--md-default-fg-color);
+  font-size: calc(1em / 0.94);
+}
+
 /* An image dropped straight into a setup-note body (222-speedy's 🐆 vs 🐯
    comparison, 333-blitz's "why male models" reveal) rendered as a bare,
    full-width <img> with square corners - looked like a random png pasted
