@@ -1574,25 +1574,41 @@ h3 { color: var(--dbc-teal); }
   border-color: rgba(var(--dbc-purple-rgb), 0.55);
 }
 /* Small uppercase divider between stages, sitting where each stage's own
-   header used to be - the surrounding .cycle-card-header (rose accent)
-   already establishes which cycle this is, so this only needs to mark
-   "this is a new stage", not repeat a badge/title pair. */
+   header used to be. Zero-footprint, same trick as .rotation-practice-
+   toggle/the old cycle-connector: the label div itself collapses to
+   height:0 and sits at its normal in-flow seam point regardless of how
+   tall the rotation-lines above/below it wrap to, while its <span> is
+   absolutely positioned and pulled up by half its own height (transform:
+   translate(0, -50%)) so it floats centered ON that seam line as a small
+   pill instead of reserving a full padded row - that's the "empty bar"
+   the block version had, which this avoids entirely. */
 .md-typeset .cycle-stage-label {
+  position: relative;
+  height: 0;
+  border-top: 1px solid rgba(var(--dbc-purple-rgb), 0.2);
+}
+/* The first stage label sits directly under the card's own header, which
+   already has its own border-bottom marking that seam - a second hairline
+   right under it would double up, so only the pill floats there. */
+.md-typeset .cycle-card-header + .cycle-stage-label {
+  border-top: none;
+}
+.md-typeset .cycle-stage-label span {
+  position: absolute;
+  top: 0;
+  left: 1.1em;
+  transform: translate(0, -50%);
+  background-color: var(--dbc-chip-surface);
+  border: 1px solid rgba(var(--dbc-rose-rgb), 0.45);
+  color: var(--dbc-rose);
+  border-radius: 999px;
   font-size: 0.68em;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--dbc-rose);
-  padding: 0.5em 0.9em 0.2em;
-  border-top: 1px solid rgba(var(--dbc-purple-rgb), 0.2);
-  margin-top: 0.2em;
-}
-/* The first stage label sits directly under the card's own header, which
-   already has its own border-bottom - an extra hairline immediately below
-   that would read as a stray double border rather than a real divider. */
-.md-typeset .cycle-card-header + .cycle-stage-label {
-  border-top: none;
-  margin-top: 0;
+  letter-spacing: 0.03em;
+  padding: 0.15em 0.65em;
+  line-height: 1.5;
+  z-index: 2;
 }
 
 /* ---------- Rotation practice mode ---------- */
