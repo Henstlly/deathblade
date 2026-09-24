@@ -197,7 +197,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 <div class="skill-compare-col" markdown>
 <span class="skill-compare-title"><span class="skill-inline" data-skill-id="darkaxel"><span class="skill-inline-name">Dark Axel</span></span> · Default</span>
 
-The build's identity. It recreates RE's Surge using two skills: Dark Axel takes you through the boss, then Deathly Slash precisely slams you into its back.
+The build's signature. It recreates RE's Surge using two skills: Dark Axel carries you over the boss, then Deathly Slash precisely slams you into its back.
 
 **In the rotation:**
 
