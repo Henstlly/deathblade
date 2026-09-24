@@ -355,6 +355,18 @@ h3 { color: var(--dbc-teal); }
 }
 .md-typeset.md-typeset :is(ul, ol) > li > :is(ul, ol) > li {
   margin-inline-start: 1.1em;
+  /* Page-level lists (outside a setup-note) put 0.5em under EVERY li, sub-
+     bullets included, so two sub-bullets sat ~7.7px apart: looser than the
+     ~6px between a parent and its first sub-bullet, i.e. the same backwards
+     proximity problem this block exists to fix (only showed up on a list
+     with 2+ sub-bullets outside a note, e.g. 111-classic's "Do NOT worry
+     about Raid Captain efficiency"). 0.2em is what .setup-note already uses. */
+  margin-block: 0.2em;
+}
+/* The rule above also overrides the site's zeroed last-child margin, which
+   added ~3px under every sub-list on top of the ul's own bottom margin. */
+.md-typeset.md-typeset :is(ul, ol) > li > :is(ul, ol) > li:last-child {
+  margin-bottom: 0;
 }
 
 /* ---------- Horizontal rule ---------- */
