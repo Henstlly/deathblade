@@ -320,7 +320,41 @@ h3 { color: var(--dbc-teal); }
    -> caveat" register at a glance, without touching vertical spacing. */
 .md-typeset li li {
   color: var(--md-default-fg-color--light);
-  font-size: 0.92em;
+  font-size: 0.96em; /* was 0.92em - with body text now at 0.94em inside notes, 0.92 stacked to ~13.8px and read too small next to its parent */
+}
+
+/* Nested list position and spacing (a sub-list under a bullet OR a number).
+   Three problems this replaces Material's defaults for:
+   1. Vertical proximity was backwards: a sub-list sat ~12px below its parent
+      line but only ~7.5px above the NEXT top-level item, so it read as
+      belonging to the item after it. Now the ladder runs tight -> loose:
+      sub-bullet to sub-bullet < parent to its first sub-bullet < last
+      sub-bullet to the next top-level item.
+   2. Horizontal position: Material indented a sub-list by the ul's own
+      margin PLUS the li's margin (~27px of text indent) and the dot landed
+      ~10px right of the parent's text, lined up with nothing. The ul's
+      margin is dropped and the li margin trimmed so the sub-bullet dot's
+      left edge sits directly under the parent's TEXT start (not under a
+      number's hanging marker), which is also what makes it line up the
+      same under "-" and "1." parents.
+   3. Same rules for ul and ol parents so bullets under numbers and bullets
+      under bullets indent identically.
+   Markup-agnostic on purpose (any li > ul/ol), and the site has no nested
+   list inside a JS component (ap-calc, gem-priority etc. use list-style:
+   none and no nesting), so nothing but prose lists is affected. */
+/* `.md-typeset.md-typeset` (doubled class) is a specificity bump, not a typo:
+   Material's own margins on nested lists are written as `[dir=ltr]
+   .md-typeset ul li ul` / `ol li` (specificity 0,2,3), which outrank a plain
+   `.md-typeset li > ul` and silently won on the first attempt. The
+   `:is(ul, ol) > li > :is(ul, ol)` form matches that 0,2,3 and, loading
+   later, wins the tie. */
+.md-typeset.md-typeset :is(ul, ol) > li > :is(ul, ol) {
+  margin-top: 0.1em;
+  margin-bottom: 0.45em;
+  margin-inline-start: 0;
+}
+.md-typeset.md-typeset :is(ul, ol) > li > :is(ul, ol) > li {
+  margin-inline-start: 1.1em;
 }
 
 /* ---------- Horizontal rule ---------- */
