@@ -482,7 +482,7 @@
        rank's own stats in the Best Setup card below without changing any
        calculation - see renderGrid's own comment. Not saved/exported -
        see apCalcSelection's own comment in the JS. -->
-  <!-- The 2nd/3rd rows additionally carry a pin button
+  <!-- The 2nd-5th rows additionally carry a pin button
        (.ap-result-pin), overlaid on the row's own top-right corner
        (position:absolute - see the CSS) rather than sitting inline with
        rank/combo/pct, so it never competes with those for flex space and
@@ -540,6 +540,42 @@
         </svg>
       </button>
     </div>
+    <div class="ap-calc-result-row" data-rank="4" tabindex="0" role="button" aria-label="Preview this combo's stats in the Best Setup card">
+      <span class="ap-result-rank">4</span>
+      <span class="ap-result-combo">—</span>
+      <span class="ap-result-delta">—</span>
+      <span class="ap-result-pct">—</span>
+      <!-- Actual thumbtack shape (Lucide's "pin" icon, MIT-licensed -
+           https://lucide.dev), same stroke-icon convention as the copy
+           icon elsewhere in this file (24x24 viewBox, stroke-width 2,
+           round caps/joins). Replaces an earlier hand-rolled circle+line
+           SVG that read as an ambiguous squiggle at this size instead of
+           a recognizable pin - see the CSS comment on .ap-result-pin svg. -->
+      <button type="button" class="ap-result-pin" aria-pressed="false" title="Pin this combo as the base every comparison on this page (Bracelet, Accessory, ArkGrid, Engraving) is computed against, instead of the true best. Click again to unpin.">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M12 17v5"></path>
+          <path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"></path>
+        </svg>
+      </button>
+    </div>
+    <div class="ap-calc-result-row" data-rank="5" tabindex="0" role="button" aria-label="Preview this combo's stats in the Best Setup card">
+      <span class="ap-result-rank">5</span>
+      <span class="ap-result-combo">—</span>
+      <span class="ap-result-delta">—</span>
+      <span class="ap-result-pct">—</span>
+      <!-- Actual thumbtack shape (Lucide's "pin" icon, MIT-licensed -
+           https://lucide.dev), same stroke-icon convention as the copy
+           icon elsewhere in this file (24x24 viewBox, stroke-width 2,
+           round caps/joins). Replaces an earlier hand-rolled circle+line
+           SVG that read as an ambiguous squiggle at this size instead of
+           a recognizable pin - see the CSS comment on .ap-result-pin svg. -->
+      <button type="button" class="ap-result-pin" aria-pressed="false" title="Pin this combo as the base every comparison on this page (Bracelet, Accessory, ArkGrid, Engraving) is computed against, instead of the true best. Click again to unpin.">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M12 17v5"></path>
+          <path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"></path>
+        </svg>
+      </button>
+    </div>
   </div>
 
 
@@ -550,7 +586,7 @@
       <div class="ap-stat-card">
         <div class="ap-stat-card-title">Base Setup</div>
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--critrate" title="The capped, uptime-weighted Crit Rate the DPS math actually uses (accounts for buffs overlapping and hitting the 100% cap).">Eff. Crit Rate</span><span class="ap-summary-base-critrate ap-summary-value">—</span></div>
-        <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--critrate" title="Uncapped sum of every Crit Rate source, before the 100% cap - can read over 100% even when Eff. Crit Rate above is capped.">Raw Crit Rate</span><span class="ap-summary-base-critrate-raw ap-summary-value">—</span></div>
+        <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--critrate" title="Crit rate if Adrenaline and Back Attack both hit at full value, uncapped - can read over 100%. Flash Orb stays uptime-scaled.">Peak Crit Rate</span><span class="ap-summary-base-critrate-peak ap-summary-value">—</span></div>
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--critdmg">Crit Dmg</span><span class="ap-summary-base-critdmg ap-summary-value">—</span></div>
         <div class="ap-stat-card-row ap-stat-card-row--breakingmoon-base ap-stat-card-row--hidden"><span class="ap-summary-label ap-summary-label--critdmg" title="Breaking Moon's average per-cast Crit Dmg bonus (applies to 111 Surge only).">T→Z CDmg</span><span class="ap-summary-base-breakingmoon ap-summary-value">—</span></div>
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--oncrit">Crit Hit Dmg</span><span class="ap-summary-base-oncrit ap-summary-value">—</span></div>
@@ -561,7 +597,7 @@
       <div class="ap-stat-card ap-stat-card-best">
         <div class="ap-stat-card-title">Best Setup</div>
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--critrate" title="The capped, uptime-weighted Crit Rate the DPS math actually uses (accounts for buffs overlapping and hitting the 100% cap).">Eff. Crit Rate</span><span class="ap-summary-best-crit ap-summary-value">—</span></div>
-        <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--critrate" title="Uncapped sum of every Crit Rate source, before the 100% cap - can read over 100% even when Eff. Crit Rate above is capped.">Raw Crit Rate</span><span class="ap-summary-best-crit-raw ap-summary-value">—</span></div>
+        <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--critrate" title="Crit rate if Adrenaline and Back Attack both hit at full value, uncapped - can read over 100%. Flash Orb stays uptime-scaled.">Peak Crit Rate</span><span class="ap-summary-best-crit-peak ap-summary-value">—</span></div>
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--critdmg">Crit Dmg</span><span class="ap-summary-best-critdmg ap-summary-value">—</span></div>
         <div class="ap-stat-card-row ap-stat-card-row--breakingmoon-best ap-stat-card-row--hidden"><span class="ap-summary-label ap-summary-label--critdmg" title="Breaking Moon's average per-cast Crit Dmg bonus (applies to 111 Surge only).">T→Z CDmg</span><span class="ap-summary-best-breakingmoon ap-summary-value">—</span></div>
         <div class="ap-stat-card-row"><span class="ap-summary-label ap-summary-label--oncrit">Crit Hit Dmg</span><span class="ap-summary-best-oncrit ap-summary-value">—</span></div>

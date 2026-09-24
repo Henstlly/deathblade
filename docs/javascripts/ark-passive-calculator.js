@@ -1014,7 +1014,7 @@
 
   // Top Combinations: per-root UI-only state for previewing a non-best
   // cell's stats in the Best Setup card (previewRank), and for PINNING
-  // one of the 2nd/3rd-best cells as the combo every bestComboFor()
+  // one of the 2nd-5th-best cells as the combo every bestComboFor()
   // search on the page should resolve to instead of re-searching all 9
   // (pinnedCombo - see bestComboFor's own comment). Both are deliberately
   // NOT persisted (not in readInputs' localStorage round-trip, not part
@@ -1642,6 +1642,30 @@
     return p * blendCritTerms(base + bonus, rest) + (1 - p) * blendCritTerms(base, rest);
   }
 
+  // The fixed, non-"sometimes on, sometimes off" portion of crit rate -
+  // critRateTotal's full sum minus the three swingy terms (Adrenaline,
+  // Back Attack, Flash Orb - see blendCritTerms' own comment for why
+  // they're treated specially). Computed by SUBTRACTING those three back
+  // out of critRateTotal's own sum, rather than re-listing every other
+  // term here, so this can never drift out of sync with critRateTotal's
+  // own term list. Shared by effectiveCritRate (time/joint-probability-
+  // weighted expected value) and peakCritRate (full-value ceiling) below
+  // so both stay consistent about which terms count as "swingy".
+  function nonSwingyCritRate(inputs, keenSenseLv) {
+    const adrenalineBonus = ADRENALINE_TABLE[inputs.adrenaline] || 0;
+    const adrenalineUptime = inputs.adrenalineUptime / 100;
+    const backAttackBonus = 0.1;
+    const backAttackRate = effectiveBackAttackShare(inputs);
+    const flashOrbBonus = FLASH_ORB_FULL_CRIT_RATE;
+    const flashOrbUptime = inputs.flashOrbUptime / 100;
+    return (
+      critRateTotal(inputs, keenSenseLv) -
+      adrenalineBonus * adrenalineUptime -
+      backAttackBonus * backAttackRate -
+      flashOrbBonus * flashOrbUptime
+    );
+  }
+
   // Downstream (combinedMultiplier's mult, marginalCritDmgGainPct) all
   // take effCrit as an already-fixed scalar
   // and are affine in it / in critDmgTotal with effCrit held constant, so
@@ -1655,14 +1679,7 @@
     const backAttackRate = effectiveBackAttackShare(inputs);
     const flashOrbBonus = FLASH_ORB_FULL_CRIT_RATE;
     const flashOrbUptime = inputs.flashOrbUptime / 100;
-    // Strip all three buggy averaged terms back out of critRateTotal's
-    // sum rather than re-listing every other term here, so this can
-    // never drift out of sync with critRateTotal's own term list.
-    const restOfCrit =
-      critRateTotal(inputs, keenSenseLv) -
-      adrenalineBonus * adrenalineUptime -
-      backAttackBonus * backAttackRate -
-      flashOrbBonus * flashOrbUptime;
+    const restOfCrit = nonSwingyCritRate(inputs, keenSenseLv);
     return blendCritTerms(restOfCrit + extra, [
       { bonus: adrenalineBonus, p: adrenalineUptime },
       { bonus: backAttackBonus, p: backAttackRate },
@@ -1670,11 +1687,45 @@
     ]);
   }
 
+  // Peak Crit Rate: the crit-rate ceiling for the moment every temporal
+  // swingy source lines up at its best, uncapped (so overshoot past the
+  // 100% cap stays visible - this is what a reader's stat allocation is
+  // actually tested against during their real burst windows, not a
+  // mathematically-averaged value that never occurs during actual play).
+  // Adrenaline and Back Attack are taken at FULL value here instead of
+  // their own uptime/rate-weighted share - Adrenaline because it's
+  // near-universal to the class (97% uptime default, so "peak" is close
+  // to "most of the fight" anyway), Back Attack because its "uptime"
+  // isn't a temporal window at all, it's a per-hit DPS-share split (see
+  // effectiveBackAttackShare) - "peak" there just means "my crit rate on
+  // the hits that land as back attacks", a real and common subset, not
+  // an edge case. Flash Orb is deliberately left uptime-scaled, NOT
+  // promoted to full value: its uptime input is really an on/off gate
+  // for whether the reader even has a Drops of Ether support in their
+  // party at all (defaults to 0%), and even when present it's genuinely
+  // situational and usually low-uptime - showing its full value
+  // regardless would put an unachievable number on the card for anyone
+  // who hasn't set a nonzero Flash Orb uptime, and an overstated one for
+  // most who have.
+  function peakCritRate(inputs, keenSenseLv, extra) {
+    const adrenalineBonus = ADRENALINE_TABLE[inputs.adrenaline] || 0;
+    const backAttackBonus = 0.1;
+    const flashOrbBonus = FLASH_ORB_FULL_CRIT_RATE;
+    const flashOrbUptime = inputs.flashOrbUptime / 100;
+    return (
+      nonSwingyCritRate(inputs, keenSenseLv) +
+      extra +
+      adrenalineBonus +
+      backAttackBonus +
+      flashOrbBonus * flashOrbUptime
+    );
+  }
+
   function getKeystoneComponents(inputs, shared, keenSenseLv, limitBreakLv, keystone) {
-    const S4 = critRateTotal(inputs, keenSenseLv);
-    const T4 = S4 + 0.07;
     const S5 = effectiveCritRate(inputs, keenSenseLv, 0);
     const T5 = effectiveCritRate(inputs, keenSenseLv, 0.07);
+    const S6 = peakCritRate(inputs, keenSenseLv, 0);
+    const T6 = peakCritRate(inputs, keenSenseLv, 0.07);
     const S19 = evoDmgTotal(keenSenseLv, limitBreakLv, shared);
     const T19 = S19 + 0.2;
 
@@ -1691,7 +1742,7 @@
     } else if (keystone === "pulverize") {
       evo = T19;
     }
-    return { effCrit, onCrit, evo, add, rawCrit: keystone === "master" ? T4 : S4 };
+    return { effCrit, onCrit, evo, add, peakCrit: keystone === "master" ? T6 : S6 };
   }
 
   function combinedMultiplier(inputs, shared, keenSenseLv, limitBreakLv, keystonePair) {
@@ -1766,13 +1817,13 @@
   // be passed in.
   function computeCellStats(inputs, shared, cell) {
     const { keenSense, limitBreak } = cell.split;
-    // critRate/critRateRaw below reuse cell.effCrit/cell.rawCrit directly -
-    // the grid loop already worked these out for this exact cell (same
-    // getKeystoneComponents call the comps lookups below would just be
-    // repeating), so there's no need to recompute them per branch. Same
-    // effective-vs-raw split as baseStats: critRate is what the DPS math
-    // in mult actually uses, critRateRaw is the uncapped sum shown as a
-    // secondary row.
+    // critRate/critRatePeak below reuse cell.effCrit/cell.peakCrit
+    // directly - the grid loop already worked these out for this exact
+    // cell (same getKeystoneComponents call the comps lookups below
+    // would just be repeating), so there's no need to recompute them per
+    // branch. Same effective-vs-peak split as baseStats: critRate is
+    // what the DPS math in mult actually uses, critRatePeak is the
+    // uncapped full-value-burst-window ceiling shown as a secondary row.
     let comps, stats;
     if (cell.keystone === "crit+master") {
       comps = {
@@ -1782,7 +1833,7 @@
       stats = {
         critDmg: shared.critDmgTotal,
         critRate: cell.effCrit * 100,
-        critRateRaw: cell.rawCrit * 100,
+        critRatePeak: cell.peakCrit * 100,
         onCritDmg: comps.critical.onCrit * 100,
         evoDmg: comps.master.evo * 100,
         addDmg: comps.master.add * 100,
@@ -1795,7 +1846,7 @@
       stats = {
         critDmg: shared.critDmgTotal,
         critRate: cell.effCrit * 100,
-        critRateRaw: cell.rawCrit * 100,
+        critRatePeak: cell.peakCrit * 100,
         onCritDmg: comps.critical.onCrit * 100,
         evoDmg: comps.pulverize.evo * 100,
         addDmg: comps.critical.add * 100,
@@ -1808,7 +1859,7 @@
       stats = {
         critDmg: shared.critDmgTotal,
         critRate: cell.effCrit * 100,
-        critRateRaw: cell.rawCrit * 100,
+        critRatePeak: cell.peakCrit * 100,
         onCritDmg: shared.onCritDmgBase * 100,
         evoDmg: comps.pulverize.evo * 100,
         addDmg: comps.master.add * 100,
@@ -1850,21 +1901,21 @@
     splitsFor(inputs.optimizedTraining).forEach((split) => {
       COMBINED_KEYSTONES.forEach((pair) => {
         const mult = combinedMultiplier(inputs, shared, split.keenSense, split.limitBreak, pair);
-        let effCrit, rawCrit;
+        let effCrit, peakCrit;
         if (pair === "crit+master") {
           const comp = getKeystoneComponents(inputs, shared, split.keenSense, split.limitBreak, "master");
           effCrit = comp.effCrit;
-          rawCrit = comp.rawCrit;
+          peakCrit = comp.peakCrit;
         } else if (pair === "crit+pulv") {
           const comp = getKeystoneComponents(inputs, shared, split.keenSense, split.limitBreak, "critical");
           effCrit = comp.effCrit;
-          rawCrit = comp.rawCrit;
+          peakCrit = comp.peakCrit;
         } else if (pair === "master+pulv") {
           const comp = getKeystoneComponents(inputs, shared, split.keenSense, split.limitBreak, "master");
           effCrit = comp.effCrit;
-          rawCrit = comp.rawCrit;
+          peakCrit = comp.peakCrit;
         }
-        const cell = { split, keystone: pair, mult, effCrit, rawCrit };
+        const cell = { split, keystone: pair, mult, effCrit, peakCrit };
         cells.push(cell);
         if (!best || mult > best.mult) best = cell;
       });
@@ -1880,8 +1931,9 @@
 
     // Base stats for verification - effCrit/onCrit here match the "no
     // keystone selected" values baseStats already reports above (S5, the
-    // capped raw Crit Rate; onCritDmgBase, the pre-Critical-keystone on-crit
-    // multiplier), so the gain % is consistent with the rest of the card.
+    // capped effective Crit Rate; onCritDmgBase, the pre-Critical-keystone
+    // on-crit multiplier), so the gain % is consistent with the rest of
+    // the card.
     // (KBW's isolated Dmg contribution used to get its own row here - moved
     // to the Engraving Comparison section's reference table below, which
     // already covers it via kbwContributionGain, so it isn't duplicated on
@@ -1890,15 +1942,16 @@
     const baseStats = {
       // critRate is the capped, uptime-weighted value DPS math actually
       // uses (effectiveCritRate) - this is what the card's primary "Crit
-      // Rate" row should show. critRateRaw is the old critRateTotal sum:
-      // Adrenaline/Back Attack/Flash Orb averaged in uncapped, so it can
-      // read over 100% even when the real crit chance is capped at 100%.
-      // Kept as a secondary row (see blendCritTerms's own comment for why
-      // the two numbers legitimately differ) rather than dropped, since
-      // it's still useful to see how much headroom is being "wasted"
-      // above the cap.
+      // Rate" row should show. critRatePeak is the full-value burst-window
+      // ceiling (see peakCritRate's own comment): Adrenaline and Back
+      // Attack taken at full value instead of uptime/rate-weighted,
+      // uncapped, so it can read over 100% even when the real crit
+      // chance is capped at 100%. Kept as a secondary row rather than
+      // dropped, since it's still useful to see how much headroom is
+      // being "wasted" above the cap during a reader's actual burst
+      // windows.
       critRate: baseEffCrit * 100,
-      critRateRaw: critRateTotal(inputs, 0) * 100,
+      critRatePeak: peakCritRate(inputs, 0, 0) * 100,
       critDmg: shared.critDmgTotal,
       onCritDmg: shared.onCritDmgBase * 100,
       evoDmg: (shared.yearningEvo + shared.evoKarmaEvo + shared.optimizedTrainingEvo + STANDING_STRIKER_EVO_DMG) * 100,
@@ -2016,7 +2069,7 @@
   function bestComboFor(candidateInputs, sharedOverride) {
     const shared = sharedOverride || computeShared(candidateInputs);
     // Top Combinations pin (see activePinnedCombo's own comment): when a
-    // reader has pinned a 2nd/3rd-best combo, every caller of
+    // reader has pinned a 2nd-5th-best combo, every caller of
     // bestComboFor - which is every "what's actually best for this
     // candidate" search on the page - resolves to that fixed combo
     // instead of re-searching all 9 cells. Deliberately still runs the
@@ -2027,9 +2080,9 @@
     // ranking is NOT affected - it never calls bestComboFor (see its own
     // comment) - so the Top Combinations list's underlying RANKING always
     // reflects the true ranking, pin or no pin. (renderGrid can still
-    // force the pinned combo into the visible 3rd row - with its own
-    // true rank number shown instead of a fake "3rd Best" - if it's
-    // drifted below true 3rd place; see renderGrid's own comment. That's
+    // force the pinned combo into the visible 5th row - with its own
+    // true rank number shown instead of a fake "5th Best" - if it's
+    // drifted below true 5th place; see renderGrid's own comment. That's
     // a display-only substitution and doesn't change what's computed
     // here.)
     if (activePinnedCombo) {
@@ -5222,9 +5275,9 @@
   }
 
   // "1st"/"2nd"/"3rd"/"4th"... - only used for a pinned combo that has
-  // drifted below the visible top 3 (see renderGrid's own comment on
+  // drifted below the visible top 5 (see renderGrid's own comment on
   // pinnedDisplayCell) and needs an honest true-rank label instead of a
-  // fake "3rd Best".
+  // fake "5th Best".
   function ordinal(n) {
     const rem100 = n % 100;
     if (rem100 >= 11 && rem100 <= 13) return n + "th";
@@ -5237,7 +5290,7 @@
   }
 
   function renderGrid(root, result) {
-    // Top 3 combinations, ranked by % of the grid's best cell. Pure
+    // Top 5 combinations, ranked by % of the grid's best cell. Pure
     // rendering: pctOfBest was already computed in computeGridAndSummary,
     // this only sorts and displays it - no math happens here. The
     // RANKING itself is always the TRUE ranking, pin or no pin - it
@@ -5246,12 +5299,12 @@
     // be circularly affected by a pin bestComboFor itself is honoring.
     //
     // Each row is also clickable: it just PREVIEWS that rank's own stats
-    // in the Best Setup card below (title swaps to "2nd/3rd Best Setup")
+    // in the Best Setup card below (title swaps to "2nd-5th Best Setup")
     // - a display-only toggle, doesn't touch inputs or any calculation at
     // all. UI-only state (see apCalcSelection) - never saved/exported,
     // resets to "auto" (rank 1) on reload.
     //
-    // The 2nd/3rd rows additionally carry a pin control (.ap-result-pin -
+    // The 2nd-5th rows additionally carry a pin control (.ap-result-pin -
     // see initApCalcRoot's own listener): pinning goes a step further
     // than previewing - it also becomes the fixed combo every
     // bestComboFor() search on the rest of the page resolves to (see
@@ -5260,17 +5313,17 @@
     // render below), not by rank, since a pinned combo's rank can itself
     // shift as the reader edits other inputs.
     //
-    // PINNED-BUT-DRIFTED-OUT-OF-TOP-3: if the pinned combo's true rank
-    // falls to 4th or below as the reader edits other inputs, it stays
-    // FORCED into the 3rd row slot (bumping the true 3rd place out of
+    // PINNED-BUT-DRIFTED-OUT-OF-TOP-5: if the pinned combo's true rank
+    // falls to 6th or below as the reader edits other inputs, it stays
+    // FORCED into the 5th row slot (bumping the true 5th place out of
     // view) rather than silently vanishing - it's still the thing every
     // panel below is computed against, so it stays visible with its own
     // real, live numbers (pct/delta both still read straight off its own
     // cell, same as any other row - nothing about those is faked). The
-    // row's rank badge shows its true overall rank (e.g. "5") instead of
-    // "3" in that case, and the Best Setup card title says "Pinned Setup
-    // (5th Best)" rather than falsely claiming 3rd. Unpinning reverts the
-    // row to whichever combo is truly 3rd again.
+    // row's rank badge shows its true overall rank (e.g. "7") instead of
+    // "5" in that case, and the Best Setup card title says "Pinned Setup
+    // (7th Best)" rather than falsely claiming 5th. Unpinning reverts the
+    // row to whichever combo is truly 5th again.
     const list = root.querySelector(".ap-calc-results");
     if (!list) return;
 
@@ -5294,13 +5347,13 @@
     const state = getApCalcSelection(root);
     const pinnedCombo = state.pinnedCombo;
     const allRanked = result.cells.slice().sort((a, b) => b.pctOfBest - a.pctOfBest);
-    const ranked = allRanked.slice(0, 3);
+    const ranked = allRanked.slice(0, 5);
 
     const sameCombo = (a, b) => !!a && !!b && a.split.key === b.split.key && a.keystone === b.keystone;
 
     // The pinned cell, if any, looked up across ALL 9 cells (not just the
-    // top 3) and its TRUE rank among all 9 - needed regardless of
-    // whether it's currently inside the visible top 3, both to decide
+    // top 5) and its TRUE rank among all 9 - needed regardless of
+    // whether it's currently inside the visible top 5, both to decide
     // whether it needs to be force-displayed and to label it honestly
     // when it does.
     const pinnedCell = pinnedCombo
@@ -5308,14 +5361,14 @@
       : null;
     const pinnedTrueRank = pinnedCell ? allRanked.findIndex((c) => sameCombo(c, pinnedCell)) + 1 : null;
 
-    // What actually populates the 3 visible rows: the true top 3, unless
-    // the pinned combo isn't among them - then it takes over the 3rd
-    // (lowest) slot instead of the true 3rd place. Rank 1 is never
+    // What actually populates the 5 visible rows: the true top 5, unless
+    // the pinned combo isn't among them - then it takes over the 5th
+    // (lowest) slot instead of the true 5th place. Rank 1 is never
     // touched (it's always the true best, and has no pin control to
     // begin with - see resources.md).
     const displayRows = ranked.slice();
     const pinnedForcedIn = !!pinnedCell && !ranked.some((c) => sameCombo(c, pinnedCell));
-    if (pinnedForcedIn) displayRows[2] = pinnedCell;
+    if (pinnedForcedIn) displayRows[displayRows.length - 1] = pinnedCell;
 
     displayRows.forEach((cell, i) => {
       if (!cell) return;
@@ -5328,7 +5381,7 @@
       const pctEl = rowEl.querySelector(".ap-result-pct");
       const deltaEl = rowEl.querySelector(".ap-result-delta");
 
-      const forcedHere = rank === 3 && pinnedForcedIn;
+      const forcedHere = rank === displayRows.length && pinnedForcedIn;
       if (rankEl) rankEl.textContent = forcedHere ? String(pinnedTrueRank) : String(rank);
 
       if (comboEl) {
@@ -5384,11 +5437,11 @@
     const titleEl = cardEl && cardEl.querySelector(".ap-stat-card-title");
     if (titleEl) {
       if (pinnedCell) {
-        const rankLabels = { 1: "Best", 2: "2nd Best", 3: "3rd Best" };
+        const rankLabels = { 1: "Best", 2: "2nd Best", 3: "3rd Best", 4: "4th Best", 5: "5th Best" };
         const rankLabel = rankLabels[pinnedTrueRank] || (pinnedTrueRank ? ordinal(pinnedTrueRank) + " Best" : null);
         titleEl.textContent = rankLabel ? "Pinned Setup (" + rankLabel + ")" : "Pinned Setup";
       } else {
-        const rankTitles = { 1: "Best Setup", 2: "2nd Best Setup", 3: "3rd Best Setup" };
+        const rankTitles = { 1: "Best Setup", 2: "2nd Best Setup", 3: "3rd Best Setup", 4: "4th Best Setup", 5: "5th Best Setup" };
         titleEl.textContent = rankTitles[cardRank] || "Best Setup";
       }
     }
@@ -5414,7 +5467,7 @@
     const base = result.baseStats;
     if (base) {
       const rateEl = root.querySelector(".ap-summary-base-critrate");
-      const rateRawEl = root.querySelector(".ap-summary-base-critrate-raw");
+      const ratePeakEl = root.querySelector(".ap-summary-base-critrate-peak");
       const dmgEl = root.querySelector(".ap-summary-base-critdmg");
       const onCritEl = root.querySelector(".ap-summary-base-oncrit");
       const evoEl = root.querySelector(".ap-summary-base-evodmg");
@@ -5425,14 +5478,14 @@
       // (blendCritTerms's base case is Math.min(base, 1)) and never
       // needs the warn styling.
       if (rateEl) rateEl.textContent = base.critRate.toFixed(2) + "%";
-      // Secondary row: the old uncapped averaged sum. THIS is the one
-      // that can legitimately read over 100% (see critRateRaw's own
-      // comment above), so the warn class belongs here now, not on the
-      // effective row.
-      if (rateRawEl) {
-        const raw = base.critRateRaw;
-        rateRawEl.textContent = raw.toFixed(2) + "%";
-        rateRawEl.classList.toggle("ap-summary-value-warn", raw > 100);
+      // Secondary row: the uncapped full-value burst-window ceiling. THIS
+      // is the one that can legitimately read over 100% (see
+      // peakCritRate's own comment above), so the warn class belongs
+      // here now, not on the effective row.
+      if (ratePeakEl) {
+        const peak = base.critRatePeak;
+        ratePeakEl.textContent = peak.toFixed(2) + "%";
+        ratePeakEl.classList.toggle("ap-summary-value-warn", peak > 100);
       }
       // Displayed Crit Dmg excludes Breaking Moon's own add when active -
       // base.critDmg itself stays the real shared.critDmgTotal (the DPS
@@ -5471,18 +5524,18 @@
     const best = (cardCell && cardCell.stats) || result.bestStats;
     if (best) {
       const critEl = root.querySelector(".ap-summary-best-crit");
-      const critRawEl = root.querySelector(".ap-summary-best-crit-raw");
+      const critPeakEl = root.querySelector(".ap-summary-best-crit-peak");
       const dmgEl = root.querySelector(".ap-summary-best-critdmg");
       const onCritEl = root.querySelector(".ap-summary-best-oncrit");
       const evoEl = root.querySelector(".ap-summary-best-evodmg");
       const addEl = root.querySelector(".ap-summary-best-adddmg");
 
-      // Same effective/raw split as the Base card above.
+      // Same effective/peak split as the Base card above.
       if (critEl) critEl.textContent = best.critRate.toFixed(2) + "%";
-      if (critRawEl) {
-        const raw = best.critRateRaw;
-        critRawEl.textContent = raw.toFixed(2) + "%";
-        critRawEl.classList.toggle("ap-summary-value-warn", raw > 100);
+      if (critPeakEl) {
+        const peak = best.critRatePeak;
+        critPeakEl.textContent = peak.toFixed(2) + "%";
+        critPeakEl.classList.toggle("ap-summary-value-warn", peak > 100);
       }
       // Same Breaking Moon exclusion as the Base card above.
       const bestCritDmgDisplay = best.critDmg - (best.breakingMoonActive ? best.breakingMoonAdd : 0);
@@ -7163,7 +7216,7 @@
         });
       });
 
-      // Top Combinations pin (2nd/3rd rows only - see resources.md, rank
+      // Top Combinations pin (2nd-5th rows only - see resources.md, rank
       // 1 already IS the default base so there's nothing for it to pin
       // to). A real <button> nested inside the row's own clickable div,
       // so stopPropagation is required or activating it would also fire
