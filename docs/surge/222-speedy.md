@@ -279,6 +279,7 @@ Can replace Dark Axel if you find it more useful.
     - <span class="skill-mention" data-skill-id="massincrease">Mass Increase</span> and/or <span class="skill-mention" data-ap-id="optimizedtraining" data-level="1">Optimized Training 1</span> help smooth things out at low investment levels.
     - +CD% <span class="skill-mention" data-glossary-id="bracelet">bracelet</span> increases gem level requirements by 1, low <span class="skill-mention" data-glossary-id="specializationstat">Specialization</span> is not recommended.
     - Once Blade Dance and Maelstrom CD are at Lv 9, Wind Cut CD priority increases significantly.
+    - The gem priority list above assumes you will be using a rotation with the advanced skip cycles. 
 
 </details>
 
@@ -300,7 +301,7 @@ There's an optimal skill order, but you have flexibility when facing downtime or
 
 Use Dark Axel to guarantee back attacks on Deathly Slash and Surge if needed.
 
-Use the Opener cycle and either loop it forever (easy) or continue on to the advanced skip cycles (ceiling).
+Use the Opener cycle and either loop it forever (easy) or continue on to the advanced skip cycles (ceiling DPS).
 
 *From 3 orbs:*
 { .lead }
@@ -314,9 +315,8 @@ Use the Opener cycle and either loop it forever (easy) or continue on to the adv
 </div>
 </div>
 
-1. This opener chains into the cycles below, but it's fine by itself if you prefer simplicity over uptime and DPS.
-2. Surprise Attack always goes before Maelstrom on cycles with a Surprise Attack finisher so their CDs line up.
-    - When looping this rotation for simplicity, or casting Maelstrom first unconditionally, you will face downtime.
+1. This opener chains into the cycles below, but it's fine by itself if you prefer simplicity and don't mind downtime.
+2. Surprise Attack always goes before Maelstrom on cycles with a Surprise Attack finisher so its CDs line up.
 
 <div class="setup-panel" data-accent="lavender" markdown>
 <div class="setup-notes" markdown>
