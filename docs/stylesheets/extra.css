@@ -4445,18 +4445,18 @@ h3 { color: var(--dbc-teal); }
 /* ---- Inline skill/tripod comparison (left vs right) ---- */
 /* Same side-by-side-cards idiom as .ap-calc-stat-cards below, but generic
    and hand-authored in markdown for a quick "A vs B" inside a setup note,
-   rather than JS-generated. minmax(0, 1fr) so the grid can actually shrink
-   on phone widths instead of being held open by its widest card. */
+   rather than JS-generated. auto-fit with a 15em minimum column width
+   instead of a viewport @media breakpoint: the row sizes itself from its
+   own available width, so the sidebar/TOC coming and going can't leave it
+   two cramped ~200px columns (a 480px viewport query did exactly that
+   between 481px and ~560px). min(100%, 15em) lets a single column shrink
+   below 15em on very narrow phones instead of overflowing, and the 1fr
+   max keeps the two cards equal width when both fit. */
 .md-typeset .skill-compare-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15em), 1fr));
   gap: 0.8em;
   margin: 0.6em 0;
-}
-@media screen and (max-width: 480px) {
-  .md-typeset .skill-compare-row {
-    grid-template-columns: minmax(0, 1fr);
-  }
 }
 .md-typeset .skill-compare-col {
   border: 1px solid rgba(255, 255, 255, 0.08);

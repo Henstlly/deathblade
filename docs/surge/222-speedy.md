@@ -203,12 +203,12 @@ The build's identity. It recreates RE's Surge using two skills: Dark Axel takes 
 
 - Usually better <span class="skill-mention" data-glossary-id="cpm">CPM</span> when repositioning; faster than 2 or more casts of (tapped) Spincutter.
 - Always cast right before Deathly Slash and Surge, leaving very little to chance.
-- Doubles as a push immunity panic button, saves your spacebar and lets you greed more.
-    - When used as a panic button: you will have limited mobility for that cycle, but it's worth it.
+- Push immunity panic button that saves your spacebar and lets you greed twice as much.
+    - Using it that way limits your mobility for the cycle, but increases uptime on the boss.
 
-**Best For:**{: .best-for } Players chasing the build's ceiling.
+**Best For:**{: .best-for } Getting the most out of the build.
 
-**Tradeoff:**{: .tradeoff } Takes a little getting used to.
+**Tradeoff:**{: .tradeoff } Takes practice, and pays off most once you're used to the advanced skip cycles.
 
 </div>
 <div class="skill-compare-col" markdown>
@@ -220,7 +220,7 @@ Can replace Dark Axel if you find it more useful.
 
 - Repositioning with it loses <span class="skill-mention" data-glossary-id="cpm">CPM</span> compared to Dark Axel when cast 2 or more times (tapped). A single cast is slightly faster than Dark Axel.
 - Repositioning with it while skipping Upper Slash costs you the free <span class="skill-mention" data-glossary-id="pushimmunity">push immune</span> window, one of the build's core benefits. You still have skills left to cast, so you're out of luck if the boss turns.
-- Moves you around the boss, so you aim outward toward its back once you have line of sight. This increases the risk of missing Deathly Slash, as its forward movement can overshoot.
+- Moves you around the boss, so you aim outward toward its back once you have line of sight, which raises the risk of Deathly Slash's forward movement overshooting.
 
 **Best For:**{: .best-for } Players who prefer simplicity: a single cycle is easier to loop if you don't wish to learn the advanced skip cycles or their recovery options.
 
