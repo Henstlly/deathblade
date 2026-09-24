@@ -220,7 +220,7 @@ Can replace Dark Axel if you find it more useful.
 
 - Repositioning with it loses <span class="skill-mention" data-glossary-id="cpm">CPM</span> compared to Dark Axel when cast 2 or more times (tapped). A single cast is slightly faster than Dark Axel.
 - Repositioning with it while skipping Upper Slash costs you the free <span class="skill-mention" data-glossary-id="pushimmunity">push immune</span> window, one of the build's core benefits. You still have skills left to cast, so you're out of luck if the boss turns.
-- Moves you around the boss, so you aim outward toward its back once you have line of sight, which raises the risk of Deathly Slash's forward movement overshooting.
+- Moves you around the boss, so you aim outward toward its back once you have line of sight, which raises the risk of missing due to Deathly Slash's forward movement.
 
 **Best For:**{: .best-for } Players who prefer simplicity: a single cycle is easier to loop if you don't wish to learn the advanced skip cycles or their recovery options.
 
