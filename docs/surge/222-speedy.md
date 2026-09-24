@@ -225,6 +225,9 @@ Can replace Dark Axel if you find it more useful.
 **Best For:**{: .best-for } Players who prefer simplicity: a single cycle is easier to loop if you don't wish to learn the advanced skip cycles or their recovery options.
 
 </div>
+<div class="skill-compare-foot" markdown>
+**Best of both:** Swap freely by content, or :ratJAM: run Lv 4 Spincutter instead of <span class="skill-mention" data-skill-id="headhunt">Head Hunt</span> when <span class="skill-mention" data-glossary-id="counter">Counter</span> isn't needed.
+</div>
 </div>
 
 </details>

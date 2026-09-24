@@ -4445,34 +4445,63 @@ h3 { color: var(--dbc-teal); }
 /* ---- Inline skill/tripod comparison (left vs right) ---- */
 /* Same side-by-side-cards idiom as .ap-calc-stat-cards below, but generic
    and hand-authored in markdown for a quick "A vs B" inside a setup note,
-   rather than JS-generated. auto-fit with a 15em minimum column width
-   instead of a viewport @media breakpoint: the row sizes itself from its
-   own available width, so the sidebar/TOC coming and going can't leave it
-   two cramped ~200px columns (a 480px viewport query did exactly that
-   between 481px and ~560px). min(100%, 15em) lets a single column shrink
-   below 15em on very narrow phones instead of overflowing, and the 1fr
-   max keeps the two cards equal width when both fit. */
+   rather than JS-generated. Flex-wrap with a 15em basis per card instead of
+   a viewport @media breakpoint: the row sizes itself from its own available
+   width, so the sidebar/TOC coming and going can't leave it two cramped
+   ~200px columns (a 480px viewport query did exactly that between 481px and
+   ~560px). Cards wrap to a stacked column once two no longer fit, and
+   min-width: 0 lets a lone card shrink below 15em on very narrow phones
+   instead of overflowing.
+   Flex rather than a repeat(auto-fit, ...) grid on purpose: the optional
+   .skill-compare-foot below spans the full row, and a full-width grid item
+   occupies every track, which stops auto-fit from collapsing the unused
+   ones - the two cards ended up as thirds of the row with an empty third
+   track. In flex the foot is just a 100%-basis item that wraps to its own
+   line. */
 .md-typeset .skill-compare-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15em), 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 0.8em;
   margin: 0.6em 0;
 }
 .md-typeset .skill-compare-col {
+  flex: 1 1 15em;
+  min-width: 0;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
   padding: 0.7em 0.85em;
 }
-.md-typeset .skill-compare-col > :first-child {
+.md-typeset .skill-compare-col > :first-child,
+.md-typeset .skill-compare-foot > :first-child {
   margin-top: 0;
 }
-.md-typeset .skill-compare-col > :last-child {
+.md-typeset .skill-compare-col > :last-child,
+.md-typeset .skill-compare-foot > :last-child {
   margin-bottom: 0;
 }
 .md-typeset .skill-compare-title {
   font-weight: 600;
   display: block;
   margin-bottom: 0.35em;
+}
+/* Optional closing note under both cards ("best of both worlds"). Lives
+   INSIDE .skill-compare-row so it shares the row's gap and width; a 100%
+   flex-basis forces it onto its own line below the cards, whether they
+   ended up side by side or stacked. Deliberately NOT a third card: no
+   border, no fill, smaller and dimmer than the card text, so it reads as
+   a footnote to the comparison above rather than a competing block (same
+   "footnote of the thing above it" idea as .ap-engr-overall-best-note).
+   Usage: one paragraph, lead-in in **bold**, e.g.
+   **Best of both:** Swap between them depending on ... */
+.md-typeset .skill-compare-foot {
+  flex: 1 1 100%;
+  min-width: 0;
+  padding: 0 0.3em;
+  font-size: 0.85em;
+  color: var(--md-default-fg-color--light);
+}
+.md-typeset .skill-compare-foot strong {
+  color: var(--md-default-fg-color);
 }
 
 /* ---- Fixed-setup / best-combo verification panel ---- */
