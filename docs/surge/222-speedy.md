@@ -185,10 +185,48 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
     - With Wide Attack, you **must** cast Turning Slash early on openers to apply synergy.
     - This is more viable than ever as Turning Slash's lingering hits now extend its uptime.
 - Earth Cleaver can be used instead of Head Hunt if you prefer its mobility or utility.
+    - It's a slower, more vulnerable skill cast that consumes significantly more mana.
     - Set Maelstrom and Upper Slash to Lv 10, then raise Earth Cleaver (3-3-1) to Lv 10.
-- You can replace Dark Axel with Spincutter (3-3-1) if you find it more useful (Mordum Extreme).
-    - Generally a lower ceiling, higher floor option that doesn't synergize as well with the build.
-    - If you don't wish to learn the advanced skip cycles, it can make a single cycle easier to loop.
+
+</details>
+
+<details class="setup-note" data-kind="example" open markdown>
+<summary><span class="setup-note-tag">Alt</span>Dark Axel vs Spincutter<span class="setup-note-arrow"></span></summary>
+
+<div class="skill-compare-row" markdown>
+<div class="skill-compare-col" markdown>
+<span class="skill-compare-title"><span class="skill-inline" data-skill-id="darkaxel"><span class="skill-inline-name">Dark Axel</span></span> · Default</span>
+
+The build's identity. It recreates RE's Surge using two skills: Dark Axel takes you through the boss, then Deathly Slash precisely slams you into its back.
+
+**In the rotation:**
+
+- Usually better <span class="skill-mention" data-glossary-id="cpm">CPM</span> when repositioning; faster than 2 or more casts of (tapped) Spincutter.
+- Always cast right before Deathly Slash and Surge, leaving very little to chance.
+- Doubles as a push immunity panic button, saves your spacebar and lets you greed more.
+    - When used as a panic button: you will have limited mobility for that cycle, but it's worth it.
+
+**Best For:**{: .best-for } Players chasing the build's ceiling.
+
+**Tradeoff:**{: .tradeoff } Takes a little getting used to.
+
+</div>
+<div class="skill-compare-col" markdown>
+<span class="skill-compare-title"><span class="skill-inline" data-skill-id="spincutter"><span class="skill-inline-name">Spincutter</span></span> (3-3-1) · Alternative</span>
+
+Can replace Dark Axel if you find it more useful.
+
+**In the rotation:**
+
+- Repositioning with it loses <span class="skill-mention" data-glossary-id="cpm">CPM</span> compared to Dark Axel when cast 2 or more times (tapped). A single cast is slightly faster than Dark Axel.
+- Repositioning with it while skipping Upper Slash costs you the free <span class="skill-mention" data-glossary-id="pushimmunity">push immune</span> window, one of the build's core benefits. You still have skills left to cast, so you're out of luck if the boss turns.
+- Moves you around the boss, so you aim outward toward its back once you have line of sight. This increases the risk of missing Deathly Slash, as its forward movement can overshoot.
+
+**Best For:**{: .best-for } Players who prefer simplicity: a single cycle is easier to loop if you don't wish to learn the advanced skip cycles or their recovery options.
+
+</div>
+</div>
+
 </details>
 
 </div>

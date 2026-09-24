@@ -4442,6 +4442,39 @@ h3 { color: var(--dbc-teal); }
   flex-shrink: 0;
 }
 
+/* ---- Inline skill/tripod comparison (left vs right) ---- */
+/* Same side-by-side-cards idiom as .ap-calc-stat-cards below, but generic
+   and hand-authored in markdown for a quick "A vs B" inside a setup note,
+   rather than JS-generated. minmax(0, 1fr) so the grid can actually shrink
+   on phone widths instead of being held open by its widest card. */
+.md-typeset .skill-compare-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0.8em;
+  margin: 0.6em 0;
+}
+@media screen and (max-width: 480px) {
+  .md-typeset .skill-compare-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.md-typeset .skill-compare-col {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 0.7em 0.85em;
+}
+.md-typeset .skill-compare-col > :first-child {
+  margin-top: 0;
+}
+.md-typeset .skill-compare-col > :last-child {
+  margin-bottom: 0;
+}
+.md-typeset .skill-compare-title {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.35em;
+}
+
 /* ---- Fixed-setup / best-combo verification panel ---- */
 /* Two cards side by side: what your gear gives you unconditionally (Base),
    and what the top-ranked combo above adds on top of it (Best). Same
