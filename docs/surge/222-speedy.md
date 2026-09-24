@@ -262,7 +262,8 @@ Can replace Dark Axel if you find it more useful.
     "windcut",
     "turningslash",
     { "id": "darkaxel", "alts": [
-      { "id": "surpriseattack", "note": "Use Surprise Attack DMG instead if you prefer, or even another class's Lv 10 gem." }
+      { "id": "surpriseattack", "note": "Use Surprise Attack DMG instead if you prefer, or even another class's Lv 10 gem." },
+      { "id": "spincutter", "note": "Use if you decide to go with Spincutter." }
     ] }
   ] }
 ]
