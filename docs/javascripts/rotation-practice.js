@@ -44,19 +44,40 @@
   // .practice-mode class on the actual .rotation-line(s) so the existing
   // dimming/border CSS (which targets .rotation-line.practice-mode) keeps
   // working unchanged either way.
+  // A .cycle-alt-branch is an optional VARIANT of the card's last stage,
+  // not a continuation of it (see extra.css's .cycle-alt-branch comment -
+  // e.g. Surge 111's "Alt: Awakening Follow-Up" sitting inside the
+  // Breaking Moon Cycle + Follow-Up card). querySelectorAll(".rotation-line")
+  // below walks ALL descendants regardless of nesting depth, so without
+  // this filter its line would silently get swept into the same combined
+  // walk as the real Cycle -> Follow-up sequence, making Practice mode
+  // drill through an alternative path as if it directly followed the
+  // real one. Filtering by .closest() here keeps the alt line out of both
+  // the shared step list AND the practice-mode dimming class below -
+  // it stays a plain static reference, same as it would be if it weren't
+  // nested inside a .cycle-card-multi at all.
+  function isAltBranch(line) {
+    return !!line.closest(".cycle-alt-branch");
+  }
+
   function getLines(unit) {
     if (unit.classList.contains("cycle-card-multi")) {
-      return Array.prototype.slice.call(unit.querySelectorAll(".rotation-line"));
+      return Array.prototype.slice
+        .call(unit.querySelectorAll(".rotation-line"))
+        .filter(function (l) { return !isAltBranch(l); });
     }
     return [unit];
   }
 
   // querySelectorAll walks ALL descendants regardless of nesting depth,
   // so this already returns the combined, in-DOM-order step list across
-  // every .rotation-line child when unit is a .cycle-card-multi - no
-  // special-casing needed here.
+  // every .rotation-line child when unit is a .cycle-card-multi - only
+  // special-casing needed is excluding a .cycle-alt-branch's own steps
+  // (see isAltBranch above).
   function getSteps(unit) {
-    return unit.querySelectorAll(".skill");
+    return Array.prototype.slice
+      .call(unit.querySelectorAll(".skill"))
+      .filter(function (s) { return !isAltBranch(s); });
   }
 
   function toggleLabel(idx, total) {

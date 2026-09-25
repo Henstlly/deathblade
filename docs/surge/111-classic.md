@@ -254,13 +254,31 @@ Use the Breaking Moon cycle and its follow-up when available, then repeat the re
 <div class="cycle-card-header"><span class="cycle-num cycle-num-1">1</span><span class="cycle-title">Breaking Moon Cycle + Follow-Up</span></div>
 <div class="rotation-line" markdown>
 <script type="application/json">
-[{ "stageLabel": "Cycle" }, { "skills": ["turningslash", "surpriseattack"], "situational": "adre/syn for openers" }, "windcut", "deathtrance", "maelstrom", "surpriseattack", "breakingmoon", "surge"]
+[{ "stageLabel": "Cycle >" }, { "skills": ["turningslash", "surpriseattack"], "situational": "adre/syn for openers" }, "windcut", "deathtrance", "maelstrom", "surpriseattack", "breakingmoon", "surge"]
 </script>
 </div>
 <div class="rotation-line" markdown>
 <script type="application/json">
-[{ "stageLabel": "Follow-up" }, "windcut", "deathtrance", { "id": "maelstrom", "situational": "used if you have 2 stacks" }, { "id": "surpriseattack", "situational": "safety stack buffer" }, "earthcleaver", "turningslash", "bladedance", "blitzrush", "surpriseattack", "surge"]
+[{ "stageLabel": "Follow-up >" }, "windcut", "deathtrance", { "id": "maelstrom", "situational": "used if you have 2 stacks" }, { "id": "surpriseattack", "situational": "safety stack buffer" }, "earthcleaver", "turningslash", "bladedance", "blitzrush", "surpriseattack", "surge"]
 </script>
+</div>
+<!-- Alternate Follow-up path, not a third stage: kept OUT of the Cycle ->
+     Follow-up sequential read/drill (see extra.css's .cycle-alt-branch
+     comment and rotation-practice.js's getLines/getSteps comment for why
+     this wrapper div is what excludes it). Uses the same leading
+     stageLabel pseudo-step Cycle/Follow-up use above (same size, same
+     spot to the left of the first chip) rather than a separate labeled
+     row - extra.css recolors just THIS line's stage-tag gold, and the
+     "Alt \u00b7 " prefix (same middle-dot separator the Practice toggle's own
+     "1 / 17 \u00b7 Exit" label already uses) is what actually says
+     "alternative" - the gold color alone read as just another stage once
+     the word wasn't there. -->
+<div class="cycle-alt-branch" markdown>
+<div class="rotation-line" markdown>
+<script type="application/json">
+[{ "stageLabel": "Alternative \u00b7 Awakening Follow-Up >" }, "windcut", "deathtrance", { "id": "maelstrom", "situational": "used if you have 2 stacks" }, "turningslash", "bladedance", "bladeassault", "surge"]
+</script>
+</div>
 </div>
 </div>
 
@@ -274,8 +292,8 @@ Use the Breaking Moon cycle and its follow-up when available, then repeat the re
 </div>
 
 1. Stack are tight in the follow-up: cast Maelstrom (if 2 stacks), the first Surprise Attack or Spincutter if needed.
-    - This mostly applies to the raid's first follow-up, as you naturally gather spare stacks through the fight for the rest.
-    - Using Turning Slash in the opener or Blade Assault in the follow-up (shown in the video below) is also enough.
+    - This mostly applies to the raid's first follow-up, you naturally gather spare stacks through the fight for the rest.
+    - Casting Turning Slash in the opener, or using the Awakening follow-up is also enough to create a safety buffer.
 2. Do NOT worry about Raid Captain efficiency; Keen Blunt Weapon is just as inefficient or worse!
     - Breaking Moon's Critical Damage bonus to the next Surge (biggest hit) is additive to Keen Blunt Weapon.
     - Raid Captain fully buffs the empowered Surge and can make use of <span class="skill-mention" data-rune-name="Rage" data-rune-tier="legendary">Rage</span>/<span class="skill-mention" data-skill-id="atropine">Atropine</span> for the follow-up.

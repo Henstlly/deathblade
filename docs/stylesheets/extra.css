@@ -1761,6 +1761,60 @@ h3 { color: var(--dbc-teal); }
   border-color: rgba(var(--dbc-purple-rgb), 0.55);
 }
 
+/* ---------- Alt branch inside a .cycle-card-multi (an optional variant
+   of the LAST stage, not a continuation of it) ---------- */
+/* Structure: an extra wrapper sitting after the card's normal
+   .rotation-line stages, still inside the same .cycle-card-multi box:
+   <div class="cycle-alt-branch" markdown>
+   <div class="rotation-line" markdown>...its own steps, with its own
+     leading { "stageLabel": "Awakening Follow-Up" } pseudo-step, same
+     as Cycle/Follow-up use above...</div>
+   </div>
+
+   The whole point of .cycle-card-multi is that its stages sit flush
+   together (margin: 0, trimmed top padding on the trailing stage - see
+   the comment above) so they read as ONE continuing sequence. An
+   alternative path has to visually break that rhythm or it just reads as
+   a third stage, so this wrapper does the opposite of the flush styling:
+   a dashed top border (a solid one would look like a stray extra card
+   edge; dashed reads as "detour" the way a dashed .skill-situational
+   chip already means "not part of the main line") plus letting the
+   nested .rotation-line fall back to its own normal 0.7em top padding
+   (NOT the trimmed 0.35em .cycle-card-multi .rotation-line + .rotation-line
+   rule above gives the trailing stage - that selector only matches a
+   .rotation-line whose PREVIOUS SIBLING is also a bare .rotation-line,
+   and this one's previous sibling is the .cycle-alt-branch wrapper's own
+   opening tag, so it never matches here; nothing extra needed for that).
+
+   The stage-tag label itself reuses the exact same stageLabel mechanism
+   Cycle/Follow-up use (same size, same spot to the left of the first
+   chip - see .stage-tag above) rather than a separately-styled label row,
+   so it visually reads as "one more stage-style label" at a glance; the
+   ONLY thing that marks it as an alternative rather than a third stage is
+   this rule recoloring just this line's tag gold instead of the default
+   rose, plus the dashed top border above breaking the flush Cycle/
+   Follow-up rhythm. Gold (--dbc-gold) is reused on purpose, not a new
+   color: it is already this exact page's "alternative" accent via
+   .setup-note[data-kind="example"]'s "Alt" tag on the Stack Reserve
+   Rotation note further down this same page.
+
+   IMPORTANT - this wrapper is also what keeps the alt path out of the
+   shared Practice drill: rotation-practice.js's getLines()/getSteps()
+   explicitly skip anything inside .cycle-alt-branch (see that file's own
+   comment on why) rather than sweeping it into the combined Cycle ->
+   Follow-up walk the way every other .rotation-line nested in a
+   .cycle-card-multi normally would be. If you ever add a second
+   .cycle-alt-branch elsewhere, no CSS changes are needed for that part -
+   it's the class name rotation-practice.js checks against, not anything
+   defined here. */
+.md-typeset .cycle-alt-branch {
+  margin-top: 0.15em;
+  border-top: 1px dashed rgba(var(--dbc-gold-rgb), 0.35);
+}
+.md-typeset .cycle-alt-branch .stage-tag {
+  color: var(--dbc-gold);
+}
+
 /* ---------- Rotation practice mode ---------- */
 /* Click-to-advance drill mode for .rotation-line (including the nested
    ones inside .cycle-card). Purely a JS/CSS layer on top of the existing
