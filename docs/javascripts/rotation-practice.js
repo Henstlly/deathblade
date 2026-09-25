@@ -22,14 +22,19 @@
 //     row already has room rather than floating a second badge
 //
 // A .cycle-card-multi (a Cycle whose follow-up continues directly from
-// it, authored as two .rotation-line children with a .cycle-stage-label
-// each instead of two separate cycle-card-header/Practice pairs) gets ONE
-// shared toggle for the whole card instead: getSteps() below already
+// it, authored as two .rotation-line children, each starting with its own
+// leading stageLabel pseudo-step instead of two separate cycle-card-header/
+// Practice pairs) gets ONE shared toggle for the whole card instead: getSteps() below already
 // walks every .skill under whatever element it's given regardless of how
 // many .rotation-line children sit under it, so the only real new code is
 // wireMultiCard()/getLines() further down - enter/exit/advance/highlight
 // all work unchanged, just called with the card as the "unit" instead of
 // a single line.
+//
+// A plain .rotation-line can opt out entirely by adding the
+// "rotation-line-map" class - for a compact loop overview built from
+// cycleRef pseudo-steps (e.g. "1 -> 2 -> 2 -> 3 -> 4 -> etc.") rather
+// than real skill steps, so there's nothing meaningful to drill.
 //
 // Only one drill unit (a rotation-line, or a whole cycle-card-multi) is
 // "active" (spacebar-listening) at a time - starting practice on a new
@@ -109,6 +114,14 @@
     // also get its own individual toggle, or the pair would show two
     // "Practice" buttons for what's really one combined drill.
     if (line.closest(".cycle-card-multi")) return;
+    // A ".rotation-line-map" is a compact overview line built from
+    // cycleRef pseudo-steps pointing at OTHER cycle-cards (e.g. "1 -> 2 ->
+    // 2 -> 3 -> 4 -> etc." showing the loop at a glance) rather than a
+    // real sequence of skills to drill - see rotation-line.js's cycleRef
+    // doc comment. Practice mode has nothing to step through there (no
+    // actual .skill inputs, just cycle-number pointers), so it opts out
+    // rather than showing a toggle that would do nothing useful.
+    if (line.classList.contains("rotation-line-map")) return;
     var steps = getSteps(line);
     if (steps.length < 2) return;
 
@@ -154,9 +167,9 @@
   // just always joining the card's .cycle-card-header (a multi-stage card
   // is never "standalone" the way a bare rotation-line can be) and
   // listening for clicks on the whole card - the two stages are separate
-  // .rotation-line elements, but a click on either one (or the
-  // .cycle-stage-label between them) should advance the same combined
-  // drill rather than needing two independent listeners kept in sync.
+  // .rotation-line elements, but a click on either one should advance the
+  // same combined drill rather than needing two independent listeners
+  // kept in sync.
   function wireMultiCard(card) {
     if (card._practiceToggle) return; // already wired
     var steps = getSteps(card);

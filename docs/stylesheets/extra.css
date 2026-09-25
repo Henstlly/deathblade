@@ -86,6 +86,10 @@
     distribution chart's white overlay label to read clearly on top of it,
     unlike the much lighter pastel --dbc-rose */
   --dbc-rose-deep-rgb: 168, 68, 107;
+  --dbc-violet-dark: #241a33;      /* dark violet tint, same darkness as
+    --dbc-rose-dark/--dbc-gold-dark/--dbc-teal-dark - on-fill text for
+    cycle-num-4, pairs with --dbc-violet (already used for epic-tier
+    rune chips/.skill-card glow elsewhere on the site) */
 }
 
 [data-md-color-scheme="slate"] {
@@ -1260,7 +1264,7 @@ h3 { color: var(--dbc-teal); }
   border-radius: 10px;
   padding: 0.7em 0.9em 0.1em;   /* bottom trimmed - the skill/arrow margin-bottom below supplies it, see note */
   margin: 0.35em 0;
-  font-size: 0.95em;
+  font-size: 0.87em;   /* was 0.95em - felt heavier/larger than surrounding prose despite the same nominal size, mostly from the chips' bold (700) weight; trimmed down a notch (see .cycle-title below, kept in step with it) */
   line-height: 1.7;
 }
 /* Depending on context (inside a tabbed block or not), pymdownx/md_in_html
@@ -1290,11 +1294,32 @@ h3 { color: var(--dbc-teal); }
    out its 0.6em margin-bottom too, same as it zeroes the text.) */
 .md-typeset .rotation-line .skill,
 .md-typeset .rotation-line .arrow,
-.md-typeset .rotation-line .rotation-suffix {
+.md-typeset .rotation-line .rotation-suffix,
+.md-typeset .rotation-line .stage-tag {
   margin: 0 2px 0.6em;
 }
 .md-typeset .rotation-line .rotation-suffix {
   color: inherit;
+}
+/* A leading "CYCLE"/"FOLLOW-UP"-style tag (rotation-line.js's leading
+   { "stageLabel": ... } pseudo-step) - a small pill that's just another
+   item in the line's own flex-wrap row, sitting before the first real
+   .skill chip with no arrow to either side. This is what a
+   .cycle-card-multi's two stages use to say which stage is which
+   (replacing an earlier full-width bar ABOVE the box - see the comment
+   near .cycle-card-multi below for why that reserved a whole row of
+   near-empty space): sharing the row with the chips means it costs
+   nothing extra vertically, and being a normal flex item (never floated
+   or absolutely positioned) means it can't overlap a wrapped row the way
+   an even earlier floating-pill version once did. */
+.md-typeset .rotation-line .stage-tag {
+  display: inline-flex;
+  align-items: center;
+  color: var(--dbc-rose);
+  font-size: 0.78em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 .md-typeset .rotation-line .skill {
   display: inline-flex;
@@ -1365,6 +1390,70 @@ h3 { color: var(--dbc-teal); }
   position: relative;
   left: -2px;
   top: -4px;
+}
+
+/* Wrap-point variant, take 3: rotation-line.js's updateWrapArrows
+   toggles this class, at render time and again on every re-measure,
+   onto whichever plain .arrow currently sits at the end of a wrapped
+   row (the step right after it is starting a new visual line, not
+   sitting right next to it). A bare "→" there reads identically to
+   every other arrow sitting mid-row between two chips touching each
+   other, so there's no cue that the sequence actually continues below
+   rather than stopping - this is what makes that arrow specifically
+   look different.
+   Take 1 reused .arrow::before's own chevron shape rotated to a
+   down-left diagonal - reasoned as "same shape, just rotated" being
+   safer than a new glyph (the way .arrow-swap below avoided a wholly
+   different shape). In practice it didn't work: the border-corner trick
+   can only ever draw a STRAIGHT chevron at 45-degree steps, and a
+   diagonal one at this size read as a stray mark ("looks like a short
+   L") with no directional meaning, not as "turn".
+   Take 2 dropped the border trick for a real icon - Feather's
+   "corner-down-left" glyph, a genuinely bent arrow whose head points
+   left, meant to read as "drop down, continue from the left". That
+   still didn't land: a reader clocks the arrowHEAD's direction first,
+   and a left-pointing head reads as backward/undo regardless of the
+   bend leading into it.
+   This version (WRAP_ARROW_ICON in the JS, same SVG convention as the
+   cycle-repeat badge's icon) is a plain straight-down arrow instead -
+   no bend to misread, just "there's more below", which is the one
+   thing this glyph actually needs to say. Which direction the next
+   step starts from is left to the reader's own left-to-right reading
+   habit, not encoded in the glyph.
+   This class (and its child .arrow-wrap-icon) are applied automatically
+   - never set them by hand or from a build page's JSON. */
+.md-typeset .rotation-line .arrow-wrap {
+  position: relative;
+  cursor: help;
+}
+.md-typeset .rotation-line .arrow-wrap::before {
+  /* The plain chevron this arrow would otherwise render - hidden here,
+     replaced by the real .arrow-wrap-icon below. */
+  display: none;
+}
+.md-typeset .rotation-line .arrow-wrap-icon {
+  /* Absolutely positioned (relative to .arrow-wrap, which is what the
+     position: relative above is for) so this can be sized bigger than
+     .arrow's own 10px track - a small bent-arrow glyph needs a bit more
+     room than a straight chevron to actually read at this scale -
+     without adding to the flex item's own intrinsic width and shifting
+     any of the chips around it. Centered on the track with translate,
+     not centered via flex/grid, for the same reason: it needs to be
+     free to visually overflow its own tiny box on all sides. */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 13px;
+  height: 13px;
+  color: var(--dbc-arrow);
+  opacity: 0.85;
+  pointer-events: none;
+}
+.md-typeset .rotation-line .arrow-wrap-icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 /* Order-interchangeable variant, take 2: the first attempt (two
@@ -1448,10 +1537,31 @@ h3 { color: var(--dbc-teal); }
   filter: grayscale(45%);
 }
 .md-typeset .skill-situational-tag {
-  font-size: 0.76em;
-  font-style: italic;
-  color: #7a7488;
-  margin-left: 0.05em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.1em;
+  height: 1.1em;
+  margin-left: 0.15em;
+  border: 1px solid #4a4650;
+  border-radius: 50%;
+  color: #9b95a8;
+  font-size: 0.7em;
+  font-style: normal;
+  line-height: 1;
+  cursor: help;
+}
+.md-typeset .skill-situational-tag::before {
+  /* A real "*" character sits slightly high/tight against a circular
+     border at these sizes across most fonts - nudged down a touch so it
+     reads as centered instead of hugging the top of the circle. */
+  content: "*";
+  position: relative;
+  top: 0.05em;
+}
+.md-typeset .rotation-line .skill-situational:hover .skill-situational-tag {
+  color: var(--dbc-purple);
+  border-color: rgba(var(--dbc-purple-rgb), 0.6);
 }
 /* Multi-skill chip ("A or B", see rotation-line.js's "skills" step): each
    skill is an icon + name pair with the same icon-to-name gap a plain
@@ -1505,7 +1615,7 @@ h3 { color: var(--dbc-teal); }
   align-items: center;
   gap: 0.5em;
   background-color: rgba(var(--dbc-purple-rgb), 0.08);
-  padding: 0.5em 0.9em;
+  padding: 0.28em 0.9em;   /* was 0.5em, then 0.38em top/bottom - trimmed twice now to match .cycle-title's smaller font, see that rule's comment. .cycle-num's fixed 20px circle is the real floor here - don't go much below this or the header starts feeling cramped around it */
   border-bottom: 1px solid rgba(var(--dbc-purple-rgb), 0.2);
 }
 .md-typeset .cycle-num {
@@ -1533,10 +1643,51 @@ h3 { color: var(--dbc-teal); }
   background-color: var(--dbc-gold);
   color: var(--dbc-gold-dark);
 }
+.md-typeset .cycle-num-4 {
+  /* 4th accent, added for Surge 111's Stack Reserve alt rotation (its own
+     locally-numbered 1-4 cycle set inside that page's Alt details block) -
+     see the comment above .cycle-card for why a new number needs its own
+     rule rather than falling out automatically. */
+  background-color: var(--dbc-violet);
+  color: var(--dbc-violet-dark);
+}
 .md-typeset .cycle-title {
   color: var(--md-default-fg-color);
   font-weight: 700;
-  font-size: 0.95em;
+  font-size: 0.87em;   /* was 0.95em - see .rotation-line's font-size comment above, kept the two in step */
+}
+/* Repeat badge (rotation-line.js's cycleRef "repeat" field) - lets a
+   loop-map show "this cycleRef step, several times in a row" as ONE chip
+   instead of the same cycleRef chip pasted 2-3 times back to back, which
+   read as needing to be counted rather than as "repeat this". Small loop
+   glyph (CSS-drawn, same instinct as .arrow above: no image/SVG needed)
+   plus the author-supplied text ("\u00d72-3" etc.), deliberately muted/
+   small so it reads as a footnote on the chip, not a second title. */
+.md-typeset .skill-has-repeat {
+  padding-right: 0.5em;
+}
+.md-typeset .cycle-repeat-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  margin-left: 0.15em;
+  padding: 0.05em 0.45em 0.05em 0.35em;
+  border-radius: 999px;
+  background-color: rgba(255, 255, 255, 0.07);
+  color: var(--md-default-fg-color--light);
+  font-size: 0.78em;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.md-typeset .cycle-repeat-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+.md-typeset .cycle-repeat-icon svg {
+  width: 0.85em;
+  height: 0.85em;
+  display: block;
 }
 .md-typeset .cycle-card .rotation-line {
   border: none;
@@ -1551,11 +1702,26 @@ h3 { color: var(--dbc-teal); }
 /* Structure:
    <div class="cycle-card cycle-card-multi" markdown>
    <div class="cycle-card-header"><span class="cycle-num cycle-num-1">1</span><span class="cycle-title">Breaking Moon + Follow-Up</span></div>
-   <div class="cycle-stage-label">Cycle</div>
-   <div class="rotation-line" markdown>...stage 1 as normal...</div>
-   <div class="cycle-stage-label">Follow-up</div>
-   <div class="rotation-line" markdown>...stage 2 as normal...</div>
+   <div class="rotation-line" markdown>...stage 1, starting with a
+     { "stageLabel": "Cycle" } pseudo-step in its JSON...</div>
+   <div class="rotation-line" markdown>...stage 2, starting with a
+     { "stageLabel": "Follow-up" } pseudo-step...</div>
    </div>
+   Each stage says which stage it is via its OWN leading stageLabel step
+   (a small pill rendered inline in that rotation-line's own flex-wrap
+   row - see rotation-line.js's buildStageTag and extra.css's .stage-tag
+   rule above) rather than a separate labeled element between the two
+   rotation-lines. Two earlier approaches to that separate label were
+   tried and dropped: a pill absolutely positioned on the seam between
+   stages (reserved no layout space, but a wrapped last row of the
+   PREVIOUS stage could grow close enough to visibly overlap it), and a
+   full-width bar above each stage (real height so it couldn't overlap,
+   but its background stretched edge-to-edge for nothing but a short
+   word, reading as a wasted near-empty row). Folding the label into the
+   rotation-line's own row avoids both: it costs no extra vertical space
+   (it's just another flex item sharing the row with the chips) and can't
+   overlap anything (it's normal flow, never floated/absolute).
+
    cycle-card-multi is an ADDITIVE modifier on the normal .cycle-card (kept
    alongside that class, not instead of it), so every plain .cycle-card
    rule above - background/border/radius, the header, the nested
@@ -1572,43 +1738,6 @@ h3 { color: var(--dbc-teal); }
 .md-typeset .cycle-card-multi.practice-mode {
   cursor: pointer;
   border-color: rgba(var(--dbc-purple-rgb), 0.55);
-}
-/* Small uppercase divider between stages, sitting where each stage's own
-   header used to be. Zero-footprint, same trick as .rotation-practice-
-   toggle/the old cycle-connector: the label div itself collapses to
-   height:0 and sits at its normal in-flow seam point regardless of how
-   tall the rotation-lines above/below it wrap to, while its <span> is
-   absolutely positioned and pulled up by half its own height (transform:
-   translate(0, -50%)) so it floats centered ON that seam line as a small
-   pill instead of reserving a full padded row - that's the "empty bar"
-   the block version had, which this avoids entirely. */
-.md-typeset .cycle-stage-label {
-  position: relative;
-  height: 0;
-  border-top: 1px solid rgba(var(--dbc-purple-rgb), 0.2);
-}
-/* The first stage label sits directly under the card's own header, which
-   already has its own border-bottom marking that seam - a second hairline
-   right under it would double up, so only the pill floats there. */
-.md-typeset .cycle-card-header + .cycle-stage-label {
-  border-top: none;
-}
-.md-typeset .cycle-stage-label span {
-  position: absolute;
-  top: 0;
-  left: 1.1em;
-  transform: translate(0, -50%);
-  background-color: var(--dbc-chip-surface);
-  border: 1px solid rgba(var(--dbc-rose-rgb), 0.45);
-  color: var(--dbc-rose);
-  border-radius: 999px;
-  font-size: 0.68em;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  padding: 0.15em 0.65em;
-  line-height: 1.5;
-  z-index: 2;
 }
 
 /* ---------- Rotation practice mode ---------- */

@@ -315,7 +315,7 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 
     <div class="cycle-card">
 
-    <div class="cycle-card-header"><span class="cycle-num cycle-num-1">1</span><span class="cycle-title">Void Strike + Deathly Slash</span></div>
+    <div class="cycle-card-header"><span class="cycle-num cycle-num-1">1</span><span class="cycle-title">Void Strike + Deathly Slash Cycle</span></div>
 
     <div class="rotation-line">
 
@@ -329,13 +329,13 @@ Make sure you've read [Essentials](essentials.md), then apply both "<span class=
 
     <div class="cycle-card">
 
-    <div class="cycle-card-header"><span class="cycle-num cycle-num-2">2</span><span class="cycle-title">Soul Absorber + Blitz Rush</span></div>
+    <div class="cycle-card-header"><span class="cycle-num cycle-num-2">2</span><span class="cycle-title">Soul Absorber + Blitz Rush Cycle</span></div>
 
     <div class="rotation-line">
 
     <script type="application/json">
     ["soulabsorber", "blitzrush", "twinshadows",
-     { "id": "maelstrom", "situational": true },
+     { "id": "maelstrom", "situational": "recovery" },
      "fatalwave", "turningslash", "fatalwave", "surge"]
     </script>
 

@@ -562,7 +562,15 @@
     if (!id) return;
     var data = lookupData(id, resolveFamily(trigger));
     if (!data) return;
-    wire(trigger, buildTip(id, data));
+    // rotation-line.js's situational marker (the "*" tag) has no
+    // tooltip of its own - it's decorative, and stashes its reason here
+    // instead so it rides along as this skill's own opts.extra line
+    // rather than a second, separate native-title tooltip stacked on top
+    // of this one. Already-formatted ("Situational" or "Situational \u2014
+    // <reason>") by rotation-line.js, so this just passes it through
+    // verbatim, same as gem-dps-tooltip.js's own opts.extra caller does.
+    var reason = trigger.getAttribute("data-situational-reason");
+    wire(trigger, buildTip(id, data, reason ? { extra: reason } : undefined));
   }
 
   function attachSkillInline(trigger) {

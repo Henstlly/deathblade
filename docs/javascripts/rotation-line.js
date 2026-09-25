@@ -40,12 +40,23 @@
 //     { "id": "fatalwave", "name": "FTF" }
 //       - override the display name (icon still comes from id).
 //     { "id": "headhunt", "situational": true }
-//       - de-emphasized/optional step (dashed border, "situational" tag
-//         under the name). Same visual meaning as before.
+//       - de-emphasized/optional step (dashed border, desaturated icon,
+//         a small "*" marker). The reason ("Situational") shows up as an
+//         extra line at the bottom of the skill's own hover/focus/tap
+//         tooltip (skill-tooltip.js's attachRotationSkill reads it off a
+//         data-situational-reason attribute) rather than a second tooltip
+//         of its own - the marker itself is decorative only.
 //     { "id": "deathlyslash", "situational": "every other rotation" }
-//       - situational with custom tag text instead of "situational".
-//         "**word**" inside the tag text bolds that word, same as
-//         before.
+//       - situational with a custom reason instead of the default
+//         "Situational" - shown in that same bottom line, not typed out
+//         on the chip (a spelled-out reason like "adrenaline/synergy"
+//         used to sit right on the chip and visibly widen/heighten it).
+//         Any "**word**" in the reason is stripped to plain "word" (the
+//         tooltip's extra line is plain text, no bold).
+//         Exception: a { "cycleRef": ... } pseudo-step (below) has no
+//         skill to attach a tooltip to at all, so ITS reason still shows
+//         via a plain native `title` on the marker - see buildStep's own
+//         comment on why that's the one case this doesn't apply to.
 //     { "skills": ["turningslash", "surpriseattack"], "situational": "adrenaline" }
 //       - one chip holding two skills joined by "or" - for a step that's
 //         really "pick whichever of these is up". Each skill keeps its
@@ -59,6 +70,13 @@
 //       - a pseudo-step pointing at a Cycle card above instead of a
 //         real skill (no icon). Renders the same cycle-num/cycle-title
 //         pill the Cycle card's own header uses.
+//     { "cycleRef": 2, "title": "Regular Cycle", "repeat": "\u00d73" }
+//       - adds a small loop badge after the title for a cycleRef step
+//         that gets repeated several times in a row. Use this INSTEAD OF
+//         listing the same cycleRef step 2-3 times in a row - one chip
+//         with a repeat badge reads as "this one, several times" instead
+//         of making the reader count identical chips. "repeat" is shown
+//         verbatim, so phrase it however reads best ("\u00d72", "\u00d72-3", "2-3x").
 //     { "id": "headhunt", "swapNext": true }
 //       - marks the arrow to the NEXT step as order-interchangeable
 //         (e.g. Head Hunt/Twin Shadows as the opener's first two steps -
@@ -72,13 +90,59 @@
 //   trailing text after the last arrow (the RE Opener rotations use this
 //   for the "-> Cycle 2 -> Cycle 1 -> etc." loop-back), add one more
 //   entry at the very end: { "suffix": "etc." }
+//
+//   Arrows also get a distinct "turn" look automatically when a line
+//   wraps - this is pure runtime measurement (see updateWrapArrows
+//   below), never something to set in the JSON.
+//
+//   For a small "CYCLE"/"FOLLOW-UP"-style tag at the START of the line
+//   (a .cycle-card-multi's two stages use this to say which stage each
+//   rotation-line is, without a separate labeled bar above the box - see
+//   extra.css's .stage-tag comment for why this replaced that bar), add
+//   one entry at the very START: { "stageLabel": "Cycle" }. It renders as
+//   a small pill and flows as an ordinary item in the line's own flex-wrap
+//   row (no arrow before or after it), so it never reserves a separate
+//   row of its own - it just sits to the left of the first real step,
+//   wrapping onto its own line only if the row genuinely runs out of
+//   width, same as any other chip would.
 (function () {
   var SITE_ROOT = window.SiteUtils.detectSiteRoot("rotation-line.js");
 
   var el = window.SiteUtils.el;
   var iconSrc = window.SiteUtils.iconSrc;
   var hideOnError = window.SiteUtils.hideOnError;
-  var appendInlineBold = window.SiteUtils.appendInlineBold;
+
+  // Feather Icons "repeat" glyph (same icon set/markup convention as
+  // build-compare.js's COPY_ICON/CHECK_ICON and bid-calculator.js's check
+  // icon - viewBox 24x24, stroke="currentColor" so it inherits the badge's
+  // text color for free, no per-theme color to maintain). Two arrows
+  // forming a loop reads as "repeat" at a glance, unlike a bare partial-
+  // circle border which needs the reader to already know the convention.
+  var CYCLE_REPEAT_ICON =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>';
+
+  // Feather Icons "arrow-down" glyph, same convention as CYCLE_REPEAT_ICON
+  // just above - used by updateWrapArrows below to mark an arrow that
+  // sits at the end of a wrapped row. Went through two earlier versions
+  // before this one:
+  //   take 1 rotated .arrow's own border-corner chevron to a down-left
+  //     diagonal instead of using a real icon at all - read as a
+  //     meaningless stray mark ("looks like a short L"), because the
+  //     border-corner trick can only ever produce a STRAIGHT chevron at
+  //     45-degree steps, not an actual bent/turning arrow.
+  //   take 2 switched to a real icon, but picked Feather's
+  //     "corner-down-left" (a bent arrow whose head points LEFT, meant
+  //     to read as "drop down, continue from the left") - in practice
+  //     that read as pointing backward/undo rather than forward, since
+  //     the head's direction is what a reader clocks first, not the
+  //     bend leading into it.
+  // This plain straight-down arrow has no such ambiguity - the head
+  // points the one direction that matters (there's more content below),
+  // and the reader's own left-to-right reading habit already supplies
+  // "and it starts from the left" without needing the glyph to encode
+  // that too.
+  var WRAP_ARROW_ICON =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>';
 
   function buildIcon(id) {
     var img = document.createElement("img");
@@ -97,6 +161,19 @@
     if (step.cycleRef != null) {
       span.appendChild(el("span", "cycle-num cycle-num-" + step.cycleRef, String(step.cycleRef)));
       span.appendChild(el("span", "cycle-title", step.title || ""));
+      if (step.repeat) {
+        span.classList.add("skill-has-repeat");
+        var badge = el("span", "cycle-repeat-badge");
+        var icon = el("span", "cycle-repeat-icon");
+        // Fixed, hardcoded markup (not derived from step data) - same
+        // safety basis build-compare.js's innerHTML icon constants rely
+        // on. step.repeat itself goes in via a text node right after, so
+        // author-supplied text can never be interpreted as markup.
+        icon.innerHTML = CYCLE_REPEAT_ICON;
+        badge.appendChild(icon);
+        badge.appendChild(document.createTextNode(step.repeat));
+        span.appendChild(badge);
+      }
     } else if (step.skills && step.skills.length) {
       span.classList.add("skill-multi");
       step.skills.forEach(function (id, i) {
@@ -129,9 +206,66 @@
     }
 
     if (step.situational) {
+      // Compact marker instead of spelling the reason out in the chip
+      // itself (the old appendInlineBold version made "adrenaline/synergy"-
+      // length reasons visibly widen/heighten the chip) - just a small "*"
+      // glyph (CSS ::before, see extra.css's .skill-situational-tag::before)
+      // that reads as "situational" at a glance.
       var tag = el("span", "skill-situational-tag");
-      appendInlineBold(tag, typeof step.situational === "string" ? step.situational : "situational");
+      // Purely decorative now (see below for where the actual reason
+      // goes) - aria-hidden so a screen reader doesn't announce a bare,
+      // context-free "*" on top of the real tooltip content.
+      tag.setAttribute("aria-hidden", "true");
       span.appendChild(tag);
+
+      var reason = typeof step.situational === "string"
+        ? step.situational.replace(/\*\*(.+?)\*\*/g, "$1")
+        : "Situational";
+
+      if (step.cycleRef != null) {
+        // cycleRef pseudo-steps have no data-skill-id anywhere on the
+        // chip (they point at a Cycle card, not a real skill), so there's
+        // no skill-tooltip.js trigger already covering this element for
+        // attachRotationSkill (below) to fold a reason into. Nothing else
+        // is wired here either, so a plain native `title` is safe in this
+        // one case - unlike the branches below, it can't end up stacked
+        // on top of a second, different tooltip.
+        tag.title = reason;
+        tag.setAttribute("aria-label", reason);
+      } else {
+        // Every other step already gets its own skill-tooltip.js hover/
+        // focus/tap tooltip (attachRotationSkill, wired to data-skill-id
+        // on `span` for a plain step, or on each .skill-part below for a
+        // "skills" multi-step) covering this whole chip. A second,
+        // separate native `title` on the marker used to mean hovering
+        // the "*" itself popped a plain browser tooltip stacked on top
+        // of that already-open custom one - two tooltips in one chip.
+        // Stashing the reason here instead lets attachRotationSkill fold
+        // it into that SAME tooltip via buildTip's opts.extra (the exact
+        // mechanism gem-priority.js's per-gem "tip" field already uses
+        // for its own bottom "here's why" line) - one tooltip, reason
+        // included, and it's what aria-hidden above is relying on: the
+        // reason still reaches screen readers, just as part of that
+        // tooltip's aria-describedby'd content instead of a dangling
+        // title on a decoration-only glyph.
+        //
+        // Assumes the id (or, for "skills" below, at least one of them)
+        // actually resolves in DB_SKILL_DATA/DB_SKILL_EXTRAS - true for
+        // every situational id in use today. An id with no tooltip data
+        // at all wires no tooltip (attachRotationSkill returns early,
+        // same "fail quietly" rule every lookup on this site follows),
+        // so the reason wouldn't surface anywhere - worth remembering
+        // here specifically since that means missing data, not just a
+        // missing icon/name.
+        var prefixedReason = reason === "Situational" ? reason : "Situational \u2014 " + reason;
+        if (step.skills && step.skills.length) {
+          span.querySelectorAll(".skill-part").forEach(function (part) {
+            part.setAttribute("data-situational-reason", prefixedReason);
+          });
+        } else {
+          span.setAttribute("data-situational-reason", prefixedReason);
+        }
+      }
     }
 
     return span;
@@ -141,6 +275,116 @@
     var span = el("span", swap ? "arrow arrow-swap" : "arrow");
     span.textContent = " \u2192 ";
     if (swap) span.title = "Order interchangeable";
+    return span;
+  }
+
+  // Toggles a "this arrow sits at the end of a wrapped row" state
+  // (.arrow-wrap, see extra.css) on every plain .arrow in `line`, based
+  // on the ACTUAL rendered layout rather than anything authored in the
+  // step data - there's nothing for a build page's JSON to set here,
+  // unlike swapNext above.
+  //
+  // Rationale for why this needs live measurement instead of being
+  // computed once at render time: wrap position depends on the
+  // container's real rendered width (sidebar/TOC toggling, window
+  // resize, a webfont swap changing chip widths), same "react to the
+  // container's own width" instinct as the rest of this project's
+  // width-dependent components - see project-context.md's CONVENTIONS
+  // section. It's called once synchronously right after building the
+  // line (below), then again by the ResizeObserver whenever the line's
+  // own box actually resizes, and once more after webfonts finish
+  // loading (see the fonts.ready hook below) to catch the one case a
+  // resize alone can't: the row count staying the same while the split
+  // point silently shifts from one arrow to the next because chip
+  // widths changed slightly.
+  //
+  // Deliberately skips .arrow-swap: that glyph already carries its own
+  // "order interchangeable" meaning, and stacking a second meaning onto
+  // the same two-headed shape would read as neither. If a swap arrow
+  // happens to land at a wrap point, it's left as-is - a known, accepted
+  // gap rather than an oversight.
+  function updateWrapArrows(line) {
+    var kids = Array.prototype.filter.call(line.children, function (child) {
+      return child.tagName !== "SCRIPT";
+    });
+    if (kids.length < 2) return;
+
+    var TOLERANCE = 2; // px - guards against subpixel offsetTop jitter within one row
+    for (var i = 0; i < kids.length; i++) {
+      var kid = kids[i];
+      if (!kid.classList.contains("arrow") || kid.classList.contains("arrow-swap")) continue;
+      var next = kids[i + 1];
+      // If `next` wrapped down TOGETHER with this arrow (both moved to
+      // the new row as a unit, because the arrow itself didn't fit on
+      // the row above), their offsetTops match and this arrow correctly
+      // stays a plain forward chevron - it isn't sitting at a row's end,
+      // it's sitting at the next row's start like any other mid-row
+      // arrow. Only a `next` that's alone on the row below (this arrow
+      // stayed up top) counts as a real wrap point.
+      var wraps = !!next && next.offsetTop > kid.offsetTop + TOLERANCE;
+      kid.classList.toggle("arrow-wrap", wraps);
+      if (wraps) {
+        kid.title = "Continues below";
+        // Idempotent: only add the icon if it isn't already there (this
+        // runs on every resize, not just once).
+        if (!kid.querySelector(".arrow-wrap-icon")) {
+          var icon = el("span", "arrow-wrap-icon");
+          icon.innerHTML = WRAP_ARROW_ICON;
+          kid.appendChild(icon);
+        }
+      } else {
+        if (kid.title === "Continues below") kid.removeAttribute("title");
+        var existingIcon = kid.querySelector(".arrow-wrap-icon");
+        if (existingIcon) existingIcon.remove();
+      }
+    }
+  }
+
+  // One shared observer (rather than one per line, cheaper for pages
+  // with several rotation-lines) watching every line's own box for the
+  // width changes that can move a wrap point - the offsetTop reads in
+  // updateWrapArrows above force a layout, so this only re-measures on
+  // an actual resize, never on a timer.
+  var wrapObserver = window.ResizeObserver
+    ? new ResizeObserver(function (entries) {
+        entries.forEach(function (entry) {
+          updateWrapArrows(entry.target);
+        });
+      })
+    : null;
+
+  // Every navigation (including the very first - document$ re-emits then
+  // too, see registerRenderer's own doc comment) needs this observer's
+  // slate wiped first: the OLD page's .rotation-line elements are about
+  // to be discarded by Material's instant-nav swap, and leaving them
+  // observed forever is the same accumulating-ResizeObserver leak
+  // skill-setup.js's masonry comment warns about, just spread across one
+  // shared instance instead of one created per widget per visit.
+  // Subscribing here, before this file's own registerRenderer() call
+  // below makes its own document$ subscription, means this disconnect
+  // always runs first on a given navigation; the renderLine calls that
+  // follow re-observe only the new page's still-live lines.
+  if (wrapObserver && window.document$) {
+    document$.subscribe(function () {
+      wrapObserver.disconnect();
+    });
+  }
+
+  // See updateWrapArrows's own comment above for why a resize-only
+  // trigger isn't quite enough on its own.
+  if (window.document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(function () {
+      document.querySelectorAll(".rotation-line").forEach(updateWrapArrows);
+    });
+  }
+
+  function buildStageTag(text) {
+    // Small pill for a leading { "stageLabel": ... } pseudo-step - see the
+    // EASY EDIT GUIDE above and extra.css's .stage-tag comment. Deliberately
+    // NOT a .skill (no icon, no data-skill-id, not counted by
+    // rotation-practice.js's getSteps/.skill selector) - it's a label, not
+    // a drillable step.
+    var span = el("span", "stage-tag", text);
     return span;
   }
 
@@ -165,12 +409,26 @@
     var raw = result.raw;
     var data = result.data;
 
+    // A leading `{ "stageLabel": "..." }` marker (an object with ONLY a
+    // "stageLabel" key - real steps always have id/skills/cycleRef) is a
+    // small tag, not a step - stripped the same way the trailing "suffix"
+    // marker below is, just from the front instead of the back.
+    var steps = data.slice();
+    var stageLabel = null;
+    var first = steps[0];
+    if (
+      first && typeof first === "object" && !Array.isArray(first) &&
+      "stageLabel" in first && !("id" in first) && !("skills" in first) && !("cycleRef" in first)
+    ) {
+      stageLabel = first.stageLabel;
+      steps.shift();
+    }
+
     // A trailing `{ "suffix": "..." }` marker (an object with ONLY a
     // "suffix" key - real steps always have id/skills/cycleRef) carries
     // text after the last arrow instead of being a step. See EASY EDIT
     // GUIDE above for why this can't just be a top-level {steps, suffix}
     // object instead.
-    var steps = data.slice();
     var suffix = null;
     var last = steps[steps.length - 1];
     if (
@@ -189,6 +447,7 @@
     });
 
     var frag = document.createDocumentFragment();
+    if (stageLabel) frag.appendChild(buildStageTag(stageLabel));
     steps.forEach(function (step, i) {
       if (i > 0) {
         var prev = steps[i - 1];
@@ -205,6 +464,9 @@
     }
     line.appendChild(frag);
     line._rotationRawData = raw;
+
+    updateWrapArrows(line);
+    if (wrapObserver) wrapObserver.observe(line);
   }
 
   window.SiteUtils.registerRenderer(".rotation-line", renderLine);

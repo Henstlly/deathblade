@@ -380,7 +380,7 @@ It helps to think of everything within <span class="skill-inline" data-skill-id=
 *Atropine usage:*
 { .lead }
 
-1. Use <span class="skill-mention" data-skill-id="atropine">Atropine</span> right before Deathly Slash, and fit two Deathly Slash + Surge pairs in a 10 second window.
+1. Use <span class="food-req-item">![](../assets/shared/icon-atropine.png){: .skill-icon } Atropine</span> right before Deathly Slash, and fit two Deathly Slash + Surge pairs in a 10 second window.
 2. Execute your fastest cycles while adapting to your stack count and boss patterns.
 
 ## DPS Spread

@@ -251,7 +251,7 @@ Apply damage <span class="skill-mention" data-glossary-id="synergy">synergy</spa
 <div class="rotation-line" markdown>
 <script type="application/json">
 ["windcut", "deathtrance", "maelstrom", "surpriseattack", "windcut", "earthcleaver", "bladedance", "deathlyslash", "blitzrush", "turningslash", "blitzrush",
-{ "id": "surpriseattack", "situational": true },
+{ "id": "surpriseattack", "situational": "stack recovery" },
 "surge"]
 </script>
 </div>
