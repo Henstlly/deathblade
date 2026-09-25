@@ -666,6 +666,34 @@
     wire(trigger, buildTip(id, data), { fallbackTrigger: chip || null });
   }
 
+  // Small standalone one-line tip shared by two decorative markers that
+  // have no OTHER element's tooltip trigger already covering them (each
+  // one's own comment in rotation-line.js explains why): a repeat
+  // badge's "x3"/"x2" pill (.cycle-repeat-badge, both the hand-authored
+  // markup in 111-classic.md's Regular Cycle headers and the JS-built
+  // cycleRef version) and a multi-skill step's situational marker
+  // (.skill-situational-tag, only when it sits outside both skills'
+  // own .skill-part triggers). Neither needs the full DB_SKILL_DATA
+  // lookup buildTip() above does - just the text the ENGINE file
+  // (rotation-line.js) already stashed on a data attribute - so this
+  // builds a minimal tip directly rather than routing through buildTip
+  // with a fake id. Same .skill-tip/.skill-tip-note classes as every
+  // other tooltip on the site (see buildTip above) so it picks up
+  // identical styling for free.
+  function buildNoteTip(text) {
+    var tip = el("div", "skill-tip md-typeset");
+    tip.setAttribute("role", "tooltip");
+    tip.appendChild(el("p", "skill-tip-note", text));
+    return tip;
+  }
+
+  function attachDataTip(trigger) {
+    if (trigger.classList.contains("skill-tip-wired")) return;
+    var text = trigger.getAttribute("data-repeat-tip") || trigger.getAttribute("data-standalone-tip");
+    if (!text) return;
+    wire(trigger, buildNoteTip(text));
+  }
+
   // A fixed-position tip doesn't scroll with its trigger the way an
   // absolute-in-document one (e.g. ark-core-badge.js's) automatically
   // would, so any tip currently showing needs an explicit reposition on
@@ -729,6 +757,7 @@
   window.SiteUtils.registerRenderer(".skill-inline, .food-req-item, .engraving-chip[data-skill-id], .engraving-card-name[data-skill-id], .skill-mention[data-skill-id]", attachSkillInline);
   window.SiteUtils.registerRenderer(".food-option", attachFoodOption);
   window.SiteUtils.registerRenderer(".food-option-icon, img.skill-icon", attachBareIcon);
+  window.SiteUtils.registerRenderer(".cycle-repeat-badge[data-repeat-tip], .skill-situational-tag[data-standalone-tip]", attachDataTip);
 
   // Exposed for gem-dps-tooltip.js: a Damage-column gem row already shows
   // this same skill's tags/note here for free (same DB_SKILL_DATA lookup,

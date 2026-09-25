@@ -30,7 +30,7 @@ theme:
     - search.highlight
 
 extra_css:
-  - stylesheets/extra.css?v=82
+  - stylesheets/extra.css?v=84
 
 # Load order matters: several widgets read a shared data file
 # (build-data.js/skill-data.js/skill-names.js/ap-node-names.js) or the
@@ -86,8 +86,8 @@ extra_javascript:
   - javascripts/ark-passive-tree.js?v=7
   - javascripts/gem-priority.js?v=6
   - javascripts/pentagon-badge.js?v=4
-  - javascripts/rotation-line.js?v=12
-  - javascripts/skill-tooltip.js?v=13
+  - javascripts/rotation-line.js?v=13
+  - javascripts/skill-tooltip.js?v=14
   - javascripts/ark-passive-tooltip.js?v=4
   - javascripts/rune-tooltip.js?v=6
   - javascripts/glossary-data.js?v=4

@@ -250,18 +250,6 @@ Use the Breaking Moon cycle and its follow-up when available, then repeat the re
 *From 3 orbs:*
 { .lead }
 
-
-<div class="rotation-line rotation-line-map" markdown>
-<script type="application/json">
-[
-  { "cycleRef": 1, "title": "Breaking Moon Cycle + Follow-Up" },
-  { "cycleRef": 2, "title": "Regular Cycle", "repeat": "\u00d73" },
-  { "cycleRef": 1, "title": "Breaking Moon Cycle + Follow-Up" },
-  { "suffix": "etc." }
-]
-</script>
-</div>
-
 <div class="cycle-card cycle-card-multi" markdown>
 <div class="cycle-card-header"><span class="cycle-num cycle-num-1">1</span><span class="cycle-title">Breaking Moon Cycle + Follow-Up</span></div>
 <div class="rotation-line" markdown>
@@ -276,12 +264,8 @@ Use the Breaking Moon cycle and its follow-up when available, then repeat the re
 </div>
 </div>
 
-1. Use both Surprise Attacks in the follow-up if you're missing stacks, otherwise skip the first one.
-2. Do NOT worry about Raid Captain efficiency; Keen Blunt Weapon is just as inefficient or worse!
-    - Breaking Moon's Critical Damage bonus to the next Surge (biggest hit) is additive to Keen Blunt Weapon.
-
 <div class="cycle-card" markdown>
-<div class="cycle-card-header"><span class="cycle-num cycle-num-2">2</span><span class="cycle-title">Regular Cycle</span></div>
+<div class="cycle-card-header"><span class="cycle-num cycle-num-2">2</span><span class="cycle-title">Regular Cycle</span><span class="cycle-repeat-badge" data-repeat-tip="Repeat this cycle 3 times"><span class="cycle-repeat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg></span>&times;3</span></div>
 <div class="rotation-line" markdown>
 <script type="application/json">
 ["windcut", "deathtrance", "maelstrom", "surpriseattack", "windcut", "earthcleaver", "turningslash", "bladedance", "blitzrush", "surpriseattack", "surge"]
@@ -289,21 +273,23 @@ Use the Breaking Moon cycle and its follow-up when available, then repeat the re
 </div>
 </div>
 
-1. The final Surprise Attack can *sometimes* be skipped with excess stacks and raid downtime.
-2. <span class="skill-mention" data-skill-id="bladeassault">Blade Assault</span> scales much worse on Surge than on Remaining Energy and takes too long to cast.
+1. Use both Surprise Attacks in the follow-up if you're missing stacks, otherwise skip the first one.
+2. Do NOT worry about Raid Captain efficiency; Keen Blunt Weapon is just as inefficient or worse!
+    - Breaking Moon's Critical Damage bonus to the next Surge (biggest hit) is additive to Keen Blunt Weapon.
+3. <span class="skill-mention" data-skill-id="bladeassault">Blade Assault</span> scales much worse on Surge than on Remaining Energy and takes too long to cast.
       - It's still useful for <span class="skill-mention" data-skill-id="atropine">Atropine</span> openers, or it can be saved to greed with <span class="skill-mention" data-glossary-id="pushimmunity">push immunity</span>/Hyper Awakening.
-3. It seems more complicated than it really is, watch [this video](https://www.youtube.com/watch?v=4bwhDT--0fo) to see how a full rotation plays out.
+4. It seems more complicated than it really is, watch [this video](https://www.youtube.com/watch?v=4bwhDT--0fo) to see how a full rotation plays out.
 
 <!-- Community-contributed alternative: a full replacement for both cycles
      above (not a recommendation over them), for players who'd rather keep
      a Stack reserve than chase max CPM. Self-contained: Cycles 1/2 here
      are its own local cycle-cards (Cycle 1 is the opener STAGE only, no
      Follow-Up), not shared with the page's cycle-num-1/2 above, plus its
-     own new Cycles 3/4 (cycle-num-4 added in extra.css for this). The
-     overview line uses rotation-line-map (added in rotation-practice.js)
-     so it doesn't get a Practice toggle - cycleRef pseudo-steps aren't
-     real skills to drill. See rotation-line.js's "EASY EDIT GUIDE"
-     comment on cycleRef. -->
+     own new Cycles 3/4 (cycle-num-4 added in extra.css for this). No
+     overview line above the cards (matches the page's main Cycle 1/2
+     pair above) - the loop is just "repeat Cycle 2 twice", carried by
+     Cycle 2's own title-bar repeat badge below rather than a separate
+     "1 -> 2x2 -> 3 -> etc." map line up top. -->
 
 <div class="setup-panel" data-accent="lavender" markdown>
 <div class="setup-notes" markdown>
@@ -311,30 +297,19 @@ Use the Breaking Moon cycle and its follow-up when available, then repeat the re
 <details class="setup-note" data-kind="example" markdown>
 <summary><span class="setup-note-tag">Alt</span>Stack Reserve Rotation<span class="setup-note-arrow"></span></summary>
 
-An alternative to the default rotation. It trades a little CPM for a stack reserve, so you're never short on them.
-
-<div class="rotation-line rotation-line-map" markdown>
-<script type="application/json">
-[
-  { "cycleRef": 1, "title": "Breaking Moon Cycle" },
-  { "cycleRef": 2, "title": "Regular Cycle", "repeat": "\u00d72" },
-  { "cycleRef": 3, "title": "Pre-Breaking Moon Cycle" },
-  { "suffix": "etc." }
-]
-</script>
-</div>
+An alternative to the default rotation. It builds a stack reserve, so you're never short on them. Goes 1>2>2>3>1, etc.
 
 <div class="cycle-card" markdown>
 <div class="cycle-card-header"><span class="cycle-num cycle-num-1">1</span><span class="cycle-title">Breaking Moon Cycle</span></div>
 <div class="rotation-line" markdown>
 <script type="application/json">
-[{ "skills": ["turningslash", "surpriseattack"], "situational": "adre/syn for openers" }, { "id": "maelstrom", "situational": "buff for openers" }, "deathtrance", "surpriseattack", "breakingmoon", "surge"]
+[{ "id": "maelstrom", "situational": "buff for openers" }, { "skills": ["turningslash", "surpriseattack"], "situational": "adre/syn for openers" }, { "id": "windcut", "situational": "precast for openers" }, "deathtrance", "surpriseattack", "breakingmoon", "surge"]
 </script>
 </div>
 </div>
 
 <div class="cycle-card" markdown>
-<div class="cycle-card-header"><span class="cycle-num cycle-num-2">2</span><span class="cycle-title">Regular Cycle</span></div>
+<div class="cycle-card-header"><span class="cycle-num cycle-num-2">2</span><span class="cycle-title">Regular Cycle</span><span class="cycle-repeat-badge" data-repeat-tip="Repeat this cycle 2 times"><span class="cycle-repeat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg></span>&times;2</span></div>
 <div class="rotation-line" markdown>
 <script type="application/json">
 ["windcut", "deathtrance", "maelstrom", "surpriseattack", "windcut", "earthcleaver", "turningslash", "bladedance", "blitzrush", "surpriseattack", "surge"]
@@ -346,7 +321,7 @@ An alternative to the default rotation. It trades a little CPM for a stack reser
 <div class="cycle-card-header"><span class="cycle-num cycle-num-3">3</span><span class="cycle-title">Pre-Breaking Moon Cycle</span></div>
 <div class="rotation-line" markdown>
 <script type="application/json">
-["windcut", "earthcleaver", "surpriseattack", "windcut", "turningslash", "bladedance", "maelstrom", "blitzrush", { "id": "surpriseattack", "situational": "stack recovery" }, "surge"]
+["windcut", "deathtrance", "earthcleaver", "surpriseattack", "windcut", "turningslash", "bladedance", "maelstrom", "blitzrush", { "id": "spincutter", "situational": "stack recovery/reposition" }, "surge"]
 </script>
 </div>
 </div>

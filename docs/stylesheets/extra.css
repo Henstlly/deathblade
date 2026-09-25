@@ -1443,7 +1443,11 @@ h3 { color: var(--dbc-teal); }
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  /* -4px matches the same upward nudge .arrow::before uses (see its
+     `top: -4px` above) - without it this icon centers on .arrow-wrap's
+     own box while every plain chevron sits 4px higher, so the two arrow
+     styles read as vertically misaligned on the same rotation line. */
+  transform: translate(-50%, calc(-50% - 4px));
   width: 13px;
   height: 13px;
   color: var(--dbc-arrow);
@@ -1656,13 +1660,24 @@ h3 { color: var(--dbc-teal); }
   font-weight: 700;
   font-size: 0.87em;   /* was 0.95em - see .rotation-line's font-size comment above, kept the two in step */
 }
-/* Repeat badge (rotation-line.js's cycleRef "repeat" field) - lets a
-   loop-map show "this cycleRef step, several times in a row" as ONE chip
-   instead of the same cycleRef chip pasted 2-3 times back to back, which
-   read as needing to be counted rather than as "repeat this". Small loop
-   glyph (CSS-drawn, same instinct as .arrow above: no image/SVG needed)
-   plus the author-supplied text ("\u00d72-3" etc.), deliberately muted/
-   small so it reads as a footnote on the chip, not a second title. */
+/* Repeat badge - lets a Cycle card's own title bar show "repeat this
+   cycle several times in a row" as one small chip next to the title,
+   instead of a separate overview line above the cards spelling out
+   "1 -> 2x3 -> etc." (see 111-classic.md's Regular Cycle header for the
+   hand-authored markup: cycle-repeat-icon SVG + literal "\u00d73" text -
+   not rendered by rotation-line.js there, though the same badge shape IS
+   built by rotation-line.js's buildStep for a JSON cycleRef step's own
+   "repeat" field). Deliberately muted/small so it reads as a footnote
+   next to .cycle-title, not a second title. Carries a data-repeat-tip
+   attribute (set in the markup, or by rotation-line.js for the JSON
+   version) spelling out what the count means ("Repeat this cycle 3
+   times") - skill-tooltip.js's attachDataTip wires that into the site's
+   normal hover/focus/tap tooltip (see that file's buildNoteTip), same
+   engine every other tooltip here uses, rather than a plain browser
+   `title` that wouldn't match, wouldn't focus with the keyboard, and
+   wouldn't show on tap. No cursor/hover CSS needed here for that -
+   skill-tooltip.js's wire() adds the shared .skill-tip-anchor class
+   (cursor: help + focus ring) to any trigger it successfully wires. */
 .md-typeset .skill-has-repeat {
   padding-right: 0.5em;
 }
@@ -1675,7 +1690,7 @@ h3 { color: var(--dbc-teal); }
   border-radius: 999px;
   background-color: rgba(255, 255, 255, 0.07);
   color: var(--md-default-fg-color--light);
-  font-size: 0.78em;
+  font-size: 0.9em;   /* was 0.78em - bumped so the "x3"/"x2" text reads clearly next to .cycle-title instead of feeling like fine print */
   font-weight: 600;
   letter-spacing: 0.01em;
 }
@@ -1685,8 +1700,8 @@ h3 { color: var(--dbc-teal); }
   opacity: 0.85;
 }
 .md-typeset .cycle-repeat-icon svg {
-  width: 0.85em;
-  height: 0.85em;
+  width: 1em;   /* was 0.85em - kept in step with .cycle-repeat-badge's own font-size bump just above */
+  height: 1em;
   display: block;
 }
 .md-typeset .cycle-card .rotation-line {
@@ -1694,6 +1709,18 @@ h3 { color: var(--dbc-teal); }
   border-radius: 0;
   background-color: transparent;
   margin: 0;
+}
+/* A .cycle-card-multi's two stages sit directly adjacent with margin: 0
+   between them (see the comment on .cycle-card-multi below), so the only
+   thing separating "Cycle" from "Follow-up" is the trailing stage's own
+   top padding - trimmed down from the shared 0.7em default (see
+   .rotation-line above) so the two stages read as one continuous
+   sequence with a tighter gap, rather than two boxes with a full row of
+   breathing room between them. Only the stage AFTER the first is
+   targeted (the lead-in adjacent-sibling selector), so a standalone
+   .rotation-line elsewhere keeps its normal 0.7em top padding. */
+.md-typeset .cycle-card-multi .rotation-line + .rotation-line {
+  padding-top: 0.35em;
 }
 
 /* ---------- Cycle card, multi-stage (a Cycle whose follow-up continues

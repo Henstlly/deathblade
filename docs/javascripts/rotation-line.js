@@ -164,6 +164,18 @@
       if (step.repeat) {
         span.classList.add("skill-has-repeat");
         var badge = el("span", "cycle-repeat-badge");
+        // Tooltip text is stashed as a data attribute rather than wired
+        // right here - skill-tooltip.js (loaded later, see extra_javascript
+        // order in mkdocs.yml) owns the actual hover/focus/tap tooltip
+        // engine and scans for this attribute itself. Same "ENGINE file
+        // builds attributes, tooltip file does the wiring" split this
+        // file already uses for the situational marker's own
+        // data-situational-reason/data-standalone-tip below - keeps this
+        // file from needing window.SkillTooltip to exist yet when this
+        // runs. step.repeat is author-supplied text like "\u00d72" or
+        // "\u00d72-3", not a bare count, so it's spelled out plainly
+        // rather than trying to parse a number back out of it.
+        badge.setAttribute("data-repeat-tip", "Repeat this step (" + step.repeat + ")");
         var icon = el("span", "cycle-repeat-icon");
         // Fixed, hardcoded markup (not derived from step data) - same
         // safety basis build-compare.js's innerHTML icon constants rely
@@ -262,6 +274,25 @@
           span.querySelectorAll(".skill-part").forEach(function (part) {
             part.setAttribute("data-situational-reason", prefixedReason);
           });
+          // Unlike the single-skill branch below, `tag` here is a SIBLING
+          // of the .skill-part triggers above, not nested inside either
+          // one - each skill in a "skills" step gets its OWN separate
+          // hover/focus/tap target (attachRotationSkill is wired to
+          // ".rotation-line .skill-part[data-skill-id]" specifically, see
+          // skill-tooltip.js), and the tag sits outside both of them in
+          // the DOM. So hovering the "*" glyph itself isn't "inside"
+          // either skill's trigger and did nothing on its own - same gap
+          // the cycleRef branch above has. Fixed the SAME way the repeat
+          // badge above is: stash the text as a data attribute and let
+          // skill-tooltip.js's own attachDataTip wire it into a real
+          // hover/focus/tap tooltip (not a native `title`) - consistent
+          // with every other tooltip on the site, and reachable by
+          // keyboard/touch the way a native title isn't. This is IN
+          // ADDITION TO (not instead of) folding the reason into each
+          // skill's own tooltip just above - whichever the reader
+          // actually hovers, the glyph or either skill, now surfaces it.
+          tag.removeAttribute("aria-hidden");
+          tag.setAttribute("data-standalone-tip", prefixedReason);
         } else {
           span.setAttribute("data-situational-reason", prefixedReason);
         }
