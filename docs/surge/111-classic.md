@@ -254,7 +254,7 @@ Use the Breaking Moon cycle and its follow-up when available, then repeat the re
 <div class="cycle-card-header"><span class="cycle-num cycle-num-1">1</span><span class="cycle-title">Breaking Moon Cycle + Follow-Up</span></div>
 <div class="rotation-line" markdown>
 <script type="application/json">
-[{ "stageLabel": "Cycle >" }, { "skills": ["turningslash", "surpriseattack"], "situational": "adre/syn for openers" }, "windcut", "deathtrance", "maelstrom", "surpriseattack", "breakingmoon", "surge"]
+[{ "stageLabel": "B.M. Cycle >" }, { "skills": ["turningslash", "surpriseattack"], "situational": "adre/syn for openers" }, "windcut", "deathtrance", "maelstrom", "surpriseattack", "breakingmoon", "surge"]
 </script>
 </div>
 <div class="rotation-line" markdown>
