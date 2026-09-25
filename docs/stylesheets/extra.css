@@ -1763,56 +1763,164 @@ h3 { color: var(--dbc-teal); }
 
 /* ---------- Alt branch inside a .cycle-card-multi (an optional variant
    of the LAST stage, not a continuation of it) ---------- */
-/* Structure: an extra wrapper sitting after the card's normal
-   .rotation-line stages, still inside the same .cycle-card-multi box:
-   <div class="cycle-alt-branch" markdown>
-   <div class="rotation-line" markdown>...its own steps, with its own
-     leading { "stageLabel": "Awakening Follow-Up" } pseudo-step, same
-     as Cycle/Follow-up use above...</div>
-   </div>
+/* Structure: a <details> sitting after the card's normal .rotation-line
+   stages, still inside the same .cycle-card-multi box:
+   <details class="cycle-alt-branch" markdown>
+   <summary markdown="span">Alternative &middot; Awakening Follow-Up<span class="cycle-alt-arrow"></span></summary>
+   <div class="rotation-line" markdown>...its own steps...</div>
+   </details>
+
+   Collapsed by default - same <details>/<summary> instinct as
+   .gem-item-expandable/.engraving-card elsewhere on the site - rather
+   than always rendering its full chip row inside the card. Closed, only
+   the <summary>'s gold "Alt \u00b7 Awakening Follow-Up" tag shows, so it
+   reads as one more small tag row sitting at the bottom of the card, not
+   a third stage eating space by default; open, it drops down into
+   exactly the same rotation-line the old always-open version showed
+   permanently. Gold (--dbc-gold) is reused on purpose, not a new color:
+   it is already this exact page's "alternative" accent via
+   .setup-note[data-kind="example"]'s "Alt" tag on the Stack Reserve
+   Rotation note further down this same page. The "Alt \u00b7 " prefix (same
+   middle-dot separator the Practice toggle's own "1 / 17 \u00b7 Exit" label
+   already uses) is what actually says "alternative" - the gold color
+   alone reads as just another stage without the word.
 
    The whole point of .cycle-card-multi is that its stages sit flush
    together (margin: 0, trimmed top padding on the trailing stage - see
    the comment above) so they read as ONE continuing sequence. An
    alternative path has to visually break that rhythm or it just reads as
-   a third stage, so this wrapper does the opposite of the flush styling:
-   a dashed top border (a solid one would look like a stray extra card
-   edge; dashed reads as "detour" the way a dashed .skill-situational
-   chip already means "not part of the main line") plus letting the
-   nested .rotation-line fall back to its own normal 0.7em top padding
-   (NOT the trimmed 0.35em .cycle-card-multi .rotation-line + .rotation-line
-   rule above gives the trailing stage - that selector only matches a
-   .rotation-line whose PREVIOUS SIBLING is also a bare .rotation-line,
-   and this one's previous sibling is the .cycle-alt-branch wrapper's own
-   opening tag, so it never matches here; nothing extra needed for that).
+   a third stage, so the still-visible closed <summary> row does the
+   opposite of the flush styling: a dashed top border (a solid one would
+   look like a stray extra card edge; dashed reads as "detour" the way a
+   dashed .skill-situational chip already means "not part of the main
+   line").
 
-   The stage-tag label itself reuses the exact same stageLabel mechanism
-   Cycle/Follow-up use (same size, same spot to the left of the first
-   chip - see .stage-tag above) rather than a separately-styled label row,
-   so it visually reads as "one more stage-style label" at a glance; the
-   ONLY thing that marks it as an alternative rather than a third stage is
-   this rule recoloring just this line's tag gold instead of the default
-   rose, plus the dashed top border above breaking the flush Cycle/
-   Follow-up rhythm. Gold (--dbc-gold) is reused on purpose, not a new
-   color: it is already this exact page's "alternative" accent via
-   .setup-note[data-kind="example"]'s "Alt" tag on the Stack Reserve
-   Rotation note further down this same page.
+   <summary> needs a near-total reset from Material's default <details>
+   title-bar styling (background/radius/border/padding/the sitewide
+   details:not([open]) opacity dim) for the same reason
+   .gem-item-expandable's summary does - see that rule's own comment for
+   the full explanation of why a bare Material summary otherwise renders
+   as a second, mismatched box. The chevron is a literal <span> in the
+   markdown (.cycle-alt-arrow), not a ::before/::after pseudo-element,
+   specifically to avoid fighting the ::before/::after neutralizing rules
+   .gem-item-expandable's summary already needs for Material's own
+   default marker - and it's built with the exact same solid-triangle
+   border-trick .gem-item-arrow already uses (border-top/border-bottom
+   transparent + border-left colored, rotate 90deg on [open]: right when
+   closed, down when open), reused rather than a custom shape, so it's
+   known to render cleanly at this size instead of risking the same kind
+   of optical skew a thin corner-chevron can show at a handful of px.
+
+   Material also gives every bare <details> its own focus-within glow -
+   `details:focus-within{box-shadow:0 0 0 .2rem #448aff1a}` - in
+   Material's default blue regardless of this site's palette, and it
+   fires the moment ANY descendant gets focus (clicking the summary
+   itself included, not just tabbing to it). Exact same fix as
+   .ap-brace-compare/.ap-gear-inputs above: box-shadow: none on both the
+   resting AND :focus-within states, since Material's own rule targets
+   :focus-within specifically and a resting-only override wouldn't touch
+   it.
+
+   The nested .rotation-line needs its display explicitly toggled (hidden
+   unless the parent has [open]) rather than relying on the browser's own
+   `details:not([open]) > :not(summary) { display: none }` UA rule -
+   .md-typeset .rotation-line's own `display: flex` rule is two classes
+   deep and beats that UA rule on specificity alone, exactly the same gap
+   .gem-item-alts already had to route around above (see that rule's own
+   comment) - so without this override the chip row would render
+   permanently visible regardless of [open].
 
    IMPORTANT - this wrapper is also what keeps the alt path out of the
    shared Practice drill: rotation-practice.js's getLines()/getSteps()
    explicitly skip anything inside .cycle-alt-branch (see that file's own
    comment on why) rather than sweeping it into the combined Cycle ->
    Follow-up walk the way every other .rotation-line nested in a
-   .cycle-card-multi normally would be. If you ever add a second
-   .cycle-alt-branch elsewhere, no CSS changes are needed for that part -
-   it's the class name rotation-practice.js checks against, not anything
-   defined here. */
-.md-typeset .cycle-alt-branch {
-  margin-top: 0.15em;
+   .cycle-card-multi normally would be. That check is on the class name,
+   not the element type, so switching the wrapper from <div> to <details>
+   changes nothing there. If you ever add a second .cycle-alt-branch
+   elsewhere, no rotation-practice.js changes are needed for that part
+   either. */
+.md-typeset details.cycle-alt-branch {
+  margin: 0.15em 0 0;
+  padding: 0;
+  border: none;
   border-top: 1px dashed rgba(var(--dbc-gold-rgb), 0.35);
+  border-radius: 0;
+  background: none;
+  overflow: visible;
+  box-shadow: none;
+  /* Matches .stage-tag's own font-size context: .stage-tag's 0.78em is
+     relative to .rotation-line's 0.87em (not the ambient .cycle-card
+     1em this <details> otherwise sits in), so without this the summary
+     label rendered visibly larger than the Cycle/Follow-up tags above it
+     despite using the same nominal 0.78em - see that rule's own
+     font-size comment. Setting the same 0.87em here first reproduces
+     the identical two-step 0.87em * 0.78em computation .stage-tag uses,
+     so the two stay in step by construction instead of by a hardcoded
+     magic number that'd drift if either base ever changes. */
+  font-size: 0.87em;
 }
-.md-typeset .cycle-alt-branch .stage-tag {
+.md-typeset details.cycle-alt-branch:not([open]) {
+  opacity: 1;
+}
+.md-typeset details.cycle-alt-branch:focus-within {
+  box-shadow: none;
+}
+.md-typeset details.cycle-alt-branch > summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  /* Horizontal padding needs the same calc(...)-based two-step
+     reproduction the font-size comment above already uses, not just a
+     matching nominal 0.9em: this summary's own font-size is 0.78em
+     *nested inside* the <details>'s 0.87em (0.6786em absolute), while
+     .stage-tag's sibling padding (.rotation-line's 0.9em) is computed
+     against .rotation-line's 0.87em directly (one nesting level, not
+     two) - so a plain "0.9em" here resolved to a visibly smaller
+     absolute offset (~0.61em) than the Cycle/Follow-up tags' effective
+     left inset above it (~0.78em), left-shifting this label out of line
+     with them. Dividing back out the 0.78 factor in calc() cancels that
+     extra nesting step so the two line up, the same way the font-size
+     rule above cancels it for text size. */
+  padding: 0.55em calc(0.9em / 0.78);
+  margin: 0;
+  background: none;
+  border-radius: 0;
   color: var(--dbc-gold);
+  font-size: 0.78em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.md-typeset details.cycle-alt-branch > summary::-webkit-details-marker { display: none; }
+.md-typeset details.cycle-alt-branch > summary::marker { content: ""; }
+.md-typeset details.cycle-alt-branch > summary::before,
+.md-typeset details.cycle-alt-branch > summary::after {
+  display: none !important;
+}
+.md-typeset .cycle-alt-arrow {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 5px solid var(--dbc-gold);
+  opacity: 0.85;
+  transition: transform 0.15s ease;
+}
+.md-typeset details.cycle-alt-branch[open] .cycle-alt-arrow {
+  transform: rotate(90deg);
+}
+.md-typeset details.cycle-alt-branch .rotation-line {
+  display: none;
+  padding-bottom: 0.6em;
+}
+.md-typeset details.cycle-alt-branch[open] > .rotation-line {
+  display: flex;
 }
 
 /* ---------- Rotation practice mode ---------- */
@@ -4675,7 +4783,20 @@ h3 { color: var(--dbc-teal); }
    .ap-brace-warn-icon's WARN pill elsewhere in the calculator, rather
    than inventing a new one-off color, and is a deliberately different
    hue from -best's teal and -active's lavender so pinned reads as its
-   own distinct 3rd state at a glance. */
+   own distinct 3rd state at a glance.
+
+   Hidden (opacity: 0) at rest rather than the faint always-on 0.5 this
+   used to sit at - with a pin control on every one of rows 2-5, that
+   permanent thumbtack cluster competed with the actual rank/combo/%
+   content for attention on every single row, all the time, even though
+   it's only actionable on the row a reader is currently looking at.
+   Revealed on: row hover (mouse), the row being -active (previewed via
+   click, or tapped-once on touch where hover doesn't exist - see
+   renderGrid's own comment on click-to-preview), the pin button itself
+   gaining keyboard focus, or the pin actually being active (pinned) -
+   that last one is opacity: 1 unconditionally via .ap-result-pin-active
+   below regardless of hover/active state, so a genuinely pinned row's
+   tack never disappears just because the pointer moved elsewhere. */
 .md-typeset .ap-result-pin {
   position: absolute;
   top: -5px;
@@ -4691,7 +4812,7 @@ h3 { color: var(--dbc-teal); }
   border-radius: 50%;
   background: var(--md-default-bg-color);
   color: var(--md-default-fg-color--light);
-  opacity: 0.5;
+  opacity: 0;
   cursor: pointer;
   transition: opacity 0.12s ease, color 0.12s ease;
 }
@@ -4706,6 +4827,7 @@ h3 { color: var(--dbc-teal); }
   transform: rotate(18deg);
 }
 .md-typeset .ap-calc-result-row:hover .ap-result-pin,
+.md-typeset .ap-calc-result-row-active .ap-result-pin,
 .md-typeset .ap-result-pin:hover,
 .md-typeset .ap-result-pin:focus-visible {
   opacity: 0.85;
@@ -4714,7 +4836,16 @@ h3 { color: var(--dbc-teal); }
   outline: 1px solid rgba(var(--dbc-red-rgb), 0.6);
   outline-offset: 1px;
 }
-.md-typeset .ap-result-pin-active {
+/* Two classes on the element itself (0,0,2,0), same specificity as the
+   .ap-calc-result-row-active .ap-result-pin reveal rule above (also
+   0,0,2,0) - needs to actually TIE it, not just come later, since a
+   pinned row is virtually always also -active (pinning sets
+   previewRank to match - see renderGrid's own comment) and a lower-
+   specificity .ap-result-pin-active alone would lose that tie despite
+   its later source position, leaving a pinned-but-unhovered row stuck
+   at 0.85 instead of fully opaque. Source order then breaks the tie in
+   this rule's favor since it's declared after. */
+.md-typeset .ap-result-pin.ap-result-pin-active {
   opacity: 1;
   color: var(--dbc-red);
 }

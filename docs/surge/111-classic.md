@@ -265,21 +265,24 @@ Use the Breaking Moon cycle and its follow-up when available, then repeat the re
 <!-- Alternate Follow-up path, not a third stage: kept OUT of the Cycle ->
      Follow-up sequential read/drill (see extra.css's .cycle-alt-branch
      comment and rotation-practice.js's getLines/getSteps comment for why
-     this wrapper div is what excludes it). Uses the same leading
-     stageLabel pseudo-step Cycle/Follow-up use above (same size, same
-     spot to the left of the first chip) rather than a separate labeled
-     row - extra.css recolors just THIS line's stage-tag gold, and the
-     "Alt \u00b7 " prefix (same middle-dot separator the Practice toggle's own
-     "1 / 17 \u00b7 Exit" label already uses) is what actually says
-     "alternative" - the gold color alone read as just another stage once
-     the word wasn't there. -->
-<div class="cycle-alt-branch" markdown>
+     this wrapper is what excludes it). Now a <details> so it's collapsed
+     by default (same <details>/<summary> instinct as .gem-item-expandable/
+     .engraving-card elsewhere on the site) instead of always rendering its
+     full chip row inside the card - closed, only the <summary>'s gold
+     "Alt \u00b7 Awakening Follow-Up" tag shows, in the exact same spot/size the
+     old always-open version's leading stageLabel pseudo-step used to sit;
+     open, it drops down into the identical rotation-line the old version
+     showed permanently. markdown="span" on <summary> is required for the
+     "&middot;" entity to actually parse - see .gem-item-expandable's own
+     comment on this same fix. -->
+<details class="cycle-alt-branch" markdown>
+<summary markdown="span">Alternative &middot; Awakening Follow-Up<span class="cycle-alt-arrow"></span></summary>
 <div class="rotation-line" markdown>
 <script type="application/json">
-[{ "stageLabel": "Alternative \u00b7 Awakening Follow-Up >" }, "windcut", "deathtrance", { "id": "maelstrom", "situational": "used if you have 2 stacks" }, "turningslash", "bladedance", "bladeassault", "surge"]
+["windcut", "deathtrance", { "id": "maelstrom", "situational": "used if you have 2 stacks" }, "turningslash", "bladedance", "bladeassault", "surge"]
 </script>
 </div>
-</div>
+</details>
 </div>
 
 <div class="cycle-card" markdown>
