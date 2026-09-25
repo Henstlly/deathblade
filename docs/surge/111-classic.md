@@ -275,7 +275,7 @@ Use the Breaking Moon cycle and its follow-up when available, then repeat the re
 
 1. Stack are tight in the follow-up: cast Maelstrom (if 2 stacks), the first Surprise Attack or Spincutter if needed.
     - This mostly applies to the raid's first follow-up, as you naturally gather spare stacks through the fight for the rest.
-    - Using Turning Slash in the opener or Awakening in the follow-up (see video below) is enough as well.
+    - Using Turning Slash in the opener or Blade Assault in the follow-up (shown in the video below) is also enough.
 2. Do NOT worry about Raid Captain efficiency; Keen Blunt Weapon is just as inefficient or worse!
     - Breaking Moon's Critical Damage bonus to the next Surge (biggest hit) is additive to Keen Blunt Weapon.
     - Raid Captain fully buffs the empowered Surge and can make use of <span class="skill-mention" data-rune-name="Rage" data-rune-tier="legendary">Rage</span>/<span class="skill-mention" data-skill-id="atropine">Atropine</span> for the follow-up.
