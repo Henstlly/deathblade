@@ -279,7 +279,7 @@ Can replace Dark Axel if you find it more useful on bosses with a small hitbox o
     - <span class="skill-mention" data-skill-id="massincrease">Mass Increase</span> and/or <span class="skill-mention" data-ap-id="optimizedtraining" data-level="1">Optimized Training 1</span> help smooth things out at low investment levels.
     - +CD% <span class="skill-mention" data-glossary-id="bracelet">bracelet</span> increases gem level requirements by 1, low <span class="skill-mention" data-glossary-id="specializationstat">Specialization</span> is not recommended.
     - Once Blade Dance and Maelstrom CD are at Lv 9, Wind Cut CD priority increases significantly.
-    - The gem priority list above assumes you will be using a rotation with the advanced skip cycles. 
+    - The gem priority list above assumes you will be using a rotation with the advanced skip cycles.
 
 </details>
 
@@ -366,7 +366,7 @@ It helps to think of everything within <span class="skill-inline" data-skill-id=
 4. Delaying Deathly Slash + Surge by more than 1.75 seconds to ensure a back attack is a DPS loss.
 5. Delaying *only* Surge by more than 1 second to ensure a back attack is also a DPS loss.
 6. <span class="skill-mention" data-skill-id="bladeassault">Blade Assault</span> scales much worse on Surge than on Remaining Energy and takes too long to cast.
-      - It's still useful for <span class="skill-mention" data-skill-id="atropine">Atropine</span> openers, or it can be saved to greed with <span class="skill-mention" data-glossary-id="pushimmunity">push immunity</span>/Hyper Awakening.
+      - It's still useful for openers, or it can be saved to greed with <span class="skill-mention" data-glossary-id="pushimmunity">push immunity</span>/Hyper Awakening.
 
 *Note: The timing to enter Death Trance in cycles without a precast is right as Surge hits. It's unforgiving but it can be improved with a macro that fires the Identity key 2-3x very quickly without any downsides, increasing CPM/QoL.*
 

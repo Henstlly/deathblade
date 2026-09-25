@@ -259,7 +259,7 @@ Use the Breaking Moon cycle and its follow-up when available, then repeat the re
 </div>
 <div class="rotation-line" markdown>
 <script type="application/json">
-[{ "stageLabel": "Follow-up" }, "windcut", "deathtrance", { "id": "surpriseattack", "situational": "safety stacks if needed" }, "earthcleaver", "turningslash", "bladedance", "blitzrush", "surpriseattack", "surge"]
+[{ "stageLabel": "Follow-up" }, "windcut", "deathtrance", { "id": "maelstrom", "situational": "used if you have 2 stacks" }, { "id": "surpriseattack", "situational": "safety stack buffer" }, "earthcleaver", "turningslash", "bladedance", "blitzrush", "surpriseattack", "surge"]
 </script>
 </div>
 </div>
@@ -273,9 +273,10 @@ Use the Breaking Moon cycle and its follow-up when available, then repeat the re
 </div>
 </div>
 
-1. Use both Surprise Attacks in the follow-up if you're missing stacks, otherwise skip the first one.
+1. The final Surprise Attack can sometimes be skipped with excess stacks and raid downtime.
 2. Do NOT worry about Raid Captain efficiency; Keen Blunt Weapon is just as inefficient or worse!
     - Breaking Moon's Critical Damage bonus to the next Surge (biggest hit) is additive to Keen Blunt Weapon.
+    - Raid Captain fully buffs the empowered Surge and can make use of <span class="skill-mention" data-rune-name="Rage" data-rune-tier="legendary">Rage</span>/<span class="skill-mention" data-skill-id="atropine">Atropine</span> for the follow-up.
 3. <span class="skill-mention" data-skill-id="bladeassault">Blade Assault</span> scales much worse on Surge than on Remaining Energy and takes too long to cast.
       - It's still useful for <span class="skill-mention" data-skill-id="atropine">Atropine</span> openers, or it can be saved to greed with <span class="skill-mention" data-glossary-id="pushimmunity">push immunity</span>/Hyper Awakening.
 4. It seems more complicated than it really is, watch [this video](https://www.youtube.com/watch?v=4bwhDT--0fo) to see how a full rotation plays out.

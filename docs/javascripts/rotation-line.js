@@ -70,13 +70,6 @@
 //       - a pseudo-step pointing at a Cycle card above instead of a
 //         real skill (no icon). Renders the same cycle-num/cycle-title
 //         pill the Cycle card's own header uses.
-//     { "cycleRef": 2, "title": "Regular Cycle", "repeat": "\u00d73" }
-//       - adds a small loop badge after the title for a cycleRef step
-//         that gets repeated several times in a row. Use this INSTEAD OF
-//         listing the same cycleRef step 2-3 times in a row - one chip
-//         with a repeat badge reads as "this one, several times" instead
-//         of making the reader count identical chips. "repeat" is shown
-//         verbatim, so phrase it however reads best ("\u00d72", "\u00d72-3", "2-3x").
 //     { "id": "headhunt", "swapNext": true }
 //       - marks the arrow to the NEXT step as order-interchangeable
 //         (e.g. Head Hunt/Twin Shadows as the opener's first two steps -
@@ -112,19 +105,9 @@
   var iconSrc = window.SiteUtils.iconSrc;
   var hideOnError = window.SiteUtils.hideOnError;
 
-  // Feather Icons "repeat" glyph (same icon set/markup convention as
-  // build-compare.js's COPY_ICON/CHECK_ICON and bid-calculator.js's check
-  // icon - viewBox 24x24, stroke="currentColor" so it inherits the badge's
-  // text color for free, no per-theme color to maintain). Two arrows
-  // forming a loop reads as "repeat" at a glance, unlike a bare partial-
-  // circle border which needs the reader to already know the convention.
-  var CYCLE_REPEAT_ICON =
-    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>';
-
-  // Feather Icons "arrow-down" glyph, same convention as CYCLE_REPEAT_ICON
-  // just above - used by updateWrapArrows below to mark an arrow that
-  // sits at the end of a wrapped row. Went through two earlier versions
-  // before this one:
+  // Feather Icons "arrow-down" glyph - used by updateWrapArrows below to
+  // mark an arrow that sits at the end of a wrapped row. Went through
+  // two earlier versions before this one:
   //   take 1 rotated .arrow's own border-corner chevron to a down-left
   //     diagonal instead of using a real icon at all - read as a
   //     meaningless stray mark ("looks like a short L"), because the
@@ -161,31 +144,6 @@
     if (step.cycleRef != null) {
       span.appendChild(el("span", "cycle-num cycle-num-" + step.cycleRef, String(step.cycleRef)));
       span.appendChild(el("span", "cycle-title", step.title || ""));
-      if (step.repeat) {
-        span.classList.add("skill-has-repeat");
-        var badge = el("span", "cycle-repeat-badge");
-        // Tooltip text is stashed as a data attribute rather than wired
-        // right here - skill-tooltip.js (loaded later, see extra_javascript
-        // order in mkdocs.yml) owns the actual hover/focus/tap tooltip
-        // engine and scans for this attribute itself. Same "ENGINE file
-        // builds attributes, tooltip file does the wiring" split this
-        // file already uses for the situational marker's own
-        // data-situational-reason/data-standalone-tip below - keeps this
-        // file from needing window.SkillTooltip to exist yet when this
-        // runs. step.repeat is author-supplied text like "\u00d72" or
-        // "\u00d72-3", not a bare count, so it's spelled out plainly
-        // rather than trying to parse a number back out of it.
-        badge.setAttribute("data-repeat-tip", "Repeat this step (" + step.repeat + ")");
-        var icon = el("span", "cycle-repeat-icon");
-        // Fixed, hardcoded markup (not derived from step data) - same
-        // safety basis build-compare.js's innerHTML icon constants rely
-        // on. step.repeat itself goes in via a text node right after, so
-        // author-supplied text can never be interpreted as markup.
-        icon.innerHTML = CYCLE_REPEAT_ICON;
-        badge.appendChild(icon);
-        badge.appendChild(document.createTextNode(step.repeat));
-        span.appendChild(badge);
-      }
     } else if (step.skills && step.skills.length) {
       span.classList.add("skill-multi");
       step.skills.forEach(function (id, i) {
@@ -281,11 +239,12 @@
           // ".rotation-line .skill-part[data-skill-id]" specifically, see
           // skill-tooltip.js), and the tag sits outside both of them in
           // the DOM. So hovering the "*" glyph itself isn't "inside"
-          // either skill's trigger and did nothing on its own - same gap
-          // the cycleRef branch above has. Fixed the SAME way the repeat
-          // badge above is: stash the text as a data attribute and let
+          // either skill's trigger and did nothing on its own. Fixed by
+          // stashing the text as a data attribute and letting
           // skill-tooltip.js's own attachDataTip wire it into a real
-          // hover/focus/tap tooltip (not a native `title`) - consistent
+          // hover/focus/tap tooltip (not a native `title`) - the same
+          // mechanism the hand-authored .cycle-repeat-badge tips in
+          // 111-classic.md already ride on - consistent
           // with every other tooltip on the site, and reachable by
           // keyboard/touch the way a native title isn't. This is IN
           // ADDITION TO (not instead of) folding the reason into each

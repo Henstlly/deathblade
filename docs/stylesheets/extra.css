@@ -1664,23 +1664,17 @@ h3 { color: var(--dbc-teal); }
    cycle several times in a row" as one small chip next to the title,
    instead of a separate overview line above the cards spelling out
    "1 -> 2x3 -> etc." (see 111-classic.md's Regular Cycle header for the
-   hand-authored markup: cycle-repeat-icon SVG + literal "\u00d73" text -
-   not rendered by rotation-line.js there, though the same badge shape IS
-   built by rotation-line.js's buildStep for a JSON cycleRef step's own
-   "repeat" field). Deliberately muted/small so it reads as a footnote
-   next to .cycle-title, not a second title. Carries a data-repeat-tip
-   attribute (set in the markup, or by rotation-line.js for the JSON
-   version) spelling out what the count means ("Repeat this cycle 3
-   times") - skill-tooltip.js's attachDataTip wires that into the site's
-   normal hover/focus/tap tooltip (see that file's buildNoteTip), same
-   engine every other tooltip here uses, rather than a plain browser
-   `title` that wouldn't match, wouldn't focus with the keyboard, and
-   wouldn't show on tap. No cursor/hover CSS needed here for that -
-   skill-tooltip.js's wire() adds the shared .skill-tip-anchor class
-   (cursor: help + focus ring) to any trigger it successfully wires. */
-.md-typeset .skill-has-repeat {
-  padding-right: 0.5em;
-}
+   hand-authored markup: cycle-repeat-icon SVG + literal "\u00d73" text).
+   Deliberately muted/small so it reads as a footnote next to .cycle-title,
+   not a second title. Carries a data-repeat-tip attribute spelling out
+   what the count means ("Repeat this cycle 3 times") -
+   skill-tooltip.js's attachDataTip wires that into the site's normal
+   hover/focus/tap tooltip (see that file's buildNoteTip), same engine
+   every other tooltip here uses, rather than a plain browser `title`
+   that wouldn't match, wouldn't focus with the keyboard, and wouldn't
+   show on tap. No cursor/hover CSS needed here for that - skill-
+   tooltip.js's wire() adds the shared .skill-tip-anchor class (cursor:
+   help + focus ring) to any trigger it successfully wires. */
 .md-typeset .cycle-repeat-badge {
   display: inline-flex;
   align-items: center;

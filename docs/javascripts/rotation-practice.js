@@ -31,11 +31,6 @@
 // all work unchanged, just called with the card as the "unit" instead of
 // a single line.
 //
-// A plain .rotation-line can opt out entirely by adding the
-// "rotation-line-map" class - for a compact loop overview built from
-// cycleRef pseudo-steps (e.g. "1 -> 2 -> 2 -> 3 -> 4 -> etc.") rather
-// than real skill steps, so there's nothing meaningful to drill.
-//
 // Only one drill unit (a rotation-line, or a whole cycle-card-multi) is
 // "active" (spacebar-listening) at a time - starting practice on a new
 // one automatically exits the previous one.
@@ -114,14 +109,6 @@
     // also get its own individual toggle, or the pair would show two
     // "Practice" buttons for what's really one combined drill.
     if (line.closest(".cycle-card-multi")) return;
-    // A ".rotation-line-map" is a compact overview line built from
-    // cycleRef pseudo-steps pointing at OTHER cycle-cards (e.g. "1 -> 2 ->
-    // 2 -> 3 -> 4 -> etc." showing the loop at a glance) rather than a
-    // real sequence of skills to drill - see rotation-line.js's cycleRef
-    // doc comment. Practice mode has nothing to step through there (no
-    // actual .skill inputs, just cycle-number pointers), so it opts out
-    // rather than showing a toggle that would do nothing useful.
-    if (line.classList.contains("rotation-line-map")) return;
     var steps = getSteps(line);
     if (steps.length < 2) return;
 
