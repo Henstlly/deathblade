@@ -94,7 +94,6 @@
       { "id": "unleashedpower", "level": 5 },
       { "id": "releasepotential", "level": 4 },
       { "id": "instantspell", "level": 2 },
-      { "id": "danceofscreams", "level": 3 },
       { "id": "pathoftheblade", "level": 3 }
     ] }
   ]
