@@ -18,10 +18,10 @@
         BFE03CBB4F77DF0F01E5140695FA2010C9B1D47B03BBE27D7855E04EE259B1CA012D2AFD8D558CB98EE607B5D6FDB071244ABF56DDE760D513AC66FC26C6FBC8
         ```
 
-=== "Подземелье Хаоса"
+=== "Брешь хаоса"
 
     ```
-    5BC069F349F703CA2B9B9B732BB3629E493826BE8BEA2FF11FF1575D1258D07FAA57A9FADBF188946EF1E2DB1CD6779759FF6F7EA4138A86EB19F6505242CC98
+    CD5B9D0DC3B317B7634F8B6BFB3A662230C78CAAD3DC8CEE54C3A74F4D268985B77504CA6E757FED821CC399933CEF721F4DCBC3251A8FC0ADB53744723CB39C
     ```
 
 ## Калькулятор Созвездий А.Р.К. {#ark-passive-calculator}
@@ -1894,7 +1894,7 @@
          row at all, unlike Ring/Necklace whose Line 1/2 already gets its
          own Grid/Flat row and would just show +0.00% here). -->
     <details class="ap-avb">
-      <summary>бижутерия против украшения</summary>
+      <summary>бижутерия против бижутерии</summary>
       <div class="ap-brace-compare-body">
         <p class="ap-brace-compare-intro">Сравнивает твоё текущее бижутерия с кандидатом на замену, а оба — с вариантом без украшения.</p>
 
