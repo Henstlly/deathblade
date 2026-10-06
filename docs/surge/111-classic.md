@@ -178,7 +178,7 @@
 <details class="setup-note" data-kind="note" open markdown>
 <summary><span class="setup-note-tag">Заметка</span>Опции и триподы<span class="setup-note-arrow"></span></summary>
 
-- «Аксель» (1-1-2) можно использовать вместо «Разрубающих лезвий», но он не даёт меньше стаков.
+- Можно поставить «Аксель» (1-1-2) вместо «Разрубающих лезвий», но он даёт меньше стаков.
 
 </details>
 
