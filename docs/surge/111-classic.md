@@ -11,20 +11,20 @@
      all update together from that one place. -->
 <div class="build-stats" data-build="111-classic" data-family="surge"></div>
 
-**Кому подходит:**{: .best-для } Тем, кому нравится копить заряд ради одного мощного и приятного удара.
+**Кому подходит:**{: .best-для } Тем, кому нравится копить заряд ради одного мощного удара.
 
-- Мощные окна для прорывного урона с комбо «Неуловимого пируэта».
-- Не нужно придерживать <span class="skill-mention" data-glossary-id="counter">Контр</span>, он заряжается до двух стаков.
-- Очень высокая эффективность самоцветов: «Концентрация воли» — практически весь твой урон.
-- Доступно с нуля <span class="skill-mention" data-glossary-id="arkgrid">Созвездия А.Р.К.</span> ядра с небольшими правками.
-- Нужно постоянно балансировать «Концентрацию воли» <span class="skill-mention" data-glossary-id="backattack">попадание в спину</span> темп с «Концентрацией воли» <span class="skill-mention" data-glossary-id="cpm">CPM</span>.
+- Сильная и эффективная заливка урона под «Ардопином-Х».
+- Не нужно придерживать контртаку, у неё два заряда.
+- Нуждается в малом количестве самоцветов: «Концентрация воли» — практически весь твой урон.
+- Билд доступен с нуля <span class="skill-mention" data-glossary-id="arkgrid">Созвездия А.Р.К.</span>.
+- Очень важно попадать «Концентрацию воли» в <span class="skill-mention" data-glossary-id="backattack">спину</span>.
 
 </div>
 <div class="pentagon-badge" data-build="111-classic" data-family="surge" markdown>
 <div class="pentagon-badge-title">Профиль билда</div>
 <div class="pentagon-svg-mount"></div>
 <div class="pentagon-badge-extra" markdown>
-[Видео-гайд](https://www.youtube.com/watch?v=pzFa5zOuNik){ .video-chip } [Геймплей](https://www.youtube.com/watch?v=j-2dGp7PGws){ .video-chip }
+[Видео-гайд](https://www.youtube.com/watch?v=3PO1iSO8g50){ .video-chip } [Геймплей](https://www.youtube.com/watch?v=j-2dGp7PGws){ .video-chip }
 </div>
 </div>
 </div>
@@ -52,7 +52,7 @@
 === "111 Классика ★"
 
     ```
-    2D89F44CB0B24806735E07C73478C083707228B4DA81D81F51074C802D5C5D795500F1C3281A6873549CD74ED4CB4E8BD59BE03D263B86A22C024C157D52B6F2
+    80A83CC635771A0687E1CE86E383C7180D05F72F9E2E87C64B122E6220BBD5D69747D8F0A6AD4AD4F8AA39E6C31E2F7CE621A99FE518DB4DC7443A77E111D7A5
     ```
 
 ## Система А.Р.К. {#ark-setup}
@@ -74,8 +74,8 @@
     { "id": "evolution", "nodes": [
       { "id": "crit", "level": 10 },
       { "id": "specialization", "level": 30 },
-      { "id": "limitbreakevo", "level": 2 },
-      { "id": "keensense", "level": 1 },
+      { "id": "keensense", "level": 2 },
+      { "id": "limitbreakevo", "level": 1 },
       { "id": "strike", "level": 2 },
       { "id": "master", "level": 1 },
       { "id": "pulverize", "level": 1 },
@@ -92,8 +92,9 @@
     { "id": "leap", "nodes": [
       { "id": "awakeningamplifier", "level": 1 },
       { "id": "unleashedpower", "level": 5 },
-      { "id": "releasepotential", "level": 3 },
-      { "id": "instantspell", "level": 3 },
+      { "id": "releasepotential", "level": 4 },
+      { "id": "instantspell", "level": 2 },
+      { "id": "danceofscreams", "level": 3 },
       { "id": "pathoftheblade", "level": 3 }
     ] }
   ]
@@ -116,15 +117,6 @@
 <summary><span class="setup-note-tag">Советы</span>Советы по А.Р.К.<span class="setup-note-arrow"></span></summary>
 
 - Используй [Калькулятор Созвездий А.Р.К.](../resources.md#ark-passive-calculator), чтобы оптимизировать вкладку «Экспансию».
-- <span class="skill-mention" data-ap-id="releasepotential" data-level="3">Стремительное восстановление 3</span> используется, потому что простой, смена фаз в рейде или смерть иногда позволяют применить его ещё раз.
-    - Альтернатива — <span class="skill-mention" data-ap-id="transcendentpower" data-level="3">Ключевой аспект 3</span>, что реально полезно только для стражей или твоего четвёртого рейда на Хилвуде без золота.
-
-</details>
-
-<details class="setup-note" data-kind="note" markdown>
-<summary><span class="setup-note-tag">Заметка</span>Созвездия А.Р.К.<span class="setup-note-arrow"></span></summary>
-
-- Ядра «Созвездий А.Р.К.» можно качать на свой выбор, но «Ядро Концентрации воли» на 17p даёт второй стак «Двуручного хвата». Это освобождает слот самоцвета и позволит применять «Двуручный хват», не придерживая его под механик рейда.
 
 </details>
 
@@ -164,7 +156,7 @@
   {"id": "windcut", "level": 10, "tripods": [3, 3, 1], "rune": {"tier": "legendary", "name": "Galewind"}},
   {"id": "spincutter", "level": 10, "tripods": [3, 3, 1], "rune": {"tier": "epic", "name": "Galewind"}},
   {"id": "bladedance", "level": 14, "tripods": [1, 1, 2], "rune": {"tier": "epic", "name": "Galewind"}},
-  {"id": "earthcleaver", "level": 14, "tripods": [3, 3, 1], "rune": {"tier": "legendary", "name": "Vision"}},
+  {"id": "earthcleaver", "level": 14, "tripods": [3, 3, 2], "rune": {"tier": "legendary", "name": "Vision"}},
   {"id": "turningslash", "level": 14, "tripods": [1, 3, 1], "rune": {"tier": "legendary", "name": "Poison"}},
   {"id": "maelstrom", "level": 10, "tripods": [3, 1, 2], "rune": {"tier": "legendary", "name": "Focus"}},
   {"id": "blitzrush", "level": 14, "tripods": [1, 1, 2], "rune": {"tier": "legendary", "name": "Galewind"}},
@@ -182,21 +174,12 @@
 <summary><span class="setup-note-tag">Советы</span>Руны<span class="setup-note-arrow"></span></summary>
 
 - Используй <span class="skill-mention" data-rune-name="Purify">Солум</span> на «Разрубающих лезвиях» при необходимости.
-- <span class="skill-mention" data-rune-name="Focus" data-rune-tier="legendary">Легендарный Марх</span> на «Плаще клинков» + вино должно хватить по мане, ведь циклы с «Неуловимым пируэтом» её восстанавливают.
-    - Если не доверяешь своему аптайму или аптайму саппорта (спец барды), бери еду на ману вместо вина как страховку.
-- Альтернативно <span class="skill-mention" data-rune-name="Focus" data-rune-tier="legendary">Легендарный Марх</span> на «Плаще клинков» + еда на ману: выше потолок и ниже пол, даже с «Неутомимым натиском».
-
 </details>
 
 <details class="setup-note" data-kind="note" open markdown>
 <summary><span class="setup-note-tag">Заметка</span>Опции и триподы<span class="setup-note-arrow"></span></summary>
 
-- Можно использовать трипод «Обнаружение слабых мест» <span class="skill-mention" data-glossary-id="tripod">трипод</span> на «Блице».
-    - Требует КД-самоцвета Ур. 10 и/или простоев в рейде, иначе он станет узким местом.
-    - Нужно заменить КД-самоцвет «Неумолимого притяжения» на КД «Блица» — это даёт небольшой прирост урона.
-- Трипод «Взрыв земли» на «Двуручном хвате» — на твоё усмотрение.
-    - Повышенная скорость каста, но сильно снижает мобильность и урон.
-- «Аксель» (1-1-2) можно использовать вместо «Разрубающих лезвий», но он не даёт **никакого** восстановления.
+- «Аксель» (1-1-2) можно использовать вместо «Разрубающих лезвий», но он не даёт меньше стаков.
 
 </details>
 
@@ -217,17 +200,14 @@
 <script type="application/json">
 [
   { "col": "dmg", "items": [
-    "surge", "earthcleaver", "blitzrush", "bladedance", "turningslash", { "id": "windcut", "alts": [
-      { "id": "spincutter", "note": "Use Spincutter CD gem instead if you prefer, Wind Cut has a very low damage share." },
-      { "id": "earthcleaver", "note": "Use Earth Cleaver CD gem instead pre-Ark Grid as you won't have its second stack." },
-      { "id": "bladedance", "note": "Use Blade Dance CD gem instead if you set its tripod to Weak Point Detection or wish to have it available sooner as a safety net." }
-    ] }
+    { "id": "surge", "level": 10 },
+    "earthcleaver", "blitzrush", "bladedance", "turningslash", "windcut"
   ] },
   { "col": "cd", "items": [
-    "blitzrush",
+    { "id": "blitzrush", "level": 10 },
+    { "id": "surpriseattack", "level": 9 },
     "windcut",
-    "maelstrom",
-    "surpriseattack",
+    { "id": "maelstrom", "level": 10 },
     "turningslash"
   ] }
 ]
@@ -246,11 +226,11 @@
 
 Есть оптимальный порядок скиллов, но у тебя есть свобода при простое или если нужно вклинить скиллы мобильности.
 
-«Неуловимый пируэт» даёт 60 стаков при попадании и усиливает следующую «Концентрацию воли» на +60% критического урона.
+«Неуловимый пируэт» даёт 60 стаков при попадании и усиливает следующую «Концентрацию воли».
 
 «Разрубающие лезвия» — твой скилл мобильности и запасной источник стаков. Применяй их, чтобы гарантированно попасть в спину «Концентрацией воли».
 
-Используй цикл с «Неуловимым пируэтом» и его добивку, когда они доступны, иначе повторяй обычный цикл.
+Используй цикл с «Неуловимым пируэтом», когда доступно (T), иначе повторяй обычный цикл.
 
 С 3 сфер
 { .rotation-stage }
@@ -259,12 +239,12 @@
 <div class="cycle-card-header"><span class="cycle-num cycle-num-1">1</span><span class="cycle-title">Цикл «Неуловимого пируэта» + добивка</span></div>
 <div class="rotation-line" markdown>
 <script type="application/json">
-[{ "stageLabel": "B.M. Cycle >" }, { "skills": ["turningslash", "surpriseattack"], "situational": "adre/syn for openers" }, "windcut", "deathtrance", "maelstrom", "surpriseattack", "breakingmoon", "surge"]
+[{ "stageLabel": "Цикл пируэта >" }, { "skills": ["turningslash", "surpriseattack"], "situational": "adre/syn for openers" }, "windcut", "deathtrance", "maelstrom", "surpriseattack", "breakingmoon", "surge"]
 </script>
 </div>
 <div class="rotation-line" markdown>
 <script type="application/json">
-[{ "stageLabel": "Follow-up >" }, "windcut", "deathtrance", { "id": "maelstrom", "situational": "used if you have 2 stacks" }, { "id": "surpriseattack", "situational": "safety stack buffer" }, "earthcleaver", "turningslash", "bladedance", "blitzrush", "surpriseattack", "surge"]
+[{ "stageLabel": "Добивка >" }, "windcut", "deathtrance", { "id": "maelstrom", "situational": "used if you have 2 stacks" }, { "id": "surpriseattack", "situational": "safety stack buffer" }, "earthcleaver", "turningslash", "bladedance", "blitzrush", "surpriseattack", "surge"]
 </script>
 </div>
 <!-- Alternate Follow-up path, not a third stage: kept OUT of the Cycle ->
@@ -281,7 +261,7 @@
      "&middot;" entity to actually parse - see .gem-item-expandable's own
      comment on this same fix. -->
 <details class="cycle-alt-branch" markdown>
-<summary markdown="span">Альтернатива &middot; Пробуждение на добивке<span class="cycle-alt-arrow"></span></summary>
+<summary markdown="span">Альтернатива &middot; Цикл с ультимейтом<span class="cycle-alt-arrow"></span></summary>
 <div class="rotation-line" markdown>
 <script type="application/json">
 ["windcut", "deathtrance", { "id": "maelstrom", "situational": "used if you have 2 stacks" }, "turningslash", "bladedance", "bladeassault", "surge"]
@@ -301,67 +281,8 @@
 
 <div class="rotation-notes" markdown>
 
-1. Стаки в следующей фазе в дефиците: применяй «Плащ клинков» (если есть 2 стака), затем первый «Внезапный выпад» или «Разрубающие лезвия» при необходимости.
-    - Это в основном относится к первой фазе рейда; дальше лишние стаки копятся сами по ходу боя.
-    - «Иссечение» в открытии или фазовый скилл пробуждения тоже дают достаточный запас.
-   2. Не переживайте за эффективность «Неутомимого натиска»; «Моргенштерн» столь же неэффективен или хуже!
-       - Бонус «Неуловимого пируэта» на крит. урон следующего Расхода (самого большого удара) складывается с «Моргенштерном».
-       - «Неутомимый натиск» полностью баффает усиленный Расход и позволяет добить <span class="skill-mention" data-rune-name="Rage" data-rune-tier="legendary">Легендарный Раш</span>/<span class="skill-mention" data-skill-id="atropine">Ардопин-Х</span>.
-3. <span class="skill-mention" data-skill-id="bladeassault">Призрачные клинки</span> масштабируется намного хуже на «Концентрации воли», чем на Остаточной энергии, и кастуется слишком долго.
-      - Он всё ещё полезен для <span class="skill-mention" data-skill-id="atropine">Ардопин-Х</span> открывающих скиллов, или его можно придержать ради жадности с <span class="skill-mention" data-glossary-id="pushimmunity">иммунитет к отбросу</span>/Гиперпробуждения.
-4. Кажется сложнее, чем есть: посмотри [это видео](https://www.youtube.com/watch?v=4bwhDT--0fo), чтобы увидеть полный цикл в деле.
+1. Кажется сложнее, чем есть: посмотри [это видео](https://www.youtube.com/watch?v=4bwhDT--0fo), чтобы увидеть полный цикл в деле.
 
-</div>
-
-<!-- Community-contributed alternative: a full replacement for both cycles
-     above (not a recommendation over them), for players who'd rather keep
-     a Stack reserve than chase max CPM. Self-contained: Cycles 1/2 here
-     are its own local cycle-cards (Cycle 1 is the opener STAGE only, no
-     Follow-Up), not shared with the page's cycle-num-1/2 above, plus its
-     own new Cycles 3/4 (cycle-num-4 added in extra.css for this). No
-     overview line above the cards (matches the page's main Cycle 1/2
-     pair above) - the loop is just "repeat Cycle 2 twice", carried by
-     Cycle 2's own title-bar repeat badge below rather than a separate
-     "1 -> 2x2 -> 3 -> etc." map line up top. -->
-
-<div class="setup-panel" data-accent="lavender" markdown>
-<div class="setup-notes" markdown>
-
-<details class="setup-note" data-kind="example" markdown>
-<summary><span class="setup-note-tag">Альтернатива</span>Ротация с запасом стаков<span class="setup-note-arrow"></span></summary>
-
-Альтернатива базовой ротации. Копит запас стаков, поэтому ты никогда не будешь без них. Идёт как 1>2>2>3>1 и так далее.
-
-<div class="cycle-card" markdown>
-<div class="cycle-card-header"><span class="cycle-num cycle-num-1">1</span><span class="cycle-title">Цикл «Неуловимого пируэта»</span></div>
-<div class="rotation-line" markdown>
-<script type="application/json">
-[{ "id": "maelstrom", "situational": "buff for openers" }, { "skills": ["turningslash", "surpriseattack"], "situational": "adre/syn for openers" }, { "id": "windcut", "situational": "precast for openers" }, "deathtrance", "surpriseattack", "breakingmoon", "surge"]
-</script>
-</div>
-</div>
-
-<div class="cycle-card" markdown>
-<div class="cycle-card-header"><span class="cycle-num cycle-num-2">2</span><span class="cycle-title">Обычный цикл</span><span class="cycle-repeat-badge" data-repeat-tip="Repeat this cycle 2 times"><span class="cycle-repeat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg></span>&times;2</span></div>
-<div class="rotation-line" markdown>
-<script type="application/json">
-["windcut", "deathtrance", "maelstrom", "surpriseattack", "windcut", "earthcleaver", "turningslash", "bladedance", "blitzrush", "surpriseattack", "surge"]
-</script>
-</div>
-</div>
-
-<div class="cycle-card" markdown>
-<div class="cycle-card-header"><span class="cycle-num cycle-num-3">3</span><span class="cycle-title">Цикл до «Неуловимого пируэта»</span></div>
-<div class="rotation-line" markdown>
-<script type="application/json">
-["windcut", "deathtrance", "earthcleaver", "surpriseattack", "windcut", "turningslash", "bladedance", "maelstrom", "blitzrush", { "id": "spincutter", "situational": "stack recovery/reposition" }, "surge"]
-</script>
-</div>
-</div>
-
-</details>
-
-</div>
 </div>
 
 С нуля сфер
@@ -369,9 +290,8 @@
 
 <div class="rotation-notes" markdown>
 
-1. Используй <span class="food-req-item">![](../assets/shared/icon-stimulant.png){: .skill-icon } Мощная «Эйфория»</span> (рекомендуется) или переходи к #2.
-      - Стая: используй трипод «Плаща клинков» «Контроль сфер» и <span class="skill-mention" data-skill-id="flashblink">Сверхновая</span> пробуждения.
-2. Сгенерируй одну сферу, набери минимум 40 стаков, затем «Концентрация воли» вернёт все 3 сферы.
+1. Рекомендуется использовать <span class="food-req-item">![](../assets/shared/icon-stimulant.png){: .skill-icon } Мощную «Эйфорию»</span>, но если ты жадный и ленивый, переходи к #2.
+2. Сгенерируй одну сферу, набери минимум 40 стаков, затем примени «Концентрацию воли» — она вернёт все 3 сферы.
 
 </div>
 
@@ -382,7 +302,6 @@
 
 1. Умести три «Концентрации воли» в 10 секунд. Используй <span class="food-req-item">![](../assets/shared/icon-atropine.png){: .skill-icon } Ардопин-Х</span> прямо перед попаданием первой «Концентрации воли».
 2. Вторая или третья «Концентрация воли» должна быть частью цикла с «Неуловимым пируэтом», иначе не хватит стаков.
-3. Стаки и обстановка постоянно меняются, так что фиксированная ротация была бы путами.
 
 </div>
 

@@ -1078,7 +1078,11 @@ h3 { color: var(--dbc-teal); }
    defines this same grid layout for itself, scoped further down. */
 .md-typeset .gem-item:not(.gem-item-expandable) {
   display: grid;
-  grid-template-columns: 1.7em 1.7em 1fr auto;
+  /* rank | icon | name | recommended level | (arrow, expandable rows
+     only) - the 4th column was already reserved as `auto` for the
+     expandable row's arrow, so the level label just takes the same
+     trailing slot and the arrow shifts one column right. */
+  grid-template-columns: 1.7em 1.7em 1fr auto auto;
   align-items: center;
   column-gap: 0.7em;
 }
@@ -1118,6 +1122,25 @@ h3 { color: var(--dbc-teal); }
 .md-typeset .gem-item-name {
   font-size: 0.92em;
   color: #b8b4b8;
+}
+/* Authored recommended gem level, e.g. "Рекомендуется ур. 10" (see the
+   "level" field in gem-priority.js's EASY EDIT GUIDE). Right-aligned in
+   the row's trailing column, quiet enough not to compete with the skill
+   name it qualifies. Deliberately NOT nowrap: at phone widths the row's
+   1fr name column has to keep its width, and letting this wrap to two
+   lines is cheaper than overflowing the card. */
+.md-typeset .gem-item-level {
+  font-size: 0.78em;
+  line-height: 1.25;
+  text-align: right;
+  color: var(--dbc-gem-name-muted);
+  opacity: 0.8;
+}
+/* Same label, but as a hover tooltip tag rather than a permanent column -
+   nothing renders it this way today, kept out of the way of the row
+   styling above on purpose. */
+.md-typeset .gem-item-expandable > summary .gem-item-level {
+  margin-right: 0.2em;
 }
 /* gem-dps-tooltip.js used to set a native `title` (damage-share on hover)
    on plain, non-expandable rows, and this rule restored the cursor:help
@@ -1225,7 +1248,11 @@ h3 { color: var(--dbc-teal); }
    grid it's declared as here. */
 .md-typeset details.gem-item-expandable > summary {
   display: grid;
-  grid-template-columns: 1.7em 1.7em 1fr auto;
+  /* rank | icon | name | recommended level | (arrow, expandable rows
+     only) - the 4th column was already reserved as `auto` for the
+     expandable row's arrow, so the level label just takes the same
+     trailing slot and the arrow shifts one column right. */
+  grid-template-columns: 1.7em 1.7em 1fr auto auto;
   align-items: center;
   column-gap: 0.7em;
   padding: 0.55em 0.85em;
@@ -3159,6 +3186,134 @@ h3 { color: var(--dbc-teal); }
   border: 1px solid rgba(255, 255, 255, 0.14);
   transition: border-color 0.15s ease;
 }
+/* "ИЛИ" sitting between the two choice chips of a pair (222-speedy's
+   "Выбор мобильности и контртаки"). A plain flex item, NOT a chip: it
+   carries no skill, so it must not pick up the chip pill styling or the
+   hover-brighten rule above. Centered on its own so it reads as a
+   divider between the two options rather than as another item in the
+   list, and dimmed so the two names it sits between stay dominant. */
+.md-typeset .choice-or {
+  align-self: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dbc-lilac);
+  opacity: 0.75;
+  user-select: none;
+  -webkit-user-select: none;
+}
+/* The "pick one of two" answer on 222-speedy's "Выбор мобильности и
+   контртаки". Two differences from the sitewide .engraving-chip pill:
+
+   1. BIGGER - these two rows are the page's actual answer, and they carry
+      a second line (tripods + rune, see below), which is exactly what
+      gets cramped at the 0.8em size the fixed engraving lists use.
+      Scoped to .engraving-loadout-choice so every other chip on the site
+      keeps the size it had. Square-ish corners too - a 999px radius on a
+      two-line chip reads as a lozenge.
+   2. A COLUMN, so the two options in a pair line up - flex:1 1 0 makes
+      both chips in a pair exactly as wide as each other regardless of how
+      long their names are (the "Разрубающие лезвия" vs "Аксель" case),
+      and align-items:stretch on the group makes them the same HEIGHT.
+      The chips row below carries margin-top:auto to sit flush against
+      the bottom of whichever chip is taller, so the tripod tiers and rune
+      tiles line up tier-for-tier and rune-for-rune across the pair -
+      the same alignment .skill-card-chips already gets in Skill Setup. */
+/* ONE grid for the whole block, not one per group - this is the fix for
+   the rows not lining up. Two separate grids sized their own columns
+   independently, so each row's chips were only as wide as that row's
+   longest name and the four chips ended up four different widths.
+   Instead the wrapper itself is the grid and both .engraving-loadout-
+   groups are dissolved into it with display:contents, so all eight items
+   (label/chip/ИЛИ/chip, twice) share four tracks: label | chip | ИЛИ |
+   chip. grid-auto-rows:1fr then makes every chip the same height too.
+
+   The display:contents on the GROUPS' <p> is the load-bearing part and
+   not an oversight - md_in_html wraps a run of same-paragraph inline
+   content (label + chips + ИЛИ on consecutive lines) in one shared <p>,
+   which is why the base .engraving-loadout-group rule deliberately keeps
+   itself a plain block and styles that <p> as the real flex row (see its
+   own long comment above). Left alone here, that <p> would land in the
+   grid as ONE item and the chips would go back to being inline content
+   that wraps at its own content width - exactly the uneven look. */
+.md-typeset .engraving-loadout.engraving-loadout-choice {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr) max-content minmax(0, 1fr);
+  grid-auto-rows: 1fr;
+  align-items: stretch;
+  gap: 0.7em;
+}
+.md-typeset .engraving-loadout-choice .engraving-loadout-group,
+.md-typeset .engraving-loadout-choice .engraving-loadout-group > p {
+  display: contents;
+}
+/* Labels and the ИЛИ divider center on their row's height; the chips
+   themselves stretch to fill it. */
+.md-typeset .engraving-loadout-choice .engraving-loadout-label {
+  align-self: center;
+}
+/* One column per row once four tracks stop fitting: label, ИЛИ and both
+   chips stack, chips full width. */
+@media screen and (max-width: 600px) {
+  .md-typeset .engraving-loadout.engraving-loadout-choice {
+    grid-template-columns: minmax(0, 1fr);
+    grid-auto-rows: auto;
+  }
+  .md-typeset .engraving-loadout-choice .choice-or {
+    justify-self: start;
+  }
+}
+
+.md-typeset .engraving-loadout-choice .engraving-chip {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45em;
+  min-width: 0;
+  font-size: 0.95em;
+  line-height: 1.35;
+  padding: 0.55em 1.15em;
+  border-radius: 12px;
+}
+/* Icon + name + level, the chip's first row. Own element rather than
+   loose inline children because the chip itself is a flex COLUMN - the
+   icon would otherwise be pushed onto a row of its own. */
+.md-typeset .engraving-loadout-choice .engraving-chip-head {
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+  min-width: 0;
+}
+.md-typeset .engraving-loadout-choice .engraving-chip img.skill-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  margin: 0;
+  flex-shrink: 0;
+}
+/* "Ур. 10" - pushed to the right edge of the row so it sits in the same
+   column on both chips of a pair. */
+.md-typeset .engraving-loadout-choice .engraving-chip-level {
+  margin-left: auto;
+  font-size: 0.8em;
+  font-weight: 400;
+  white-space: nowrap;
+  color: var(--dbc-lilac);
+}
+/* Second row: the same .tripod-chip / .rune-chip components Skill Setup
+   renders, so the tier colors, the rune tile and rune-tooltip.js's hover
+   (it keys off .rune-chip[data-rune-name]) all behave identically here.
+   Only the alignment differs - left-aligned instead of Skill Setup's
+   margin-left:auto right-align, because inside a choice pair these sit
+   under the name they belong to. */
+.md-typeset .engraving-loadout-choice .engraving-chip-chips {
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+  margin-top: auto;
+  flex-wrap: wrap;
+}
+
 /* Only a chip skill-tooltip.js actually wired (.skill-tip-anchor, added
    by wire() once an id resolved to DB_SKILL_EXTRAS data) gets a hover/
    focus cue - same "don't visually promise a tooltip a chip doesn't

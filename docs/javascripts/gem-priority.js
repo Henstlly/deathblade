@@ -76,6 +76,15 @@
 //   display name). Use the object form for the less common cases:
 //     { "id": "fatalwave", "name": "FTF" }
 //       - override the display name (icon still comes from id).
+//     { "id": "surge", "level": 10 }
+//       - OPTIONAL recommended GEM level for this row, rendered as a
+//         small muted "Рекомендуется ур. N" on the RIGHT of the row (the
+//         trailing grid column both the plain row and the <summary>
+//         already reserve). Use it for the levels a build genuinely
+//         needs, as opposed to "tip" below, which is freeform prose for
+//         the hover tooltip and reads badly as a permanent label. The
+//         number is the gem's own level, NOT the skill's - Surge at
+//         gem level 10 is { "id": "surge", "level": 10 }.
 //     { "id": "soulabsorber", "alts": [ { "id": "blitzrush", "note": "..." } ] }
 //       - turns the row into an expandable (arrow, click to open) with
 //         one or more suggested alternative gems listed below it. Each
@@ -161,6 +170,15 @@
     parent.appendChild(el("span", "gem-item-rank", String(rank)));
     parent.appendChild(buildIcon(entry.id, "gem-item-icon"));
     parent.appendChild(el("span", "gem-item-name", displayName(entry)));
+    // Trailing "Рекомендуется ур. N" label, right-aligned in the grid's
+    // last column - appended here (before buildRow adds .gem-item-arrow
+    // on an expandable row) so the arrow stays the last item in that row
+    // either way. Omitted entirely when no "level" was authored, so rows
+    // without a recommendation don't render an empty column.
+    if (entry.level) {
+      parent.appendChild(el("span", "gem-item-level",
+        "Рекомендуется ур. " + entry.level));
+    }
   }
 
   function buildAlt(alt) {

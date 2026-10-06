@@ -13,18 +13,17 @@
 
 **Кому подходит:**{: .best-для } Тем, кому нужно что-то простое для старта, но сложное для освоения.
 
-- Простой геймплей, заточенный на аптайм, без трюков.
-- Использует «Разрубающие лезвия» и «Двуручный хват» ради мобильности и полезности.
-- Множество <span class="skill-mention" data-glossary-id="pushimmunity">иммунитет к отбросу</span>, лишние стаки и свободу в ротации.
-- Очень высокая эффективность самоцветов: «Концентрация воли» и «Убийственная сталь» — практически весь твой урон.
-- Приходится постоянно балансировать попадание в спину у «Концентрации воли» и «Убийственной стали» темп с «Концентрацией воли» <span class="skill-mention" data-glossary-id="cpm">CPM</span>.
+- Простая ротация, для понимания. Но тяжёлая в реализации.
+- Использует «Разрубающие лезвия» и «Двуручный хват» ради мобильности.
+- Множество <span class="skill-mention" data-glossary-id="pushimmunity">иммунитетов к отбросу</span>, а так же всегда есть запас стаков.
+- Нуждается в малом количестве самоцветов: «Концентрация воли» и «Убийственная сталь».
 
 </div>
 <div class="pentagon-badge" data-build="222-speedy" data-family="surge" markdown>
 <div class="pentagon-badge-title">Профиль билда</div>
 <div class="pentagon-svg-mount"></div>
 <div class="pentagon-badge-extra" markdown>
-[Видео-гайд](https://www.youtube.com/watch?v=V1UQhE37Yjs){ .video-chip } [Геймплей](https://www.youtube.com/watch?v=JQISLdCtXjQ){ .video-chip }
+[Видео-гайд](https://www.youtube.com/watch?v=3PO1iSO8g50){ .video-chip } [Геймплей](https://www.youtube.com/watch?v=JQISLdCtXjQ){ .video-chip }
 </div>
 </div>
 </div>
@@ -52,7 +51,7 @@
 === "222 Ускоренный"
 
     ```
-    529EFCAD5AADC38E0F6BA8A7F7781C136E88697BFAF5999811D8898564A010617FD14F6822C637C0A2B745A010DF50CE26CBEA0A8F493EAF49317C90E2806F53
+    921BE17D25362FCFE8E928C54EA0C16120543073CD898B0CD4B3471ECE3EC6F89D211CCCB6167A00594B98D61F9DE491E6EAF79853D19F8DCBE515CD1429430D
     ```
 
 ## Система А.Р.К. {#ark-setup}
@@ -74,8 +73,8 @@
     { "id": "evolution", "nodes": [
       { "id": "crit", "level": 10 },
       { "id": "specialization", "level": 30 },
-      { "id": "limitbreakevo", "level": 2 },
-      { "id": "keensense", "level": 1 },
+      { "id": "keensense", "level": 2 },
+      { "id": "limitbreakevo", "level": 1 },
       { "id": "strike", "level": 2 },
       { "id": "master", "level": 1 },
       { "id": "pulverize", "level": 1 },
@@ -84,8 +83,9 @@
     { "id": "enlightenment", "nodes": [
       { "id": "surgeenhancement", "level": 1 },
       { "id": "orbcompression", "level": 3 },
-      { "id": "orbcontrol", "level": 2 },
+      { "id": "orbcontrol", "level": 1 },
       { "id": "limitbreakenl", "level": 3 },
+      { "id": "chaosinfusion", "level": 1 },
       { "id": "chaoticpower", "level": 3 }
     ] },
     { "id": "leap", "nodes": [
@@ -115,15 +115,6 @@
 <summary><span class="setup-note-tag">Советы</span>Советы по А.Р.К.<span class="setup-note-arrow"></span></summary>
 
 - Используй [Калькулятор Созвездий А.Р.К.](../resources.md#ark-passive-calculator), чтобы оптимизировать вкладку «Экспансию».
-- <span class="skill-mention" data-ap-id="chaosinfusion" data-level="1">Фатальный удар 1</span> + <span class="skill-mention" data-ap-id="orbcontrol" data-level="1">Координация сфер 1</span> можно использовать, если доля «Концентрации воли» в уроне стабильно выше 50%.
-- Этот билд умеет применять <span class="skill-mention" data-skill-id="raidcaptain">Неутомимый натиск</span> + <span class="skill-mention" data-skill-id="massincrease">Карающая длань</span> с наименьшими издержками.
-
-</details>
-
-<details class="setup-note" data-kind="note" markdown>
-<summary><span class="setup-note-tag">Заметка</span><span class="skill-mention" data-glossary-id="arkgrid">Созвездия А.Р.К.</span><span class="setup-note-arrow"></span></summary>
-
-- Урон и удобство будут заметно ниже, если взять минимальные требования по ядрам.
 
 </details>
 
@@ -161,7 +152,7 @@
 [
   {"id": "surpriseattack", "level": 13, "tripods": [1, 1, 1], "rune": {"tier": "legendary", "name": "Rage"}},
   {"id": "windcut", "level": 14, "tripods": [3, 3, 1], "rune": {"tier": "legendary", "name": "Galewind"}},
-  {"id": "upperslash", "level": 11, "tripods": [2, 3, 2], "rune": {"tier": "legendary", "name": "Galewind"}},
+  {"id": "upperslash", "level": 11, "tripods": [2, 3, 2], "rune": {"tier": "epic", "name": "Galewind"}, "picks": ["Руна: Фиолетовый Агель или Легендарный Ульд — оба варианта равноценны."]},
   {"id": "bladedance", "level": 14, "tripods": [1, 1, 2], "rune": {"tier": "legendary", "name": "Galewind"}},
   {"id": "spincutter", "level": 10, "tripods": [3, 3, 1], "rune": {"tier": "epic", "name": "Galewind"}},
   {"id": "earthcleaver", "level": 10, "tripods": [3, 3, 2], "rune": {"tier": "legendary", "name": "Vision"}},
@@ -180,65 +171,26 @@
 <details class="setup-note" data-kind="tip" open markdown>
 <summary><span class="setup-note-tag">Советы</span>Руны<span class="setup-note-arrow"></span></summary>
 
-- Используй <span class="skill-mention" data-rune-name="Purify">Солум</span> на «Хитроумном финте», если переходишь на альтернативную сборку.
-- Используй <span class="skill-mention" data-rune-name="Focus" data-rune-tier="legendary">Легендарный Марх</span> на «Плаще клинков», если испытываешь проблемы с маной.
-- Используй <span class="skill-mention" data-rune-name="Vision" data-rune-tier="legendary">Легендарный Ульд</span> на «Внезапном выпаде», если он полезнее, чем <span class="skill-mention" data-rune-name="Rage" data-rune-tier="legendary">Легендарный Раш</span>.
-    - Повышает шанс получить лишний стак на прекасте «Внезапного выпада».
-    - На альтернативной сборке дай «Хитроумному финту» <span class="skill-mention" data-rune-name="Galewind">Агель</span> или <span class="skill-mention" data-rune-name="Vision">Ульд</span> руна, которая доступна.
-
-   *Примечание: «Блиц» отображается <span class="skill-mention" data-rune-name="Galewind" data-rune-tier="legendary">Легендарный Агель</span> в игре, но на самом деле он не даёт ничего сверх <span class="skill-mention" data-rune-name="Galewind" data-rune-tier="epic">Эпический Агель</span> (или даже свыше <span class="skill-mention" data-rune-name="Vision" data-rune-tier="legendary">Легендарный Ульд</span>) из-за того, что игра [округляет вниз](https://www.inven.co.kr/board/lostark/5497/175825) сокращения времени каста до интервалов по 0,05 с — держи Эпический, чтобы слот руны остался свободным для другого скилла.*
-
-</details>
-
-<details class="setup-note" data-kind="note" open markdown>
-<summary><span class="setup-note-tag">Заметка</span>Опции и триподы<span class="setup-note-arrow"></span></summary>
-
-- На альтернативной сборке опусти «Хитроумный финт» до Ур. 1 ради меньшего расхода маны.
-    - Поднимать выше Ур. 4 невыгодно: теряешь стак и повышаешь расход маны почти без причины.
-- Можно использовать «Широкий удар» <span class="skill-mention" data-glossary-id="tripod">трипод</span> на «Внезапном выпаде» ради заметно большего удобства.
-    - С «Широким ударом» ты **обязан** применять «Иссечение» рано в открытиях ради синергии.
-    - Теперь он жизнеспособнее, чем когда-либо, потому что добивающие попадания «Иссечения» продлевают его аптайм.
-- «Двуручный хват» (3-3-2) — выбор по умолчанию здесь за мобильность и полезность.
-    - Это более медленный и уязвимый каст, который тратит заметно больше маны — поэтому «Плащ клинков» и «Восходящий вихрь» в этом билде стоят на Ур. 10.
-    - «Хитроумный финт» — более дешёвый вариант, если позволяет мана; смотри примечание к альтернативе ниже.
+- Используй <span class="skill-mention" data-rune-name="Purify">Солум</span> на «Хитроумном финте», для снятия негативных эффектов.
+- Используй <span class="skill-mention" data-rune-name="Focus" data-rune-tier="legendary">Легендарный Марх</span> на «Плаще клинков», если проблемы с маной.
 
 </details>
 
 <details class="setup-note" data-kind="example" open markdown>
-<summary><span class="setup-note-tag">Альтернатива</span>«Аксель» против «Разрубающих лезвий»<span class="setup-note-arrow"></span></summary>
+<summary><span class="setup-note-tag">Альтернатива</span>Выбор мобильности и контртаки<span class="setup-note-arrow"></span></summary>
 
-<div class="skill-compare-row" markdown>
-<div class="skill-compare-col" markdown>
-<span class="skill-compare-title"><span class="skill-inline" data-skill-id="spincutter"><span class="skill-inline-name">Разрубающие лезвия</span></span> (3-3-1) · По умолчанию</span>
-
-Скилл для смены позиции по умолчанию и более безопасный из двух: не требует практики и работает в каждом цикле, ценой части потолка по сравнению с «Акселем».
-
-**В ротации:**
-
-- Смена позиции им лишает тебя <span class="skill-mention" data-glossary-id="cpm">CPM</span> по сравнению с «Акселем», если применён 2 или более раз (тапы). Одно применение немного быстрее «Акселя».
-- Смена позиции им со скипом «Восходящего вихря» лишает тебя бесплатного <span class="skill-mention" data-glossary-id="pushimmunity">иммунитет к отбросу</span> окно — одно из ключевых преимуществ билда. У тебя останутся неприменённые скиллы, так что при развороте босса не повезёт.
-- Перемещает тебя вокруг босса, поэтому целиться нужно наружу к его спине, рискуя промахнуться из-за движения «Убийственной стали» вперёд.
-
-**Кому подходит:**{: .best-для } Тем, кто предпочитает простоту: один цикл проще повторять, если не хочется разбираться в продвинутых циклах со скипами и их вариантах восстановления.
-
+<div class="engraving-loadout engraving-loadout-choice" markdown>
+<div class="engraving-loadout-group" markdown>
+<span class="engraving-loadout-label">Мобильность</span>
+<span class="engraving-chip" data-skill-id="spincutter"><span class="engraving-chip-head"><img class="skill-icon" src="../../assets/shared/icon-spincutter.png" alt="">Разрубающие лезвия<span class="engraving-chip-level">Ур. 10</span></span><span class="engraving-chip-chips"><span class="tripod-chip tripod-t1">3</span><span class="tripod-chip tripod-t2">3</span><span class="tripod-chip tripod-t3">1</span><span class="rune-chip rune-epic rune-chip-tile" data-rune-name="galewind" data-rune-tier="epic"><span class="rune-chip-tile-box"><img class="rune-chip-icon" src="../../assets/shared/rune-icons/galewind.png" alt="" loading="lazy"></span><span class="rune-chip-label">Агель</span></span></span></span>
+<span class="choice-or">ИЛИ</span>
+<span class="engraving-chip" data-skill-id="darkaxel"><span class="engraving-chip-head"><img class="skill-icon" src="../../assets/shared/icon-darkaxel.png" alt="">Аксель<span class="engraving-chip-level">Ур. 10</span></span><span class="engraving-chip-chips"><span class="tripod-chip tripod-t1">1</span><span class="tripod-chip tripod-t2">1</span><span class="tripod-chip tripod-t3">2</span><span class="rune-chip rune-epic rune-chip-tile" data-rune-name="galewind" data-rune-tier="epic"><span class="rune-chip-tile-box"><img class="rune-chip-icon" src="../../assets/shared/rune-icons/galewind.png" alt="" loading="lazy"></span><span class="rune-chip-label">Агель</span></span></span></span>
 </div>
-<div class="skill-compare-col" markdown>
-<span class="skill-compare-title"><span class="skill-inline" data-skill-id="darkaxel"><span class="skill-inline-name">Аксель</span></span> · Альтернатива</span>
-
-Вариант максимального потолка. Он воссоздаёт «Концентрацию воли» ОС двумя скиллами: «Аксель» переносит тебя через босса, а «Убийственная сталь» точно вбивает тебя в его спину — бери, если освоишь циклы со скипами.
-
-**В ротации:**
-
-- Обычно лучше <span class="skill-mention" data-glossary-id="cpm">CPM</span> при смене позиции; быстрее, чем 2 или более применений (тапов) «Разрубающих лезвий».
-- Всегда применяй прямо перед «Убийственной сталью» и «Концентрацией воли», оставляя минимум случайности.
-- Аварийная кнопка иммунитета к отбросу: экономит пробел и позволяет жадничать вдвое больше.
-    - Такое применение ограничивает мобильность в цикле, но повышает аптайм на боссе.
-
-**Кому подходит:**{: .best-для } Тем, кто хочет максимальный потолок и умеет выполнять циклы со скипами.
-
-</div>
-<div class="skill-compare-foot" markdown>
-**Лучшее из двух:** Меняй свободно под контент или :ratJAM: бери Ур. 4 <span class="skill-inline" data-skill-id="headhunt"><span class="skill-inline-name">Хитроумный финт</span></span> вместо <span class="skill-inline" data-skill-id="earthcleaver"><span class="skill-inline-name">Двуручный хват</span></span> когда <span class="skill-mention" data-glossary-id="counter">Контр</span> не нужен.
+<div class="engraving-loadout-group" markdown>
+<span class="engraving-loadout-label">Контртака</span>
+<span class="engraving-chip" data-skill-id="headhunt"><span class="engraving-chip-head"><img class="skill-icon" src="../../assets/shared/icon-headhunt.png" alt="">Хитроумный финт<span class="engraving-chip-level">Ур. 4</span></span><span class="engraving-chip-chips"><span class="tripod-chip tripod-t1">1</span><span class="tripod-chip tripod-chip-empty" aria-hidden="true"></span><span class="tripod-chip tripod-chip-empty" aria-hidden="true"></span><span class="rune-chip rune-legendary rune-chip-tile" data-rune-name="vision" data-rune-tier="legendary"><span class="rune-chip-tile-box"><img class="rune-chip-icon" src="../../assets/shared/rune-icons/vision.png" alt="" loading="lazy"></span><span class="rune-chip-label">Ульд</span></span></span></span>
+<span class="choice-or">ИЛИ</span>
+<span class="engraving-chip" data-skill-id="earthcleaver"><span class="engraving-chip-head"><img class="skill-icon" src="../../assets/shared/icon-earthcleaver.png" alt="">Двуручный хват<span class="engraving-chip-level">Ур. 10</span></span><span class="engraving-chip-chips"><span class="tripod-chip tripod-t1">3</span><span class="tripod-chip tripod-t2">3</span><span class="tripod-chip tripod-t3">2</span><span class="rune-chip rune-legendary rune-chip-tile" data-rune-name="vision" data-rune-tier="legendary"><span class="rune-chip-tile-box"><img class="rune-chip-icon" src="../../assets/shared/rune-icons/vision.png" alt="" loading="lazy"></span><span class="rune-chip-label">Ульд</span></span></span></span>
 </div>
 </div>
 
@@ -258,43 +210,26 @@
 <div class="setup-panel" data-accent="lavender" markdown>
 
 <div class="gem-priority" markdown>
-<script type="application/json">
-[
+<script type="application/json">[
   { "col": "dmg", "items": [
-    "surge",
+    { "id": "surge", "level": 10 },
     "bladedance",
     "turningslash",
     "windcut"
   ] },
   { "col": "cd", "items": [
-    "upperslash",
-    "surpriseattack",
-    "maelstrom",
+    { "id": "maelstrom", "level": 10 },
+    { "id": "upperslash", "level": 9 },
+    { "id": "surpriseattack", "level": 9 },
     "bladedance",
     "windcut",
     "turningslash",
-      { "id": "spincutter", "alts": [
-        { "id": "surpriseattack", "note": "Use Surprise Attack DMG instead if you prefer, or even another class's Lv 10 gem." },
-        { "id": "darkaxel", "note": "Use if you decide to go with Dark Axel." }
+    { "id": "spincutter", "alts": [
+      { "id": "surpriseattack", "note": "Бери «Урон» на «Внезапном выпаде», если предпочитаешь, или даже самоцвет другого класса Ур. 10." },
+      { "id": "darkaxel", "note": "Бери, если решишь перейти на «Аксель»." }
     ] }
   ] }
-]
-</script>
-</div>
-
-<div class="setup-notes" markdown>
-
-<details class="setup-note" data-kind="note" open markdown>
-<summary><span class="setup-note-tag">Заметка</span>Требования к самоцветам<span class="setup-note-arrow"></span></summary>
-
-- Чтобы раскрыть потолок, этому билду нужно больше вложений в КД-самоцветы, чем остальным.
-    - <span class="skill-mention" data-skill-id="massincrease">Карающая длань</span> и/или <span class="skill-mention" data-ap-id="optimizedtraining" data-level="1">Изнурительные тренировки 1</span> помогают сгладить картину при небольших вложениях.
-    - +КД% <span class="skill-mention" data-glossary-id="bracelet">браслет</span> повышает требования к уровню самоцвета на 1, низкий <span class="skill-mention" data-glossary-id="specializationstat">Специализация</span> не рекомендуется.
-    - Как только перезарядка «Блица» и «Плаща клинков» достигнет Ур. 9, приоритет перезарядки «Неумолимого притяжения» сильно растёт.
-    - Список приоритетов самоцветов выше предполагает ротацию с продвинутыми циклами со скипами.
-
-</details>
-
+]</script>
 </div>
 
 </div>
@@ -307,19 +242,15 @@
      cycleRef, trailing suffix, etc.) is in javascripts/rotation-line.js's
      "EASY EDIT GUIDE" comment. -->
 
-Есть оптимальный порядок скиллов, но у тебя есть свобода при простое или если нужно вклинить скиллы мобильности.
+Применяй «Разрубающие лезвия» (или «Аксель», если берёшь альтернативу), чтобы гарантированно попасть в спину «Убийственной сталью» и «Концентрацией воли».
 
-«Судьба: Усиленная острота» накапливается до 5 стаков за счёт применения (Обычных) скиллов и усиливает «Убийственную сталь».
+Используй Открытие (по желанию), затем чередуй Цикл 1 и 2 до конца боя.
 
-   Применяй «Разрубающие лезвия» (или «Аксель», если берёшь альтернативную сборку), чтобы гарантированно попасть в спину «Убийственной сталью» и «Концентрацией воли», если нужно.
-
-Используй цикл открытия и либо повторяй его бесконечно (просто), либо переходи к продвинутым циклам со скипами (максимум урона).
-
-С 3 сфер
+Открытие
 { .rotation-stage }
 
 <div class="cycle-card" markdown>
-<div class="cycle-card-header"><span class="cycle-num cycle-num-1">1</span><span class="cycle-title">Открытие с перенакапом стаков — 68 стаков</span></div>
+<div class="cycle-card-header"><span class="cycle-title">Открытие с запасом стаков — 68 стаков</span></div>
 <div class="rotation-line" markdown>
 <script type="application/json">
 ["windcut", "deathtrance", "surpriseattack", "maelstrom", "windcut", "upperslash", "turningslash", "bladedance", "deathlyslash", "surpriseattack", "surge"]
@@ -327,23 +258,11 @@
 </div>
 </div>
 
-<div class="rotation-notes" markdown>
-
-1. Это открытие перетекает в циклы ниже, но и само по себе годится, если предпочитаешь простоту и не против простоев.
-2. В циклах с добивкой «Внезапным выпадом» он всегда идёт перед «Плащом клинков», чтобы перезарядки совпали.
-
-</div>
-
-<div class="setup-panel" data-accent="lavender" markdown>
-<div class="setup-notes" markdown>
-
-<details class="setup-note" data-kind="tip" open markdown>
-<summary><span class="setup-note-tag">Советы</span>Режим леопарда (рекомендуется)<span class="setup-note-arrow"></span></summary>
-
-После открытия чередуй эти два цикла по необходимости ради максимального урона:
+Циклы
+{ .rotation-stage }
 
 <div class="cycle-card" markdown>
-<div class="cycle-card-header"><span class="cycle-num cycle-num-2">2</span><span class="cycle-title">Цикл со скипом «Внезапного выпада» — 61 стаков</span></div>
+<div class="cycle-card-header"><span class="cycle-num cycle-num-1">1</span><span class="cycle-title">Цикл со скипом «Внезапного выпада» — 61 стаков</span></div>
 <div class="rotation-line" markdown>
 <script type="application/json">
 ["windcut", "deathtrance", "maelstrom", "surpriseattack", "windcut", "upperslash", "turningslash", "bladedance", "deathlyslash", "surge"]
@@ -352,7 +271,7 @@
 </div>
 
 <div class="cycle-card" markdown>
-<div class="cycle-card-header"><span class="cycle-num cycle-num-3">3</span><span class="cycle-title">Цикл со скипом «Неумолимого притяжения» — 60 стаков</span></div>
+<div class="cycle-card-header"><span class="cycle-num cycle-num-2">2</span><span class="cycle-title">Цикл со скипом «Неумолимого притяжения» — 60 стаков</span></div>
 <div class="rotation-line" markdown>
 <script type="application/json">
 ["deathtrance", "surpriseattack","maelstrom", "windcut", "upperslash", "turningslash", "bladedance", "deathlyslash", "surpriseattack", "surge"]
@@ -362,49 +281,18 @@
 
 <div class="rotation-notes" markdown>
 
-1. Цикл **2** даёт запас, оставляя «Внезапный выпад» на восстановление; цикл **3** даёт более Легендарный CPM.
-2. Идеально чередование **2>3>2>3**, но по паттернам босса допустимы и варианты вроде **2>3>3>2** или **2>2>3>3**.
-      - Цикл **3** предпочтителен на опасных паттернах босса, потому что у «Неумолимого притяжения» нет иммунитета к параличу.
-      - Восстанавливайся «Неумолимым притяжением» или «Внезапным выпадом» и выбирай следующий цикл по доступности.
-3. Добивку «Внезапным выпадом» можно пропустить, если перед «Убийственной сталью» у тебя 49+ стаков.
-      - Аналогично для 40+ стаков перед «Блицем», 30+ стаков перед «Восходящим вихрём» и так далее.
-      - Если перед активацией «Боевого транса» у тебя 8+ стаков, можно пропустить и прекаст «Неумолимого притяжения», и добивку «Внезапного выпада».
-      - При 15+ стаках перед «Боевым трансом» можно пропускать и прекаст «Неумолимого притяжения», и добивку «Внезапного выпада» два цикла подряд.
-4. Кажется сложнее, чем есть: посмотри [это видео](https://www.youtube.com/watch?v=V1UQhE37Yjs), чтобы увидеть полный цикл в деле.
+1. Идеально чередование **1>2>1>2**, но по паттернам босса допустимы и варианты вроде **1>2>2>1** или **1>1>2>2**.
+2. Кажется сложнее, чем есть: посмотри [это видео](https://www.youtube.com/watch?v=V1UQhE37Yjs), чтобы увидеть полный цикл в деле.
 
 </div>
-
-Полезно думать обо всём внутри <span class="skill-inline" data-skill-id="deathtrance"><span class="skill-inline-name">Боевой транс</span></span> и <span class="skill-inline" data-skill-id="deathlyslash"><span class="skill-inline-name">Убийственная сталь</span></span> как 53 стака, а прекаст «Неумолимого притяжения» или «Внезапный выпад» как добивку — гибкие варианты, которые дают нужные 7+ стаков, чтобы завершить «Концентрацию воли» на 60+ стаков.
-</details>
-
-</div>
-</div>
-
-Все циклы
-{ .rotation-stage }
-
-<div class="rotation-notes" markdown>
-
-1. В зависимости от скорости атаки и задержки прекаст «Неумолимого притяжения» может дать 7 стаков вместо 8.
-2. При меньшей скорости атаки (<span class="skill-mention" data-skill-id="massincrease">Карающая длань</span>), «Убийственная сталь» может дать 12 стаков вместо 11.
-3. Лучше применить «Концентрацию воли» примерно на 59 стаках, чем ждать больше 1,5 секунды.
-4. Задержка «Убийственной стали» + «Концентрации воли» больше чем на 1,75 с ради гарантированного попадания в спину — потеря урона.
-5. Задержка *только* «Концентрации воли» больше чем на 1 секунду ради гарантированного попадания в спину — тоже потеря урона.
-6. <span class="skill-mention" data-skill-id="bladeassault">Призрачные клинки</span> масштабируется намного хуже на «Концентрации воли», чем на Остаточной энергии, и кастуется слишком долго.
-      - Он всё ещё полезен для открывающих скиллов, или его можно придержать ради жадности с <span class="skill-mention" data-glossary-id="pushimmunity">иммунитет к отбросу</span>/Гиперпробуждения.
-
-</div>
-
-*Примечание: в циклах без прекаста момент входа в «Боевой транс» — ровно в момент попадания «Концентрации воли». Это не прощает ошибок, но ситуацию можно улучшить макросом, который очень быстро жмёт клавишу Идентичности 2-3 раза без каких-либо минусов, повышая CPM и удобство.*
 
 С нуля сфер
 { .rotation-stage }
 
 <div class="rotation-notes" markdown>
 
-1. Используй a <span class="food-req-item">![](../assets/shared/icon-stimulant.png){: .skill-icon } Мощная «Эйфория»</span> (рекомендуется) или переходи к #2.
-      - Стая: используй трипод «Плаща клинков» «Контроль сфер» и <span class="skill-mention" data-skill-id="flashblink">Сверхновая</span> пробуждения.
-2. Сгенерируй одну сферу, набери минимум 40 стаков, затем «Концентрация воли» вернёт все 3 сферы.
+1. Рекомендуется использовать <span class="food-req-item">![](../assets/shared/icon-stimulant.png){: .skill-icon } Мощную «Эйфорию»</span>, но если ты жадный и ленивый, переходи к #2.
+2. Сгенерируй одну сферу, набери минимум 40 стаков, затем примени «Концентрацию воли» — она вернёт все 3 сферы.
 
 </div>
 
@@ -414,7 +302,6 @@
 <div class="rotation-notes" markdown>
 
 1. Используй <span class="food-req-item">![](../assets/shared/icon-atropine.png){: .skill-icon } Ардопин-Х</span> прямо перед «Убийственной сталью» и умести две пары «Убийственная сталь» + «Концентрация воли» в 10 секунд.
-2. Выполняй самые быстрые циклы, адаптируясь к числу стаков и паттернам босса.
 
 </div>
 

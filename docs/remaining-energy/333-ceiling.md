@@ -50,17 +50,8 @@
 === "333 Шакрамы ★"
 
     ```
-    900CC6DEE164317B007DB080728058559F253356D493D9068FC9464270019E2DA0657696B30F009427D2603F2E13AB070E8A77607E775659BE0F35EF964A9929
+    B8D439DF1CD065F57B13617B183389592A0CC33220F6BE9E73BB5DE3436975884F075C0D62505EC34A6E8134B428C59E34EF8CAE65BB121AB97300D34C3BC542
     ```
-
-=== "Циркуляция энергии 5 (проще)"
-
-    ```
-    76A1B31F95DC1F7B50FB830D485E547AE6140D5427029F9729DD63D83C3AAE2A3EEF991E2263BA7AC3B9D67056DB26958AC8DB67D4D0E20EB22F0A70C1E86A35
-    ```
-
-    - Использует <span class="skill-mention" data-ap-id="orbcirculation" data-level="5">Циркуляция энергии 5</span>, что делает билд прощающим ценой примерно 3% урона.
-    - Дополнительно использует <span class="skill-mention" data-rune-name="Wealth" data-rune-tier="legendary">Легендарный Эйге</span> на «Длани Авесты», что иначе было бы невозможно.
 
 ## Система А.Р.К. {#ark-setup}
 
@@ -81,8 +72,8 @@
     { "id": "evolution", "nodes": [
       { "id": "crit", "level": 10 },
       { "id": "specialization", "level": 30 },
-      { "id": "limitbreakevo", "level": 2 },
       { "id": "keensense", "level": 1 },
+      { "id": "limitbreakevo", "level": 2 },
       { "id": "strike", "level": 2 },
       { "id": "master", "level": 1 },
       { "id": "pulverize", "level": 1 },
@@ -122,7 +113,6 @@
 
 - Используй [Калькулятор Созвездий А.Р.К.](../resources.md#ark-passive-calculator), чтобы оптимизировать вкладку «Экспансию».
 - <span class="skill-mention" data-ap-id="releasepotential" data-level="3">Стремительное восстановление 3</span> / <span class="skill-mention" data-ap-id="instantspell" data-level="3">Божественное вдохновение 3</span> / <span class="skill-mention" data-ap-id="awakeningamplifier" data-level="1">Пробужденное сознание 1</span> может решить проблемы с маной ценой совсем небольшой потери урона.
-    - Менее комфортен с +КД% <span class="skill-mention" data-glossary-id="bracelet">браслет</span> линия и/или низкий <span class="skill-mention" data-glossary-id="specializationstat">Специализация</span>.
 
 </details>
 
@@ -211,8 +201,8 @@
   {"id": "turningslash", "level": 14, "tripods": [1, 3, 1], "rune": {"tier": "rare", "name": "Wealth"}},
   {"id": "maelstrom", "level": 10, "tripods": [2, 1, 2], "rune": {"tier": "rare", "name": "Wealth"}},
   {"id": "fatalwave", "level": 14, "tripods": [2, 3, 2], "rune": {"tier": "legendary", "name": "Galewind"}},
-  {"id": "blitzrush", "level": 12, "tripods": [1, 1, 1], "rune": {"tier": "rare", "name": "Wealth"}},
-  {"id": "voidstrike", "level": 13, "tripods": [3, 1, 2], "rune": {"tier": "legendary", "name": "Wealth"}},
+  {"id": "blitzrush", "level": 14, "tripods": [2, 1, 1], "rune": {"tier": "rare", "name": "Wealth"}},
+  {"id": "voidstrike", "level": 14, "tripods": [3, 1, 2], "rune": {"tier": "legendary", "name": "Wealth"}},
   {"id": "surge", "subtitle": "Identity"},
   {"id": "deathlyslash", "subtitle": "Technique"},
   {"id": "bladeassault", "subtitle": "Awakening"}
@@ -255,7 +245,7 @@
 <script type="application/json">
 [
   { "col": "dmg", "items": [
-    "fatalwave", "surge", "twinshadows", "soulabsorber",
+    { "id": "fatalwave", "level": 10 }, "surge", "twinshadows", "soulabsorber",
     "turningslash", "voidstrike", "blitzrush"
   ] },
   { "col": "cd", "items": [

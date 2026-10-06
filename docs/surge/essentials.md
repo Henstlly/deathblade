@@ -31,6 +31,18 @@
 
 </div>
 
+Если не уверен в саппортах, держи всегда еду на ману в инвентаре
+
+<div class="food-options" markdown>
+
+<div class="food-option" markdown>
+![](../assets/shared/icon-fish.png){: .food-option-icon }
+
+Томатная фаршированная рыба
+</div>
+
+</div>
+
 <details class="setup-note" data-kind="tip" open markdown>
 <summary><span class="setup-note-tag">Советы</span>Короткая база о блейде<span class="setup-note-arrow"></span></summary>
 
