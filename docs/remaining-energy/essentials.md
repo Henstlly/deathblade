@@ -67,8 +67,8 @@
 <summary><span class="setup-note-tag">Советы</span>Короткая база о блейде<span class="setup-note-arrow"></span></summary>
 
 - Всем билдам Клинка смерти нужен питомец, дающий бонус к «<span class="skill-mention" data-glossary-id="specializationstat">Мастерству</span>» (160).
-- Оптимизируйте свою <span class="skill-mention" data-glossary-id="arkpassive">Созвездия А.Р.К.</span> и подберите <span class="skill-mention" data-glossary-id="bracelet">браслеты</span>/снаряжение — [здесь!](../resources.md#ark-passive-calculator)
 - Порог для 333 — **1818** <span class="skill-mention" data-glossary-id="specializationstat">Мастерства</span> (для оптимального набора шариков), но старайся выжать **1830+**.
+- Оптимизируйте свою <span class="skill-mention" data-glossary-id="arkpassive">Созвездия А.Р.К.</span> и подберите <span class="skill-mention" data-glossary-id="bracelet">браслеты</span>/снаряжение — [здесь!](../resources.md#ark-passive-calculator)
 - Всегда жмите следующее умение во время анимации текущего умения.
 - Если сомневаетесь, берите «<span class="skill-mention" data-skill-id="grudge">Титаноборец</span>» и «<span class="skill-mention" data-skill-id="ambushmaster">Бесшумный убийца</span>»/«<span class="skill-mention" data-skill-id="adrenaline">Адреналин</span>» в качестве гравировок <span class="skill-mention" data-glossary-id="abilitystone">Фетранита</span>.
 - Для тренировок в <span class="skill-mention" data-glossary-id="trixion">Тризионе</span> нужны гравировки «<span class="skill-mention" data-skill-id="spiritabsorption">Стремительность</span>» и «<span class="skill-mention" data-skill-id="maxmp">Источник маны</span>» максимального уровня.
