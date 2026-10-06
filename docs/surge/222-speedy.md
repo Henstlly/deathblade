@@ -304,7 +304,7 @@
 
 </div>
 
-![222 TL;DR flowchart](../assets/tldr-222.svg){ .zoomable-image loading=lazy }
+![222 TL;DR flowchart](../assets/tldr-222.svg?v=2){ .zoomable-image loading=lazy }
 
 ## Распределение Урона {#dps-spread}
 
