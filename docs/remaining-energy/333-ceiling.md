@@ -249,7 +249,7 @@
     "turningslash", "voidstrike", "blitzrush"
   ] },
   { "col": "cd", "items": [
-    "maelstrom", "blitzrush", "turningslash", "fatalwave"
+    { "id": "maelstrom", "level": 10 }, "blitzrush", "turningslash", "fatalwave"
   ] }
 ]
 </script>
