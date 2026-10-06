@@ -97,7 +97,7 @@ extra_javascript:
   - javascripts/rotation-practice.js?v=9
   - javascripts/dps-chart.js?v=8
   - javascripts/gem-dps-tooltip.js?v=11
-  - javascripts/build-compare.js?v=14
+  - javascripts/build-compare.js?v=15
   - javascripts/image-lightbox.js?v=1
 
 extra:

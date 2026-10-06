@@ -108,12 +108,17 @@
 
       var nameCell = document.createElement("td");
       var nameLink = document.createElement("a");
-      // Ссылка в столбце «Билд» ведёт на страницу билда. Раньше она
-      // открывала видео-гайд в новой вкладке (см. build-data.js's
-      // video: field) - но из таблицы сравнения нужен переход на страницу
-      // самого билда, а ролик и так лежит у него в профиле. Как в
-      // эталонной версии.
-      nameLink.href = buildUrl(family, build);
+      // Ссылка в столбце «Билд» ведёт на страницу билда: из таблицы
+      // сравнения нужен переход на сам билд, а ролик и так лежит у него в
+      // профиле. Исключение — билды с compareVideo: true в
+      // build-data.js (сейчас 313 «Шакрамы 2.0» и 333 «Охота за
+      // голововами»): для них из сравнения нужен переход на
+      // видео-гайд, поэтому берём их video: вместо страницы. Флаг
+      // опционален и проверяется наряду с самим video:, чтобы
+      // проставленный флаг без ссылки не дал href в null.
+      nameLink.href = (build.compareVideo && build.video)
+        ? build.video
+        : buildUrl(family, build);
       nameLink.className = "build-compare-name";
       var dot = document.createElement("span");
       dot.className = "build-compare-dot";
