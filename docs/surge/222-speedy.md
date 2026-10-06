@@ -170,7 +170,7 @@
 <details class="setup-note" data-kind="tip" open markdown>
 <summary><span class="setup-note-tag">Советы</span>Руны<span class="setup-note-arrow"></span></summary>
 
-- Используй <span class="skill-mention" data-rune-name="Purify">Солум</span> на «Хитроумном финте», для снятия негативных эффектов.
+- Используй <span class="skill-mention" data-rune-name="Purify">Солум</span> на «Хитроумном финте/Двуручный хват», для снятия негативных эффектов.
 - Используй <span class="skill-mention" data-rune-name="Focus" data-rune-tier="legendary">Легендарный Марх</span> на «Плаще клинков», если проблемы с маной.
 
 </details>
