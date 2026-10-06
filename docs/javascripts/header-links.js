@@ -17,10 +17,14 @@
 // document$ re-fires on every SPA-style page swap, so without it the icons
 // would be appended again on each in-app navigation.
 //
-// Icon colors are the brands' own (#9146FF Twitch, #5865F2 Discord, #1B92D1
-// Telegram) and are baked into the SVGs, so they can't be restyled from here.
-// All three measure 3.7:1 or better against the #1c1c1e header, clearing the
-// 3:1 WCAG 1.4.11 non-text bar for logos, hence no brightness filter.
+// Icon colors are the site's own red (--dbc-red, #e05a6e) and are baked into
+// the SVGs - each file had exactly one color it needed changed: Twitch's
+// #9146FF and Discord's #5865F2 fill, and Telegram's .st117 rule (#1B92D1),
+// which is the only one of that file's 150 mixer classes the single path
+// actually uses. So they can't be restyled from here; changing them means
+// editing the fills in the SVGs. #e05a6e measures 4.6:1 against the #1c1c1e
+// header, clearing the 3:1 WCAG 1.4.11 non-text bar for logos, hence no
+// brightness filter.
 (function () {
   var LINKS = [
     ["twitch-svgrepo-com.svg", "https://www.twitch.tv/henstly", "Twitch"],
