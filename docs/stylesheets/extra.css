@@ -11355,6 +11355,28 @@ body.page-333-blitz *:hover {
   height: auto;
   border-radius: 6px;
 }
+/* Same sticker floated RIGHT so the credits text sits in the column to its
+   left instead of under it. `.sticker-image` centers the image
+   (margin: 0 auto) and that centering has to be undone here, not just
+   overridden - an auto side margin is what holds a float on its own
+   side. Slightly narrower than the centered size: the credits run long
+   enough that at 220px they wrapped onto a third line with almost
+   nothing beside it. */
+.md-typeset img.sticker-image-side {
+  float: right;
+  margin: 0.2em 0 0.8em 1.4em;
+  max-width: min(180px, 40%);
+}
+/* On phones there is no room for a side column at all - 180px of a
+   ~320px viewport leaves the credits a ~130px ribbon, several words per
+   line. Back to the centered block the base class already styles. */
+@media screen and (max-width: 600px) {
+  .md-typeset img.sticker-image-side {
+    float: none;
+    margin: 0 auto 1.2em;
+    max-width: min(220px, 100%);
+  }
+}
 /* The lightbox overlay gets zoom-OUT rather than the zoom-in above - it is
    the "click anywhere to close" surface, not a thing you click to open. Its
    own rule because of that, hence not a comma list on the previous one. It

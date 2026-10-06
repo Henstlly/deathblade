@@ -31,7 +31,7 @@ theme:
     - search.highlight
 
 extra_css:
-  - stylesheets/extra.css?v=170
+  - stylesheets/extra.css?v=171
 
 # Load order matters: several widgets read a shared data file
 # (build-data.js/skill-data.js/skill-names.js/ap-node-names.js) or the
