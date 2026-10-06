@@ -15,7 +15,8 @@
 
 - Простая ротация, для понимания. Но тяжёлая в реализации.
 - Множество <span class="skill-mention" data-glossary-id="pushimmunity">иммунитетов к отбросу</span>, а так же всегда есть запас стаков.
-- Нуждается в малом количестве самоцветов. «Концентрация воли» и «Убийственная сталь» основа твоего урона.
+- Нуждается в малом количестве самоцветов.
+- «Концентрация воли» и «Убийственная сталь» основа твоего урона.
 
 </div>
 <div class="pentagon-badge" data-build="222-speedy" data-family="surge" markdown>
@@ -304,7 +305,7 @@
 
 </div>
 
-![222 TL;DR flowchart](../assets/tldr-222.svg?v=2){ .zoomable-image loading=lazy }
+![222 TL;DR flowchart](../assets/tldr-222-v2.svg){ .zoomable-image loading=lazy }
 
 ## Распределение Урона {#dps-spread}
 
